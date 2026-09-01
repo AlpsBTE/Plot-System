@@ -82,7 +82,7 @@ menu-title:
   submit: 'Entregar'
   teleport: 'Teletransporte'
   abandon: 'Abandonar'
-  abandon-confirm: 'Abandon plot #{0}?'
+  abandon-confirm: '¿Abandonar la parcela #{0}?'
   undo-submit: 'Deshacer entrega'
   manage-members: 'Gestionar miembros'
   feedback: 'Comentarios | Revisión #{0}'
@@ -165,7 +165,7 @@ review:
   block-palette-points: "Bloquear puntos de paleta"
   toggle-points: "Alternar puntos"
   total-points: "Puntos totales"
-  abandoned-in-days: "§6Abandoned in §6{0} days"
+  abandoned-in-days: "§6Se abandonará en §6{0} días"
   criteria:
     accuracy: "Precisión"
     accuracy-desc: "¿Qué tan preciso es el edificio? %newline%%newline% - Parece similar a RL %newline%- Esquemas correctos %newline%- Altura correcta %newline%- Se completa"
@@ -202,7 +202,7 @@ note:
     click-to-remove-plot-member: "Haga clic para eliminar miembro de la parcela..."
     click-to-open-link: "Haga clic aquí para abrir el enlace {0}..."
     click-to-open-link-with-shortlink: "§6Haz clic aquí §7para abrir el enlace §a{0}§7 o usa este enlace: §a{1}"
-    click-to-copy-to-clipboard: "Copy to clipboard"
+    click-to-copy-to-clipboard: "Copiar al portapapeles"
     click-to-show-feedback: "§6 Haz clic aquí §ato mostrar tus comentarios..."
     click-to-show-open-reviews: "§6 Haz clic aquí §ato mostrar reseñas abiertas..."
     click-to-show-plots: "§6 Haz clic aquí §ato mostrar tus parcelas..."
@@ -221,9 +221,9 @@ message:
     finished-plot: "§a ¡La parcela §6#{0}§a de §6{1}§a ha terminado!"
     plot-marked-as-reviewed: "§a¡La parcela §6#{0}§a de §6{1}§a se ha marcado como revisada!"
     plot-rejected: "§a¡La parcela §6#{0}§a de §6{1}§a ha sido rechazada!"
-    plot-previously-rejected: "This plot has been rejected before ({0})."
-    plot-previously-rejected-feedback: "Rejection Feedback:"
-    plot-previously-rejected-reviewer: "Rejected by:"
+    plot-previously-rejected: "Esta parcela ha sido rechazada antes ({0})."
+    plot-previously-rejected-feedback: "Comentarios sobre el rechazo:"
+    plot-previously-rejected-reviewer: "Rechazado por:"
     undid-submission: "§a¡Se deshizo el envío a revisión de la parcela §6#{0}§a!"
     undid-review: "§a¡Se deshizo la revisión de la parcela §6#{0}§a de §6{1}§a!"
     reviewed-plot: "§a¡Tu parcela §6#{0}§a ha sido revisada!"
@@ -231,7 +231,7 @@ message:
     unreviewed-plots: "§a¡Hay §6{0}§a parcelas sin revisar!"
     unfinished-plot: "§a¡Tienes §6{0}§a parcela sin terminar!"
     unfinished-plots: "§a¡Tienes §6{0}§a parcelas sin terminar!"
-    enabled-build-permissions: "§aEnabled build permissions for reviewers on plot §6#{0}§a!"
+    enabled-build-permissions: "¡§aPermisos de construcción activados para revisores en la parcela §6#{0}§a!"
     disabled-build-permissions: "§a¡Se deshabilitaron permisos de construcción para supervisores en la parcela §6#{0}§a!"
     updated-plot-feedback: "§a¡Se actualizaron los comentarios de la parcela §6#{0}§a!"
     removed-plot-member: "§a¡Se eliminó a §6{0}§a de la parcela §6#{1}§a!"
@@ -351,83 +351,83 @@ tutorials:
         - '{1} para seleccionar el primer punto y {2} para seleccionar el segundo punto.'
         - 'Para continuar conectando los puntos usando {0}. ¡Inténtalo de nuevo!'
       stage-5-tasks:
-        - 'Connect the points by using {0}.'
+        - 'Conecta los puntos usando {0}.'
     stage-6:
-      stage-6-title: 'Building Heights'
+      stage-6-title: 'Alturas de los edificios'
       stage-6-messages:
-        - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
-        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
-        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - 'Ahora que tenemos los contornos del edificio, tenemos que medir <gold>medir</gold> la altura del edificio.'
+        - 'Calcula la altura de la <gold>fachada</gold> restando la altura del <gold>suelo</gold> de la altura del techo <gold></gold>.'
+        - 'Introduce la altura (en metros) de la fachada del edificio en el chat para continuar.'
         - '{0}'
-        - 'Well done! The height of the building is {1} blocks.'
-        - 'You´ve almost made it. The height of the building is {1} blocks.'
-        - 'You´ve almost made it. Try again!'
+        - '¡Bien hecho! La altura del edificio es de {1} bloques.'
+        - 'Ya casi lo has conseguido. La altura del edificio es de {1} bloques.'
+        - 'Ya casi lo has conseguido. ¡Inténtalo de nuevo!'
         - 'Puedes §6leer§ la elevación de Google Earth en la parte §inferior derecha§f del mapa. %newline%%newline% Para §6measure§f la altura, mueve el §puntero§ en el mapa.'
       stage-6-tasks:
-        - 'Calculate the height of the building.'
+        - 'Calcula la altura del edificio.'
     stage-7:
-      stage-7-title: 'Building Shells'
+      stage-7-title: 'Estructuras del edificio'
       stage-7-messages:
-        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
-        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
-        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
-        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
-        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
-        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
-        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+        - '¡Ahora podemos empezar por fin con el edificio! Los primeros pasos son las estructuras del edificio, que ahora podemos comenzar con los contornos y alturas de la construcción.'
+        - 'Teletransportar al menos a §6un punto§f del tejado a §6conectar§f el punto(s) con la fachada.'
+        - 'Usa §6diferentes tipos§f de bloques y colores para que sea más fácil separar el edificio en secciones.'
+        - 'A continuación, podemos levantar las paredes y sellar el techo. Ahora es el momento de marcar las ventanas y puertas.'
+        - 'Usa el comando de WorldEdit §6{0}§f para levantar las paredes de forma rápida y fácil.'
+        - 'Llena el techo a mano o usa el comando de WorldEdit §6{1}§f. También utiliza el comando §6{2}§f para cambiar la selección de tejados más grandes y complejos.'
+        - 'Comprueba siempre la altura §6de§f las ventanas y puertas para que §6coincida§f con la fachada.'
       stage-7-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Lee todos los consejos sobre la parcela y marcalos como leídos.'
     stage-8:
-      stage-8-title: 'Windows'
+      stage-8-title: 'Ventanas'
       stage-8-messages:
-        - 'The building shell is done! Let´s continue with the windows and doors.'
-        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
-        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
-        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
-        - 'Use the same blocks as for the windows on the right. Try again!'
-        - 'Thank you for your help! Now we can continue with the texturing.'
+        - '¡La estructura del edificio está terminada! Continuemos con las ventanas y las puertas.'
+        - 'Ohh... parece que faltan dos ventanas. ¿Puedes ayudarme a colocarlos? Son iguales a las del lado derecho.'
+        - 'No te olvides de §6oscurecer§f las §6ventanas§f y §6puertas§f para que puedas ver a través de ellas. ¡Nosotros no construimos interiores!'
+        - 'Hay muchas maneras de construir ventanas para BTE por ejemplo usando §6estandartes§f, §6trampillas§f o §6alfombras§f.'
+        - 'Usa los mismos bloques que para las ventanas de la derecha. ¡Inténtalo de nuevo!'
+        - '¡Gracias por tu ayuda! Ahora podemos continuar con el texturizado.'
       stage-8-tasks:
-        - 'Place the missing window details.'
+        - 'Coloca los detalles de la ventana que faltan.'
     stage-9:
-      stage-9-title: 'Texturing'
+      stage-9-title: 'Texturizado'
       stage-9-messages:
-        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
-        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
-        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
-        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+        - 'La textura es una parte integral del proceso de construcción, por lo que es importante utilizar los bloques y colores adecuados para que el edificio se vea realista.'
+        - 'Usa §6Google Street Vieew§f o §6imágenes§f para elegir el bloque correcto, ya que a veces las imágenes aéreas no son muy precisas.'
+        - 'Usa el comando de WorldEdit §6{0}§f para reemplazar la estructura de tu patrón.'
+        - 'Intenta usar §6bloques mixes§f y §6gradientes§f para las paredes y el techo, para que el edificio se vea más realista y resalte.'
       stage-9-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Lee todos los consejos sobre la parcela y marcalos como leídos.'
     stage-10:
-      stage-10-title: 'Detailing & Further Steps'
+      stage-10-title: 'Detalles y Pasos Adicionales'
       stage-10-messages:
-        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
-        - 'Add §6custom banners§f and §6custom heads§f to your builds. Use the command §6{0}§f to get a variety of custom heads.'
-        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
-        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
-        - 'Click here to learn more about the project.'
-        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
-        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
-        - 'Happy building! ☺'
+        - 'El detalle es uno de los procesos más importantes, ya que hace que el edificio sea distintivo y único.'
+        - 'Añade §6estandartes personalizados§f y §6cabezas personalizadas§f a tus construcciones. Usa el comando §6{0}§f para obtener una variedad de cabezas personalizadas.'
+        - 'Hay muchas maneras de §6decorar§f tus edificios. Siempre presta atención a los detalles de la fachada y tejados tales como §6chimeneas§f, §6ventanas§f y §6canaletas§f.'
+        - 'Gracias por tu participación. ¡Ahora estás listo para crear tus propios edificios para el proyecto BuildTheEarth!'
+        - 'Haga clic aquí para obtener más información sobre el proyecto.'
+        - 'Para <gold>postular como constructor</gold>, crea y envía <gold>uno o más parcelas</gold> en nuestro servidor. Puedes encontrar más información sobre el proceso de postulación en nuestro sitio web o {1}.'
+        - 'Si quieres explorar el progreso actual del mapa, ¡revisa el servidor <gold>Terra</gold>!'
+        - '¡Feliz construcción! ☺'
       stage-10-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Lee todos los consejos sobre la parcela y marcalos como leídos.'
 # -----------------------------------------------------
 # | Database
 # -----------------------------------------------------
 database:
   city-project:
     example-city:
-      name: 'Example City'
-      description: 'Some description'
+      name: 'Ciudad de ejemplo'
+      description: 'Alguna descripción'
   country:
     AT:
       name: 'Austria'
     CH:
-      name: 'Switzerland'
+      name: 'Suiza'
     LI:
       name: 'Liechtenstein'
   difficulty:
     easy:
-      name: 'Easy'
+      name: 'Fácil'
     medium:
       name: 'Medio'
     hard:
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Tipos correctos de ventanas'
     windows_blacked_out: 'Todas las ventanas bloqueadas'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2
