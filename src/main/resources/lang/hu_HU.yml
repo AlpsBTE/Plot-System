@@ -177,7 +177,7 @@ review:
 note:
   tip: "Tipp"
   under-construction: 'Építés Alatt'
-  wont-be-able-continue-building: "!"
+  wont-be-able-continue-building: "Nem fogod tudni folytatni a telek építését!"
   score-will-be-split: "Az eredmény el lesz osztva minden tag között elbírálás után!"
   player-has-to-be-online: "A játékosnak online kell lennie!"
   optional: "Opcionális"
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Helyes ablak fajta'
     windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2
