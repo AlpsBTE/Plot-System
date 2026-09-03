@@ -21,8 +21,6 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.function.mask.BlockTypeMask;
-import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.RegionMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -45,7 +43,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -223,15 +220,11 @@ public abstract class AbstractPlotLoader {
         return blockedCommands;
     }
 
+    /**
+     * Generates the structure for the plot
+     */
     protected void generateStructure() throws Exception {
-        runFaweAsync(() -> {
-            if (plotType.hasEnvironment()) {
-                pasteSchematic(null, this.schematicBytes, this.plotWorld, false, false);
-            } else {
-                Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(this.plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false);
-            }
-        }).get();
+        runFaweAsync(() -> pasteSchematic(!plotType.hasEnvironment(), PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false)).get();
     }
 
     /**
@@ -253,13 +246,13 @@ public abstract class AbstractPlotLoader {
     /**
      * Pastes the schematic to the plot center in the given world
      *
-     * @param pasteMask     - sets a mask for the paste operation, can be null - if the mast is not null, the paste operation ignores air blocks
+     * @param ignoreAir     - if true, the paste operation will ignore air blocks
      * @param schematicFile - plot/environment schematic file
      * @param world         - world to paste in
      * @param clearArea     - clears the plot area with air before pasting
      * @param offset        - offset for the paste operation
      */
-    public static void pasteSchematic(@Nullable Mask pasteMask, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
+    public static void pasteSchematic(boolean ignoreAir, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
         // load world if not loaded already
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());
@@ -295,11 +288,10 @@ public abstract class AbstractPlotLoader {
 
         // paste schematic
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
-            if (pasteMask != null) editSession.setMask(pasteMask);
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
-                    .ignoreAirBlocks(pasteMask != null)
+                    .ignoreAirBlocks(ignoreAir)
                     .build();
             Operations.complete(clipboardHolder);
         }

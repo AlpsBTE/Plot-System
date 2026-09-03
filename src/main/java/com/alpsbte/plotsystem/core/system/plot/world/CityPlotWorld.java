@@ -139,7 +139,7 @@ public class CityPlotWorld extends PlotWorld {
         try {
             AbstractPlotLoader.runFaweAsync(() ->
                     AbstractPlotLoader.pasteSchematic(
-                            null,
+                            false,
                             PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes()),
                             this,
                             true,

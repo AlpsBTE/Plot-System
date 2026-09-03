@@ -35,10 +35,6 @@ import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.function.mask.BlockTypeMask;
-import com.sk89q.worldedit.function.mask.Mask;
-import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,10 +66,7 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
 
         byte[] completedSchematic = p.getCompletedSchematic();
         if (completedSchematic != null) {
-            runFaweAsync(() -> {
-                Mask airMask = new BlockTypeMask(BukkitAdapter.adapt(plotWorld.getBukkitWorld()), BlockTypes.AIR);
-                pasteSchematic(airMask, completedSchematic, plotWorld, false, true);
-            }).get();
+            runFaweAsync(() -> pasteSchematic(true, completedSchematic, plotWorld, false, true)).get();
         } else super.generateStructure();
         copyToCityWorld(completedSchematic == null ? schematicBytes : completedSchematic, completedSchematic != null);
     }
@@ -98,12 +91,7 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
         try {
             ensureWorldGenerated(cityPlotWorld);
-            runFaweAsync(() -> {
-                Mask mask = completedSchematic
-                        ? new BlockTypeMask(BukkitAdapter.adapt(cityPlotWorld.getBukkitWorld()), BlockTypes.AIR)
-                        : null;
-                AbstractPlotLoader.pasteSchematic(mask, structureBytes, cityPlotWorld, false, true);
-            }).get();
+            runFaweAsync(() -> AbstractPlotLoader.pasteSchematic(completedSchematic, structureBytes, cityPlotWorld, false, true)).get();
         } catch (Exception e) {
             if (e.getCause() instanceof IOException ioException) throw ioException;
             throw new IOException("Could not copy plot to city world!", e);
