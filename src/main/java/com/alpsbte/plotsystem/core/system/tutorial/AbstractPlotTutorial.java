@@ -6,7 +6,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
@@ -41,7 +41,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot tutorialPlot;
-    private TutorialPlotGenerator plotGenerator;
+    private TutorialPlotLoader plotGenerator;
     private boolean isPasteSchematic;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) {
@@ -92,7 +92,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws IOException {
+    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws Exception {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (schematicId < 0) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
@@ -125,7 +125,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             if (pasteSchematic) {
                 try {
                     onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     onException(ex);
                     return;
                 }
@@ -153,21 +153,29 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
-        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
-        int schematicId = ((AbstractPlotStage) currentStage).getInitSchematicId();
-        tutorialPlot.setTutorialSchematic(schematicId);
-
-        if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-            plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
-            try {
-                onPlotSchematicPaste(playerUUID, schematicId);
-            } catch (IOException ex) {
-                onException(ex);
-                return;
-            }
+    public CompletableFuture<Void> switchWorldAsync(@NotNull UUID playerUUID, int tutorialWorldIndex) {
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return CompletableFuture.completedFuture(null);
+        if (tutorialWorldIndex == 1 && (plotGenerator == null || !tutorialPlot.getWorld().isWorldGenerated())) {
+            return CompletableFuture.runAsync(() -> {
+                plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
+                try {
+                    int schematicId = ((AbstractPlotStage) currentStage).getInitSchematicId();
+                    tutorialPlot.setTutorialSchematic(schematicId);
+                    onPlotSchematicPaste(playerUUID, schematicId);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }).thenCompose(ignored -> {
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
+                        super.switchWorldAsync(playerUUID, tutorialWorldIndex).whenComplete((result, throwable) -> {
+                            if (throwable != null) future.completeExceptionally(throwable);
+                            else future.complete(result);
+                        }));
+                return future;
+            });
         }
-        super.onSwitchWorld(playerUUID, tutorialWorldIndex);
+        return super.switchWorldAsync(playerUUID, tutorialWorldIndex);
     }
 
     @Override

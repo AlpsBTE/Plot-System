@@ -48,6 +48,10 @@ public class TutorialNPC {
     public void create(Location spawnPos) {
         if (npc != null) delete();
 
+        if (FancyNpcsPlugin.get().getNpcAdapter() == null) {
+            throw new IllegalStateException("FancyNpcs NPC adapter is unavailable. This usually means the installed FancyNpcs version is incompatible with Plot-System.");
+        }
+
         NpcData npcData = new NpcData(id, UUID.randomUUID(), spawnPos);
         npc = FancyNpcsPlugin.get().getNpcAdapter().apply(npcData);
         npc.getData().setSkinData(skin);
@@ -66,9 +70,10 @@ public class TutorialNPC {
      */
     public void spawn(Player player) {
         if (npc == null) return;
+        String playerWorldName = player.getWorld().getName();
         Bukkit.getScheduler().runTaskAsynchronously(FancyNpcsPlugin.get().getPlugin(), () -> {
             npc.spawn(player);
-            if (hologram != null && player.getWorld().getName().equals(
+            if (hologram != null && playerWorldName.equals(
                     Objects.requireNonNull(hologram.getLocation().getWorld()).getName()))
                 hologram.create(player);
         });
@@ -95,6 +100,8 @@ public class TutorialNPC {
         if (npc != null) npc.removeForAll();
         if (hologram != null) hologram.delete();
         activeTutorialNPCs.remove(this);
+        npc = null;
+        hologram = null;
     }
 
     /**

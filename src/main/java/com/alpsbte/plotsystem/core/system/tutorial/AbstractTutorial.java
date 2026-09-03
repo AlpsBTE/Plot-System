@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -196,18 +197,28 @@ public abstract class AbstractTutorial implements Tutorial {
             try {
                 // Switch to the next stage
                 currentStage = getStage();
-
-                // Check if player has to switch world
-                onSwitchWorld(player.getUniqueId(), currentStage.getInitWorldIndex());
-
-                // Ge the timeline of the current stage
-                stageTimeline = currentStage.getTimeline();
-
-                // Start tasks timeline
-                prepareStage(stageTimeline::StartTimeline);
             } catch (Exception ex) {
                 onException(ex);
+                return;
             }
+
+            switchWorldAsync(player.getUniqueId(), currentStage.getInitWorldIndex()).whenComplete((ignored, throwable) ->
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                        if (throwable != null) {
+                            onException(throwable instanceof Exception exception ? exception : new Exception(throwable));
+                            return;
+                        }
+
+                        try {
+                            // Ge the timeline of the current stage
+                            stageTimeline = currentStage.getTimeline();
+
+                            // Start tasks timeline
+                            prepareStage(stageTimeline::StartTimeline);
+                        } catch (Exception ex) {
+                            onException(ex);
+                        }
+                    }));
         }
     }
 
@@ -220,12 +231,20 @@ public abstract class AbstractTutorial implements Tutorial {
 
     @Override
     public void onSwitchWorld(UUID playerUUID, int tutorialWorldIndex) {
-        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return;
-        if (currentWorldIndex == tutorialWorldIndex) return;
+        switchWorldAsync(playerUUID, tutorialWorldIndex).exceptionally(ex -> {
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
+                    onException(ex instanceof Exception exception ? exception : new Exception(ex)));
+            return null;
+        });
+    }
+
+    public CompletableFuture<Void> switchWorldAsync(UUID playerUUID, int tutorialWorldIndex) {
+        if (!player.getUniqueId().toString().equals(playerUUID.toString())) return CompletableFuture.completedFuture(null);
+        if (currentWorldIndex == tutorialWorldIndex) return CompletableFuture.completedFuture(null);
         currentWorldIndex = tutorialWorldIndex;
 
         TutorialWorld world = worlds.get(tutorialWorldIndex);
-        if (world == null) return;
+        if (world == null) return CompletableFuture.completedFuture(null);
         player.teleport(world.getPlayerSpawnLocation());
         if (npc.getNpc() != null) {
             npc.move(player, world.getNpcSpawnLocation());
@@ -233,6 +252,7 @@ public abstract class AbstractTutorial implements Tutorial {
             npc.create(world.getNpcSpawnLocation());
             npc.spawn(player);
         }
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

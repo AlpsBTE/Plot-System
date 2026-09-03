@@ -1,7 +1,8 @@
-package com.alpsbte.plotsystem.core.system.plot.generator;
+package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.DependencyManager;
+import com.alpsbte.plotsystem.utils.Utils;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -11,90 +12,84 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.NotFileFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
-import org.bukkit.GameRule;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.entity.SpawnCategory;
-import org.bukkit.generator.ChunkGenerator;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.external.vavr.control.Option;
 
-import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Locale;
 import java.util.Objects;
-import java.util.Random;
 
 import static net.kyori.adventure.text.Component.text;
 
 public class PlotWorldGenerator {
     private final WorldManager worldManager = DependencyManager.getMultiverseCore().getWorldManager();
-    private WorldCreator worldCreator;
-
     private final String worldName;
     private static final World.Environment environment = World.Environment.NORMAL;
-    private static final WorldType worldType = WorldType.FLAT;
-    private static final String generatorSettings = "{\"features\": false,\"layers\": [{\"block\": \"air\", \"height\": 1}],\"biome\":\"plains\"}";
 
     public PlotWorldGenerator(String worldName) throws Exception {
+        long startTime = System.nanoTime();
         this.worldName = worldName;
+
+        // Async Part
         generateWorld();
-        createMultiverseWorld();
-        configureWorld();
-        createGlobalProtection();
+
+        // Sync Part
+        long mainThreadStart = System.nanoTime();
+        Utils.runSync(() -> {
+            createMultiverseWorld();
+            configureWorld();
+            createGlobalProtection();
+            return null;
+        }).get();
+
+        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time to generate world: {}ms", (System.nanoTime() - startTime) / 1_000_000);
+        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time on main thread: {}ms", (System.nanoTime() - mainThreadStart) / 1_000_000);
     }
 
-    protected void generateWorld() {
-        worldCreator = new WorldCreator(worldName);
-        worldCreator.environment(environment);
-        worldCreator.type(worldType);
-        worldCreator.generator(new EmptyChunkGenerator());
-        worldCreator.generatorSettings(generatorSettings);
-        worldCreator.createWorld();
+    protected void generateWorld() throws IOException {
+        Path skeletonPath = worldManager.getWorld(SkeletonWorldGenerator.WORLD_KEY.value()).get().getOfflineWorldFolder().toPath();
+        Path worldLevelPath = skeletonPath.getParent().resolve(worldName.toLowerCase(Locale.ROOT));
+        FileUtils.copyDirectory(skeletonPath.toFile(), worldLevelPath.toFile(), new NotFileFilter(new NameFileFilter("metadata.dat")));
     }
 
-    protected void createMultiverseWorld() throws Exception {
-        // Check if world creator is configured and add new world to multiverse world manager
-        if (worldCreator != null) {
-            if (!worldManager.isLoadedWorld(worldName)) {
-                worldManager.importWorld(ImportWorldOptions.worldName(worldName)
-                        .environment(environment)
-                        .generator("VoidGen:{\"caves\":false,\"decoration\":false,\"mobs\":false,\"structures\":false}")
-                        .useSpawnAdjust(false)
-                );
-            }
-        } else {
-            throw new Exception("World Creator is not configured");
+    protected void createMultiverseWorld() {
+        createMultiverseWorld(worldManager, worldName);
+    }
+
+    protected static void createMultiverseWorld(WorldManager worldManager, String worldName) {
+        if (!worldManager.isLoadedWorld(worldName)) {
+            worldManager.importWorld(ImportWorldOptions.worldKey(NamespacedKey.minecraft(worldName.toLowerCase(Locale.ROOT)))
+                    .environment(environment)
+                    .generator("Plot-System")
+                    .useSpawnAdjust(false)
+            );
         }
     }
 
     protected void configureWorld() {
-        World bukkitWorld = Bukkit.getWorld(worldName);
+        configureWorld(worldManager, worldName);
+    }
+
+    protected static void configureWorld(WorldManager worldManager, String worldName) {
+        World world = Bukkit.getWorld(worldName);
+        assert world != null;
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
 
-        if (mvWorld.isEmpty()) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Multiverse world" + worldName + " is not loaded! Skipping world configuration..."));
-            return;
-        }
-
-        // Set world time to midday
-        assert bukkitWorld != null;
-        bukkitWorld.setTime(6000);
-
-        // Set Bukkit world game rules
-        bukkitWorld.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-        bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        bukkitWorld.setGameRule(GameRule.DO_FIRE_TICK, false);
-        bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-        bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, true);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-        bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        bukkitWorld.setGameRule(GameRule.DO_TILE_DROPS, false);
-        bukkitWorld.setGameRule(GameRule.DO_MOB_LOOT, false);
+        world.setDifficulty(Difficulty.PEACEFUL);
+        world.setSpawnFlags(false, false);
+        world.setAutoSave(false);
 
         // Configure multiverse world
         mvWorld.get().setAllowFlight(true);
@@ -130,15 +125,6 @@ public class PlotWorldGenerator {
             regionManager.saveChanges();
         } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
     }
-
-    public static class EmptyChunkGenerator extends ChunkGenerator {
-        @Override
-        @Nonnull
-        public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {
-            return createChunkData(world);
-        }
-    }
-
 }
 
 

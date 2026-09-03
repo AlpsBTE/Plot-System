@@ -12,6 +12,8 @@ import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.generator.world.SkeletonWorldGenerator;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.BeginnerTutorial;
@@ -19,6 +21,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.Tutorial;
 import com.alpsbte.plotsystem.core.system.tutorial.TutorialEventListener;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
@@ -28,6 +31,7 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
@@ -117,14 +121,22 @@ public class PlotSystem extends JavaPlugin {
 
         DecentHologramDisplay.registerPlugin(this);
         HologramRegister.init();
-        PlotUtils.checkPlotsForLastActivity();
         Utils.ChatUtils.checkForChatInputExpiry();
         PlotUtils.Effects.startTimer();
+
+        // Start task that checks for and abandons inactive plots every hour
+        Bukkit.getScheduler().runTaskTimerAsynchronously(PlotSystem.getPlugin(), PlotHandler::abandonInactivePlots, 0L, 20 * 60 * 60L);
 
         // Register tutorials
         if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE)) {
             AbstractTutorial.registerTutorials(Collections.singletonList(BeginnerTutorial.class));
-            Bukkit.getScheduler().runTaskTimerAsynchronously(FancyNpcsPlugin.get().getPlugin(), new TutorialNPCTurnTracker(), 0, 1L);
+            Bukkit.getScheduler().runTaskTimer(FancyNpcsPlugin.get().getPlugin(), new TutorialNPCTurnTracker(), 0, 1L);
+        }
+
+        // Generate Skeleton World
+        if (!DependencyManager.getMultiverseCore().getWorldManager().isWorld(SkeletonWorldGenerator.WORLD_KEY.value())) {
+            getComponentLogger().info("No skeleton world found! Generating skeleton world...");
+            new SkeletonWorldGenerator();
         }
 
         pluginEnabled = true;
@@ -195,5 +207,10 @@ public class PlotSystem extends JavaPlugin {
         try (var con = DatabaseConnection.getConnection(); var s = con.createStatement()) {
             s.execute(initScript);
         }
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
+        return new SkeletonWorldGenerator.EmptyChunkGenerator();
     }
 }

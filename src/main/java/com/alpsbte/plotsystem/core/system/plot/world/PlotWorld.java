@@ -4,13 +4,14 @@ import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.AbstractPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -24,9 +25,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
+import org.mvplugins.multiverse.core.world.options.LoadWorldOptions;
+import org.mvplugins.multiverse.external.vavr.control.Option;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -40,7 +43,7 @@ public class PlotWorld implements IWorld {
 
     private final MultiverseCoreApi mvCore = DependencyManager.getMultiverseCore();
     private final String worldName;
-    private final AbstractPlot plot;
+    protected final AbstractPlot plot;
 
     public PlotWorld(@NotNull String worldName, @Nullable AbstractPlot plot) {
         this.worldName = worldName;
@@ -48,47 +51,58 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean generateWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean generateWorld(@NotNull Class<T> generator) {
         throw new UnsupportedOperationException("No world generator set for world " + getWorldName());
     }
 
     @Override
-    public <T extends AbstractPlotGenerator> boolean regenWorld(@NotNull Class<T> generator) {
+    public <T extends AbstractPlotLoader> boolean regenWorld(@NotNull Class<T> generator) {
         return deleteWorld() && generateWorld(generator);
     }
 
     @Override
     public boolean deleteWorld() {
-        if (isWorldGenerated() && loadWorld()) {
-            if (Boolean.TRUE.equals(mvCore.getWorldManager().getWorld(getWorldName())
-                    .map(world -> mvCore.getWorldManager().deleteWorld(DeleteWorldOptions.world(world)).isSuccess())
-                    .getOrElse(false)) && mvCore.getWorldManager().saveWorldsConfig().isSuccess()) {
-                try {
-                    var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(getWorldName());
-                    if (mviConfig != null) {
-                        File multiverseInventoriesConfig = new File(mviConfig);
-                        if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
-                    }
-                    File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
-                    if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
-                } catch (IOException ex) {
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"));
-                    return false;
-                }
-                return true;
-            } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete world " + getWorldName() + "!"));
+        if (!isWorldGenerated() || !loadWorld()) return false;
+        if (!Boolean.TRUE.equals(mvCore.getWorldManager().getWorld(getWorldName())
+                .map(world -> mvCore.getWorldManager().deleteWorld(DeleteWorldOptions.world(world)).isSuccess())
+                .getOrElse(false)) || !mvCore.getWorldManager().saveWorldsConfig().isSuccess()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete world " + getWorldName() + "!"));
+            return false;
         }
-        return false;
+        try {
+            var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(getWorldName());
+            if (mviConfig != null) {
+                File multiverseInventoriesConfig = new File(mviConfig);
+                if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
+            }
+            File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
+            if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
+        } catch (IOException ex) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"), ex);
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean loadWorld() {
-        if (isWorldGenerated()) {
-            if (isWorldLoaded()) {
-                return true;
-            } else return mvCore.getWorldManager().loadWorld(getWorldName()).isSuccess() || isWorldLoaded();
-        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + " because it is not generated!"));
-        return false;
+        if (!isWorldGenerated()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + " because it is not generated!"));
+            return false;
+        }
+
+        if (isWorldLoaded()) return true;
+
+        try {
+            return Utils.supplySync(() -> {
+                Option<MultiverseWorld> world = mvCore.getWorldManager().getWorld(getWorldName());
+                if (world.isEmpty()) return false;
+                return mvCore.getWorldManager().loadWorld(LoadWorldOptions.world(world.get())).isSuccess();
+            }).get();
+        } catch (Exception e) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not load world " + worldName + "!"), e);
+            return false;
+        }
     }
 
     @Override
@@ -108,25 +122,21 @@ public class PlotWorld implements IWorld {
         if (loadWorld() && plot != null) {
             player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
             return true;
-        } else PlotSystem.getPlugin().getComponentLogger().warn(text("Could not teleport player " + player.getName() + " to world " + worldName + "!"));
+        }
+        PlotSystem.getPlugin().getComponentLogger().warn(text("Could not teleport player " + player.getName() + " to world " + worldName + "!"));
         return false;
     }
 
     @Override
     public Location getSpawnPoint(BlockVector3 plotVector) {
-        if (isWorldGenerated() && loadWorld()) {
-            Location spawnLocation;
-            if (plotVector == null) {
-                spawnLocation = getBukkitWorld().getSpawnLocation();
-            } else {
-                spawnLocation = new Location(getBukkitWorld(), plotVector.x(), plotVector.y(), plotVector.z());
-            }
+        if (!isWorldGenerated() || !loadWorld()) return null;
+        Location spawnLocation = plotVector == null
+                ? getBukkitWorld().getSpawnLocation()
+                : new Location(getBukkitWorld(), plotVector.x(), plotVector.y(), plotVector.z());
 
-            // Set spawn point 1 block above the highest block at the spawn location
-            spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1d);
-            return spawnLocation;
-        }
-        return null;
+        // Set spawn point 1 block above the highest block at the spawn location
+        spawnLocation.setY(getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ()) + 1d);
+        return spawnLocation;
     }
 
     @Override
@@ -136,17 +146,9 @@ public class PlotWorld implements IWorld {
 
     @Override
     public int getPlotHeightCentered() throws IOException {
-        if (plot != null) {
-            Clipboard clipboard;
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-            try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-                clipboard = reader.read();
-            }
-            if (clipboard != null) {
-                return (int) clipboard.getRegion().getCenter().y() - clipboard.getMinimumPoint().y();
-            }
-        }
-        return 0;
+        if (plot == null) return 0;
+        AbstractPlot.SchematicMetadata metadata = plot.getSchematicMetadata();
+        return metadata.center().y() - metadata.minimumPoint().y();
     }
 
     @Override
@@ -184,21 +186,26 @@ public class PlotWorld implements IWorld {
         return mvCore.getWorldManager().getWorld(worldName).isDefined();
     }
 
-    private @Nullable ProtectedRegion getRegion(String regionName) {
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        if (loadWorld()) {
-            RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
-            if (regionManager != null) {
-                return regionManager.getRegion(regionName);
-            } else PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null!"));
-        }
-        return null;
-    }
-
+    @Override
     public AbstractPlot getPlot() {
         return plot;
     }
 
+    @Override
+    public boolean onAbandon() {
+        return true;
+    }
+
+    private @Nullable ProtectedRegion getRegion(String regionName) {
+        if (!loadWorld()) return null;
+
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
+        if (regionManager != null) return regionManager.getRegion(regionName);
+
+        PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null!"));
+        return null;
+    }
 
     /**
      * @param worldName - the name of the world
@@ -224,12 +231,19 @@ public class PlotWorld implements IWorld {
      * @return - plot world
      */
     public static @Nullable PlotWorld getPlotWorldByName(String worldName) {
-        if (isOnePlotWorld(worldName) || isCityPlotWorld(worldName)) {
-            Integer id = AlpsUtils.tryParseInt(worldName.substring(2));
-            if (id == null) return new PlotWorld(worldName, null);
-            AbstractPlot plot = worldName.toLowerCase().startsWith("t-") ? DataProvider.TUTORIAL_PLOT.getById(id).orElse(null) : DataProvider.PLOT.getPlotById(id);
-            return plot == null ? null : plot.getWorld();
-        }
-        return null;
+        // TODO: rework
+        if (!isOnePlotWorld(worldName) && !isCityPlotWorld(worldName)) return null;
+
+        Integer id = AlpsUtils.tryParseInt(worldName.substring(2));
+        if (id == null) return new PlotWorld(worldName, null);
+
+        AbstractPlot plot = worldName.toLowerCase().startsWith("t-") ? DataProvider.TUTORIAL_PLOT.getById(id).orElse(null) : DataProvider.PLOT.getPlotById(id);
+        return plot == null ? null : plot.getWorld();
+    }
+
+    public static PlotWorld getByType(PlotType type, Plot plot) {
+        // TODO: rework
+        boolean disableCIM = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE);
+        return disableCIM || type.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot);
     }
 }

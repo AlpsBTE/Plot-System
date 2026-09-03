@@ -4,8 +4,7 @@ api-version: "1.21"
 name: Plot-System
 description: "${description}"
 author: R3tuxn, Cinnazeyy & Zoriot
-depend: [ LangLibs, FancyNpcs, VoidGen, FastAsyncWorldEdit, Multiverse-Core,
-          DecentHolograms, WorldGuard, HeadDatabase ]
+depend: [ LangLibs, FancyNpcs, FastAsyncWorldEdit, Multiverse-Core, DecentHolograms, WorldGuard, HeadDatabase ]
 softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI ]
 
 commands:

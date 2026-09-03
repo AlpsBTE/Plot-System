@@ -75,7 +75,7 @@ public class StageTimeline implements TutorialTimeline {
                             this.cancel();
                         } else updatePlayerActionBar();
                     }
-                }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 20);
+                }.runTaskTimer(PlotSystem.getPlugin(), 0, 20);
             }
 
             // If the task has npc interaction show the hologram click info, otherwise hide it
