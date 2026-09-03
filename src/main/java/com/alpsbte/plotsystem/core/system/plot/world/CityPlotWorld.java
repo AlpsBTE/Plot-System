@@ -13,6 +13,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,9 +87,20 @@ public class CityPlotWorld extends PlotWorld {
         // Additional ground layer the plot use to save as schematic need to be included for plot's y-level
         int groundLayer = 64;
 
+        World bukkitWorld = getBukkitWorld();
+        int minHeight;
+        int maxHeight;
+
+        if (bukkitWorld != null) {
+            minHeight = bukkitWorld.getMinHeight();
+            maxHeight = bukkitWorld.getMaxHeight() - 1;
+        } else {
+            minHeight = MIN_WORLD_HEIGHT + groundLayer;
+            maxHeight = MAX_WORLD_HEIGHT + groundLayer;
+        }
+
         // Plots created outside of vanilla build limit or the build-able height is too small
-        if (plotHeight + groundLayer < MIN_WORLD_HEIGHT + groundLayer
-                || plotHeight + groundLayer + minBuildingHeight > MAX_WORLD_HEIGHT + groundLayer)
+        if (plotHeight + groundLayer < minHeight || plotHeight + groundLayer + minBuildingHeight > maxHeight)
             throw new IOException("Plot height is out of range.");
         return plotHeight;
     }
