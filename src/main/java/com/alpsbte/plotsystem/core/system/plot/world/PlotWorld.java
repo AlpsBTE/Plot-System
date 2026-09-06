@@ -11,6 +11,8 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.LangPaths;
+import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
@@ -119,10 +121,12 @@ public class PlotWorld implements IWorld {
 
     @Override
     public boolean teleportPlayer(@NotNull Player player) {
-        if (loadWorld() && plot != null) {
-            player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()));
+        if (loadWorld() && plot != null &&
+                (player.getPassengers().isEmpty() || plot.getWorld().getBukkitWorld().equals(player.getWorld()) || player.eject()) &&
+                player.teleport(getSpawnPoint(plot instanceof TutorialPlot ? null : plot.getCenter()))) {
             return true;
         }
+        player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
         PlotSystem.getPlugin().getComponentLogger().warn(text("Could not teleport player " + player.getName() + " to world " + worldName + "!"));
         return false;
     }
