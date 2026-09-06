@@ -46,6 +46,14 @@ public interface IWorld {
     boolean loadWorld();
 
     /**
+     * Loads the plot world and generates it beforehand if its world files are missing.
+     * Generation waits for work that has to run on the main thread, so this must be called asynchronously.
+     *
+     * @return true if the world is generated and loaded
+     */
+    boolean prepareWorld();
+
+    /**
      * Unloads the plot world from memory. Plot cannot be used anymore. Plot has to be generated.
      *
      * @param movePlayers if true, players will get teleported to the spawn location. Otherwise, plot will not get unloaded.

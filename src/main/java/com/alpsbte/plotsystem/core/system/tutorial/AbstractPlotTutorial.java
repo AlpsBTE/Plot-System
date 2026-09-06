@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
@@ -122,22 +123,32 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             if (stage != currentStage) return;
 
             // paste initial schematic outlines of stage
-            if (pasteSchematic) {
-                try {
-                    onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
-                } catch (Exception ex) {
-                    onException(ex);
+            CompletableFuture<Void> schematicPaste = pasteSchematic
+                    ? CompletableFuture.runAsync(() -> {
+                        try {
+                            onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
+                        } catch (Exception ex) {
+                            throw new CompletionException(ex);
+                        }
+                    })
+                    : CompletableFuture.completedFuture(null);
+
+            schematicPaste.whenComplete((ignored, throwable) -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (throwable != null) {
+                    Throwable cause = throwable instanceof CompletionException && throwable.getCause() != null ? throwable.getCause() : throwable;
+                    onException(cause instanceof Exception exception ? exception : new Exception(cause));
                     return;
                 }
-            }
-            isPasteSchematic = false;
+                if (stage != currentStage) return;
+                isPasteSchematic = false;
 
-            // Send a new stage unlocked message to the player
-            sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
-            getPlayer().playSound(getPlayer().getLocation(), Sound.STAGE_COMPLETED, 1f, 0.7f);
+                // Send a new stage unlocked message to the player
+                sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
+                getPlayer().playSound(getPlayer().getLocation(), Sound.STAGE_COMPLETED, 1f, 0.7f);
 
-            // Mark stage preparation as done
-            action.setDone();
+                // Mark stage preparation as done
+                action.setDone();
+            }));
         }, 20);
     }
 

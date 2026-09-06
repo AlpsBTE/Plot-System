@@ -19,7 +19,6 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -49,7 +48,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -261,7 +259,7 @@ public class PlotHandler {
         playerPlotGenerationHistory.remove(playerUuid);
     }
 
-    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws IOException, WorldEditException, ExecutionException, InterruptedException {
+    public static boolean savePlotAsSchematic(@NotNull Plot plot) throws Exception {
         if (plot.getVersion() < 4) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
             return false;
@@ -288,7 +286,7 @@ public class PlotHandler {
 
         // Copy and write finished plot clipboard to schematic
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        AbstractPlotLoader.runFaweAsync(() -> {
+        AbstractPlotLoader.runFaweBlocking(() -> {
             try (Clipboard cb = new BlockArrayClipboard(region)) {
                 cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
 
@@ -302,7 +300,7 @@ public class PlotHandler {
                     writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
                 }
             }
-        }).get();
+        });
 
         // Set Completed Schematic
         boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
@@ -318,7 +316,7 @@ public class PlotHandler {
                     throw new IOException("Could not generate city plot world!", exception);
                 }
             }
-            AbstractPlotLoader.runFaweAsync(() -> AbstractPlotLoader.pasteSchematic(true, outputStream.toByteArray(), cpw, false, true)).get();
+            AbstractPlotLoader.runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(true, outputStream.toByteArray(), cpw, false, true));
         }
         return true;
     }

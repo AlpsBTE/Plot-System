@@ -136,7 +136,7 @@ public class PlotActionsMenu extends AbstractMenu {
                 return;
             }
             CompletableFuture.runAsync(() -> {
-                if (!plot.getWorld().loadWorld()) return;
+                if (!plot.getWorld().prepareWorld()) return;
 
                 Utils.runSync(() -> {
                     plot.getWorld().teleportPlayer(clickPlayer);

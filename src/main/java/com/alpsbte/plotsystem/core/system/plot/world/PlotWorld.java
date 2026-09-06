@@ -108,6 +108,11 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
+    public boolean prepareWorld() {
+        return loadWorld();
+    }
+
+    @Override
     public boolean unloadWorld(boolean movePlayers) {
         if (!isWorldLoaded()) return true;
         if (movePlayers && !getBukkitWorld().getPlayers().isEmpty()) {

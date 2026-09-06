@@ -149,7 +149,7 @@ public class CityPlotWorld extends PlotWorld {
 
         // paste initial schematic to reset plot
         try {
-            AbstractPlotLoader.runFaweAsync(() ->
+            AbstractPlotLoader.runFaweBlocking(() ->
                     AbstractPlotLoader.pasteSchematic(
                             false,
                             PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes()),
@@ -157,7 +157,7 @@ public class CityPlotWorld extends PlotWorld {
                             true,
                             false
                     )
-            ).get();
+            );
         } catch (Exception e) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Could not paste schematic!"), e);
             return false;

@@ -42,7 +42,7 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
 
         byte[] completedSchematic = p.getCompletedSchematic();
         if (completedSchematic != null) {
-            runFaweAsync(() -> pasteSchematic(true, completedSchematic, plotWorld, false, true)).get();
+            runFaweBlocking(() -> pasteSchematic(true, completedSchematic, plotWorld, false, true));
         } else super.generateStructure();
         copyToCityWorld(completedSchematic == null ? schematicBytes : completedSchematic, completedSchematic != null);
     }
@@ -67,10 +67,11 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
         try {
             ensureWorldGenerated(cityPlotWorld);
-            runFaweAsync(() -> AbstractPlotLoader.pasteSchematic(completedSchematic, structureBytes, cityPlotWorld, false, true)).get();
-        } catch (Exception e) {
-            if (e.getCause() instanceof IOException ioException) throw ioException;
-            throw new IOException("Could not copy plot to city world!", e);
+            runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(completedSchematic, structureBytes, cityPlotWorld, false, true));
+        } catch (IOException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new IOException("Could not copy plot to city world!", exception);
         }
     }
 }

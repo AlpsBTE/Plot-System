@@ -41,6 +41,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -78,6 +80,8 @@ public abstract class AbstractPlotLoader {
             PlotWorld plotWorld,
             boolean completionActionsEnabled
     ) {
+        requireAsyncThread("Loading a plot");
+
         this.plot = plot;
         this.plotType = plotType;
         this.plotWorld = plotWorld;
@@ -107,6 +111,7 @@ public abstract class AbstractPlotLoader {
     }
 
     public static void ensureWorldGenerated(@NotNull PlotWorld world) throws Exception {
+        requireAsyncThread("Generating a plot world");
         if (Utils.supplySync(world::isWorldGenerated).get()) return;
 
         Object lock = WORLD_GENERATION_LOCKS.computeIfAbsent(world.getWorldName(), ignored -> new Object());
@@ -224,13 +229,13 @@ public abstract class AbstractPlotLoader {
      * Generates the structure for the plot
      */
     protected void generateStructure() throws Exception {
-        runFaweAsync(() -> pasteSchematic(!plotType.hasEnvironment(), PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false)).get();
+        runFaweBlocking(() -> pasteSchematic(!plotType.hasEnvironment(), PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false));
     }
 
     /**
      * Runs a WorldEdit operation on FAWE's asynchronous task executor.
      */
-    public static CompletableFuture<Void> runFaweAsync(@NotNull FaweTask task) {
+    private static CompletableFuture<Void> runFaweAsync(@NotNull FaweTask task) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         FaweAPI.getTaskManager().async(() -> {
             try {
@@ -241,6 +246,30 @@ public abstract class AbstractPlotLoader {
             }
         });
         return future;
+    }
+
+    /**
+     * Runs a WorldEdit operation on FAWE's asynchronous task executor and waits for it to finish.
+     */
+    public static void runFaweBlocking(@NotNull FaweTask task) throws Exception {
+        requireAsyncThread("Waiting for a WorldEdit operation");
+        try {
+            runFaweAsync(task).get();
+        } catch (ExecutionException exception) {
+            if (exception.getCause() instanceof Exception cause) throw cause;
+            throw exception;
+        }
+    }
+
+    /**
+     * Guards operations that block until the main thread has run part of their work. Calling them on the
+     * main thread stalls the server until the watchdog kicks in, because the work they wait for needs the
+     * very thread that is blocked.
+     */
+    public static void requireAsyncThread(String operation) {
+        if (Bukkit.isPrimaryThread()) {
+            throw new IllegalStateException(operation + " must not happen on the main thread!");
+        }
     }
 
     /**

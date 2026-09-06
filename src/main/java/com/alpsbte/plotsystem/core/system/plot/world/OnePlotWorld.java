@@ -43,8 +43,8 @@ public class OnePlotWorld extends PlotWorld {
     }
 
     @Override
-    public boolean loadWorld() {
-        if (plot == null || isWorldGenerated()) return super.loadWorld();
+    public boolean prepareWorld() {
+        if (plot == null || isWorldGenerated()) return super.prepareWorld();
 
         // Rebuild a missing plot world exactly once, including completed plots.
         AbstractPlotLoader loader = plot.getPlotType() == PlotType.TUTORIAL

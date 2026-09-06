@@ -19,7 +19,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,11 +30,9 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -185,7 +182,7 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
                 return false;
             }
-        } catch (IOException | WorldEditException | ExecutionException | InterruptedException ex) {
+        } catch (Exception ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
             return false;
         }
