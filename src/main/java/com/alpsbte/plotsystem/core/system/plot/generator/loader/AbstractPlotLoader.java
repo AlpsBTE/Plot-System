@@ -332,10 +332,10 @@ public abstract class AbstractPlotLoader {
                 PlotSystem.getPlugin().getComponentLogger().error("Failed to clean up plot #{} after generation error!", plot.getId());
             }
         } catch (Exception ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot after generation error!"), ex);
+            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot #{} after generation error!"), plot.getId(), ex);
         }
 
-        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot!"), e);
+        PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot #{}!"), plot.getId(), e);
         Utils.runSync(() -> {
             if (builder != null && builder.getPlayer() != null) {
                 builder.getPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(builder.getPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
