@@ -100,8 +100,8 @@ public class CityPlotWorld extends PlotWorld {
         }
 
         // Plots created outside of vanilla build limit or the build-able height is too small
-        if (plotHeight + groundLayer < minHeight || plotHeight + groundLayer + minBuildingHeight > maxHeight)
-            throw new IOException("Plot height is out of range.");
+        if (plotHeight + groundLayer < minHeight + groundLayer || plotHeight + groundLayer + minBuildingHeight > maxHeight)
+            return 0;
         return plotHeight;
     }
 
