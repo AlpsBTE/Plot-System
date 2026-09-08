@@ -10,7 +10,6 @@ import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoad
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -251,8 +250,8 @@ public class PlotWorld implements IWorld {
     }
 
     public static PlotWorld getByType(PlotType type, Plot plot) {
-        // TODO: rework
-        boolean disableCIM = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DISABLE_CITY_INSPIRATION_MODE);
-        return disableCIM || type.hasOnePlotPerWorld() ? new OnePlotWorld(plot) : new CityPlotWorld(plot);
+        return plot.getVersion() <= AbstractPlot.LEGACY_VERSION_THRESHOLD || type.hasOnePlotPerWorld()
+                ? new OnePlotWorld(plot)
+                : new CityPlotWorld(plot);
     }
 }
