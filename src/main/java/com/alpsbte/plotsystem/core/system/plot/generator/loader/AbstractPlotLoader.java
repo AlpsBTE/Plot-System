@@ -144,7 +144,7 @@ public abstract class AbstractPlotLoader {
             if (plotWorld.isWorldLoaded()) return null;
 
             boolean successful = plotWorld.loadWorld();
-            if (!successful) throw new Exception("Could not load world!");
+            if (!successful) throw new IOException("Could not load world!");
             return null;
         }).get();
     }

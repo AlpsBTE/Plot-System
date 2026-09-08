@@ -260,64 +260,76 @@ public class PlotHandler {
     }
 
     public static boolean savePlotAsSchematic(@NotNull Plot plot) throws Exception {
-        if (plot.getVersion() < 4) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
-            return false;
-        }
+        if (!isSchematicSaveSupported(plot)) return false;
 
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(plot.getInitialSchematicBytes());
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
-        }
-        if (clipboard == null) return false;
+        Clipboard initialSchematic = readInitialSchematic(plot);
+        if (initialSchematic == null) return false;
 
-        CuboidRegion cuboidRegion = PlotUtils.getPlotAsRegion(plot);
-        if (cuboidRegion == null) return false;
+        byte[] completedSchematic = createCompletedSchematic(plot, initialSchematic);
+        if (!DataProvider.PLOT.setCompletedSchematic(plot.getId(), completedSchematic)) return false;
 
-        BlockVector3 plotCenter = plot.getCenter();
-
-        // Get plot outline
-        List<BlockVector2> plotOutlines = plot.getOutline();
-
-        // Load finished plot region as cuboid region
-        if (!plot.getWorld().loadWorld()) return false;
-        Polygonal2DRegion region = new Polygonal2DRegion(null, plotOutlines, cuboidRegion.getMinimumPoint().y(), cuboidRegion.getMaximumPoint().y());
-
-        // Copy and write finished plot clipboard to schematic
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        AbstractPlotLoader.runFaweBlocking(() -> {
-            try (Clipboard cb = new BlockArrayClipboard(region)) {
-                cb.setOrigin(BlockVector3.at(plotCenter.x(), cuboidRegion.getMinimumY(), (double) plotCenter.z()));
-
-                World world = new BukkitWorld(plot.getWorld().getBukkitWorld());
-                ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(world, region, cb, region.getMinimumPoint());
-                Operations.complete(forwardExtentCopy);
-
-                try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-                    double initialY = clipboard.getRegion().getMinimumY();
-                    double offset = initialY - cuboidRegion.getMinimumY();
-                    writer.write(cb.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
-                }
-            }
-        });
-
-        // Set Completed Schematic
-        boolean successful = DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray());
-        if (!successful) return false;
-
-        // If plot was created in a void world, copy the result to the city world
-        if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) {
-            var cpw = new CityPlotWorld(plot);
-            if (!cpw.isWorldGenerated()) {
-                try {
-                    AbstractPlotLoader.ensureWorldGenerated(cpw);
-                } catch (Exception exception) {
-                    throw new IOException("Could not generate city plot world!", exception);
-                }
-            }
-            AbstractPlotLoader.runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(true, outputStream.toByteArray(), cpw, false, true));
-        }
+        copySchematicToCityWorld(plot, completedSchematic);
         return true;
+    }
+
+    private static boolean isSchematicSaveSupported(Plot plot) {
+        if (plot.getVersion() >= 4) return true;
+        PlotSystem.getPlugin().getComponentLogger().error(text("Saving schematics of legacy plots is no longer allowed!"));
+        return false;
+    }
+
+    private static Clipboard readInitialSchematic(Plot plot) throws IOException {
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(
+                new ByteArrayInputStream(plot.getInitialSchematicBytes()))) {
+            return reader.read();
+        }
+    }
+
+    private static byte[] createCompletedSchematic(Plot plot, Clipboard initialSchematic) throws Exception {
+        CuboidRegion cuboidRegion = PlotUtils.getPlotAsRegion(plot);
+        if (cuboidRegion == null || !plot.getWorld().loadWorld()) return null;
+
+        Polygonal2DRegion region = new Polygonal2DRegion(
+                null,
+                plot.getOutline(),
+                cuboidRegion.getMinimumPoint().y(),
+                cuboidRegion.getMaximumPoint().y()
+        );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        AbstractPlotLoader.runFaweBlocking(() -> writeCompletedSchematic(plot, initialSchematic, cuboidRegion, region, outputStream));
+        return outputStream.toByteArray();
+    }
+
+    private static void writeCompletedSchematic(
+            Plot plot,
+            Clipboard initialSchematic,
+            CuboidRegion cuboidRegion,
+            Polygonal2DRegion region,
+            ByteArrayOutputStream outputStream
+    ) throws Exception {
+        try (Clipboard clipboard = new BlockArrayClipboard(region)) {
+            clipboard.setOrigin(BlockVector3.at(plot.getCenter().x(), cuboidRegion.getMinimumY(), (double) plot.getCenter().z()));
+            ForwardExtentCopy copy = new ForwardExtentCopy(
+                    new BukkitWorld(plot.getWorld().getBukkitWorld()),
+                    region,
+                    clipboard,
+                    region.getMinimumPoint()
+            );
+            Operations.complete(copy);
+
+            try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+                double offset = initialSchematic.getRegion().getMinimumY() - cuboidRegion.getMinimumY();
+                writer.write(clipboard.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
+            }
+        }
+    }
+
+    private static void copySchematicToCityWorld(Plot plot, byte[] schematic) throws Exception {
+        if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE) return;
+
+        CityPlotWorld cityPlotWorld = new CityPlotWorld(plot);
+        if (!cityPlotWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityPlotWorld);
+        AbstractPlotLoader.runFaweBlocking(() ->
+                AbstractPlotLoader.pasteSchematic(true, schematic, cityPlotWorld, false, true));
     }
 }

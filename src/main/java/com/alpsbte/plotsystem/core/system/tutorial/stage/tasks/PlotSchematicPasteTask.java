@@ -6,6 +6,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.PlotTutorial;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletableFuture;
 
 public class PlotSchematicPasteTask extends AbstractTask {
@@ -24,7 +25,7 @@ public class PlotSchematicPasteTask extends AbstractTask {
                 try {
                     tutorial.onPlotSchematicPaste(player.getUniqueId(), schematicId);
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    throw new CompletionException(ex);
                 }
             }).whenComplete((ignored, throwable) -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                 if (throwable != null) {

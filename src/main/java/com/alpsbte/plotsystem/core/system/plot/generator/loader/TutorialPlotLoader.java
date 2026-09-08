@@ -78,5 +78,7 @@ public class TutorialPlotLoader extends AbstractPlotLoader {
     }
 
     @Override
-    protected void onCompletion() {}
+    protected void onCompletion() {
+        // Tutorial completion is handled by the tutorial lifecycle.
+    }
 }
