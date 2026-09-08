@@ -65,6 +65,7 @@ public abstract class AbstractPlotLoader {
 
     protected final Builder builder;
     protected final boolean completionActionsEnabled;
+    private final boolean abandonOnFailure;
 
     protected byte[] schematicBytes = null;
     private boolean successful;
@@ -80,6 +81,17 @@ public abstract class AbstractPlotLoader {
             PlotWorld plotWorld,
             boolean completionActionsEnabled
     ) {
+        this(plot, builder, plotType, plotWorld, completionActionsEnabled, true);
+    }
+
+    protected AbstractPlotLoader(
+            @NotNull AbstractPlot plot,
+            Builder builder,
+            PlotType plotType,
+            PlotWorld plotWorld,
+            boolean completionActionsEnabled,
+            boolean abandonOnFailure
+    ) {
         requireAsyncThread("Loading a plot");
 
         this.plot = plot;
@@ -87,6 +99,7 @@ public abstract class AbstractPlotLoader {
         this.plotWorld = plotWorld;
         this.builder = builder;
         this.completionActionsEnabled = completionActionsEnabled;
+        this.abandonOnFailure = abandonOnFailure;
 
         PlotSystem.getPlugin().getComponentLogger().info("Loading plot #{}...", plot.getId());
         PlotSystem.getPlugin().getComponentLogger().info("Plot Type: {}", plotType.name());
@@ -327,12 +340,14 @@ public abstract class AbstractPlotLoader {
     }
 
     protected void onException(Exception e) {
-        try {
-            if (!PlotHandler.abandonPlot(this.plot)) {
-                PlotSystem.getPlugin().getComponentLogger().error("Failed to clean up plot #{} after generation error!", plot.getId());
+        if (abandonOnFailure) {
+            try {
+                if (!PlotHandler.abandonPlot(this.plot)) {
+                    PlotSystem.getPlugin().getComponentLogger().error("Failed to clean up plot #{} after generation error!", plot.getId());
+                }
+            } catch (Exception ex) {
+                PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot #{} after generation error!"), plot.getId(), ex);
             }
-        } catch (Exception ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Failed to clean up plot #{} after generation error!"), plot.getId(), ex);
         }
 
         PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while generating plot #{}!"), plot.getId(), e);

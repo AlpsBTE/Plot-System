@@ -49,7 +49,7 @@ public class OnePlotWorld extends PlotWorld {
         // Rebuild a missing plot world exactly once, including completed plots.
         AbstractPlotLoader loader = plot.getPlotType() == PlotType.TUTORIAL
                 ? new TutorialPlotLoader(plot, plotOwner)
-                : new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this, false);
+                : new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this, false, false);
         if (!loader.isSuccessful() || !isWorldGenerated() || !isWorldLoaded()) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not regenerate world " + getWorldName() + " for plot " + plot.getId() + "!"));
             return false;

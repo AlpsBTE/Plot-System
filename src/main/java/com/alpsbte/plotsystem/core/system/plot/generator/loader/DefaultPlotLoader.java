@@ -21,8 +21,15 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         super(plot, builder, plotType, plotWorld);
     }
 
-    public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder, PlotType plotType, PlotWorld plotWorld, boolean completionActionsEnabled) {
-        super(plot, builder, plotType, plotWorld, completionActionsEnabled);
+    public DefaultPlotLoader(
+            @NotNull AbstractPlot plot,
+            Builder builder,
+            PlotType plotType,
+            PlotWorld plotWorld,
+            boolean completionActionsEnabled,
+            boolean abandonOnFailure
+    ) {
+        super(plot, builder, plotType, plotWorld, completionActionsEnabled, abandonOnFailure);
     }
 
     public DefaultPlotLoader(@NotNull AbstractPlot plot, Builder builder) {
