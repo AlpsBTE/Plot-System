@@ -19,7 +19,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,10 +78,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     protected TutorialNPC initNpc() {
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         return new TutorialNPC(
                 "ps-tutorial-" + tutorialPlot.getId(),
-                ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
-                ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
+                serializer.serialize(text(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME), GOLD).decorate(BOLD)),
+                serializer.serialize(text("(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")", GRAY)),
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE));
     }
@@ -174,7 +175,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
                     tutorialPlot.setTutorialSchematic(schematicId);
                     onPlotSchematicPaste(playerUUID, schematicId);
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    throw new CompletionException(ex);
                 }
             }).thenCompose(ignored -> {
                 CompletableFuture<Void> future = new CompletableFuture<>();
