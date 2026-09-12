@@ -7,6 +7,7 @@ import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,11 +30,27 @@ public class CMD_SetLeaderboard extends BaseCommand {
         Player player = (Player) sender;
         if (args.length != 1) {
             sendInfo(sender);
-            player.sendMessage("§8------- §6§lLeaderboards §8-------");
+            Component message = Component.text()
+                    .append(Component.text("------- ", NamedTextColor.DARK_GRAY))
+                    .append(
+                            Component.text("Leaderboards", NamedTextColor.GOLD, TextDecoration.BOLD)
+                    )
+                    .append(Component.text(" -------", NamedTextColor.DARK_GRAY))
+                    .append(Component.newline())
+                    .build();
+
             for (DecentHologramDisplay holo : DecentHologramDisplay.activeDisplays) {
-                player.sendMessage(" §6> §f" + holo.getId());
+                message = message
+                        .append(Component.text(" > ", NamedTextColor.GOLD))
+                        .append(Component.text(holo.getId(), NamedTextColor.WHITE))
+                        .append(Component.newline());
             }
-            player.sendMessage("§8--------------------------");
+
+            message = message.append(
+                    Component.text("--------------------------", NamedTextColor.DARK_GRAY)
+            );
+
+            player.sendMessage(message);
             return true;
         }
 

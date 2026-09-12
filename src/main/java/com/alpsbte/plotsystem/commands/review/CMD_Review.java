@@ -117,6 +117,10 @@ public class CMD_Review extends BaseCommand {
 
             // If the reviewer is not on the plot, teleport the player first
             if (teleportPlayer) {
+                if (!plotToReview.getWorld().prepareWorld()) {
+                    player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                    return;
+                }
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     boolean teleported = plotToReview.getWorld().teleportPlayer(player);
                     if (!teleported) return;

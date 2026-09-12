@@ -38,7 +38,7 @@ public class BuildEventTask extends AbstractTask implements EventTask {
                     player.getWorld().spawnParticle(Particle.FLAME, blockVector.getBlockX() + 0.5, blockVector.getBlockY() + 0.5,
                             blockVector.getBlockZ() + 0.5, 1, 0, 0, 0, 0);
             }
-        }.runTaskTimerAsynchronously(PlotSystem.getPlugin(), 0, 10);
+        }.runTaskTimer(PlotSystem.getPlugin(), 0, 10);
     }
 
     @Override
