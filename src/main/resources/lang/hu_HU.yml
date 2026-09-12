@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Válassz ki egy Földrészt'
   companion-select-country: 'Válassz ki egy Országot'
   companion-select-city: 'Válassz ki egy Várost'
-  player-plots: '{0}s Telkek'
+  player-plots: '{0}''s Telkek'
   leave-plot: 'Telek elhagyása'
   review-plots: 'Telkek Elbírálása'
   review-plot: '#{0} -as/es Telek Elbírálása'
@@ -177,7 +177,7 @@ review:
 note:
   tip: "Tipp"
   under-construction: 'Építés Alatt'
-  wont-be-able-continue-building: "!"
+  wont-be-able-continue-building: "Nem fogod tudni folytatni a telek építését!"
   score-will-be-split: "Az eredmény el lesz osztva minden tag között elbírálás után!"
   player-has-to-be-online: "A játékosnak online kell lennie!"
   optional: "Opcionális"
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Helyes ablak fajta'
     windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.3

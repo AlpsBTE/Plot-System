@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Selecteer een Continent'
   companion-select-country: 'Selecteer een Land'
   companion-select-city: 'Selecteer een Stad'
-  player-plots: '{0}s Plots'
+  player-plots: '{0}''s Plots'
   leave-plot: 'Verlaat Plot'
   review-plots: 'Controleer Plots'
   review-plot: 'Controleer Plot #{0}'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'Alle ramen zijn verduisterd'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2
