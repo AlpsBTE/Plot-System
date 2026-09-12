@@ -41,7 +41,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     private int plotDisplayCount = 0;
 
     public PlayerPlotsMenu(Player menuPlayer, @NotNull Builder builder) {
-        super(6, LangUtil.getInstance().get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName() + "'"), menuPlayer);
+        super(6, LangUtil.getInstance().get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName()), menuPlayer);
         this.builder = builder;
     }
 

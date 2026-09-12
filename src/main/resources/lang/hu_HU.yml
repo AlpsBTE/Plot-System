@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Válassz ki egy Földrészt'
   companion-select-country: 'Válassz ki egy Országot'
   companion-select-city: 'Válassz ki egy Várost'
-  player-plots: '{0}s Telkek'
+  player-plots: '{0}''s Telkek'
   leave-plot: 'Telek elhagyása'
   review-plots: 'Telkek Elbírálása'
   review-plot: '#{0} -as/es Telek Elbírálása'

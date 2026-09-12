@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Seleziona Un Continente'
   companion-select-country: 'Seleziona Un Paese'
   companion-select-city: 'Seleziona Una Città'
-  player-plots: '{0}s Trame'
+  player-plots: '{0}''s Trame'
   leave-plot: 'Lascia Il Grafico'
   review-plots: 'Rivedi Trame'
   review-plot: 'Revisione Trama #{0}'

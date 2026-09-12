@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Choisissez un continent'
   companion-select-country: 'Choisissez un pays'
   companion-select-city: 'Choisissez une ville'
-  player-plots: '{0}s Parcelles'
+  player-plots: '{0}''s Parcelles'
   leave-plot: 'Quitter Plot'
   review-plots: 'Évaluation de la Parcelle'
   review-plot: 'Évaluation de la Parcelle #{0}'
