@@ -344,7 +344,7 @@ public final class PlotUtils {
                 if (plots.isEmpty()) continue;
 
                 for (Plot plot : plots) {
-                    if ((!plot.getWorld().getWorldName().equals(player.getWorld().getName())) ||
+                    if ((!plot.getWorld().getWorldName().equalsIgnoreCase(player.getWorld().getName())) ||
                             (!plot.getPlotOwner().getPlotType().hasEnvironment() || plot.getVersion() <= 2)) {
                         continue;
                     }

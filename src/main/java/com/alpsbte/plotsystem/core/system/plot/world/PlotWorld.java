@@ -71,12 +71,14 @@ public class PlotWorld implements IWorld {
             return false;
         }
         try {
-            var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(getWorldName());
+            String configWorldName = getWorldName().toLowerCase(Locale.ROOT);
+
+            var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(configWorldName);
             if (mviConfig != null) {
                 File multiverseInventoriesConfig = new File(mviConfig);
                 if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
             }
-            File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(getWorldName()));
+            File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(configWorldName));
             if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
         } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"), ex);
