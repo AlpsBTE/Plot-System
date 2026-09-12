@@ -68,6 +68,7 @@ jobs:
           pull_request_title: "New Crowdin translations"
           commit_message: "New Crowdin translations"
           pull_request_base_branch_name: "main"
+          skip_ref_checkout: true
 
           project_id: ${{ vars.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
