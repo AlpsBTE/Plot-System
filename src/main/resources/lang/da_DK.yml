@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Vælg Et Kontinent'
   companion-select-country: 'Vælg Et Land'
   companion-select-city: 'Vælg En By'
-  player-plots: '{0}s Plot'
+  player-plots: '{0}''s Plot'
   leave-plot: 'Forlad Plot'
   review-plots: 'Gennemgå Plot'
   review-plot: 'Gennemgå Plot #{0}'

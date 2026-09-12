@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Selecteer een Continent'
   companion-select-country: 'Selecteer een Land'
   companion-select-city: 'Selecteer een Stad'
-  player-plots: '{0}s Plots'
+  player-plots: '{0}''s Plots'
   leave-plot: 'Verlaat Plot'
   review-plots: 'Controleer Plots'
   review-plot: 'Controleer Plot #{0}'
