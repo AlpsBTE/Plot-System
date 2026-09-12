@@ -3,6 +3,7 @@ package com.alpsbte.plotsystem.core.system.plot.generator.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -39,6 +40,7 @@ public class PlotWorldGenerator {
     private static final World.Environment environment = World.Environment.NORMAL;
 
     public PlotWorldGenerator(String worldName) throws Exception {
+        boolean dev = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE);
         long startTime = System.nanoTime();
         this.worldName = worldName;
 
@@ -54,8 +56,10 @@ public class PlotWorldGenerator {
             return null;
         }).get();
 
-        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time to generate world: {}ms", (System.nanoTime() - startTime) / 1_000_000);
-        PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time on main thread: {}ms", (System.nanoTime() - mainThreadStart) / 1_000_000);
+        if (dev) {
+            PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time to generate world: {}ms", (System.nanoTime() - startTime) / 1_000_000);
+            PlotSystem.getPlugin().getComponentLogger().info("(PWG) Total time on main thread: {}ms", (System.nanoTime() - mainThreadStart) / 1_000_000);
+        }
     }
 
     protected void generateWorld() throws IOException {
