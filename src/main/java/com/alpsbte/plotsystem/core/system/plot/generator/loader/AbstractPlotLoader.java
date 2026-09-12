@@ -242,7 +242,12 @@ public abstract class AbstractPlotLoader {
      * Generates the structure for the plot
      */
     protected void generateStructure() throws Exception {
-        runFaweBlocking(() -> pasteSchematic(!plotType.hasEnvironment(), PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false));
+        if (plotType.hasEnvironment()) {
+            // The schematic already contains the environment around the plot, so it is pasted as a whole.
+            runFaweBlocking(() -> pasteSchematic(false, this.schematicBytes, this.plotWorld, false, false));
+            return;
+        }
+        runFaweBlocking(() -> pasteSchematic(true, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false));
     }
 
     /**
