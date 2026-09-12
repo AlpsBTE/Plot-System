@@ -17,7 +17,6 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +44,7 @@ public abstract class AbstractPlot {
 
     protected List<BlockVector2> outline;
     protected List<BlockVector2> blockOutline;
+    private volatile SchematicMetadata schematicMetadata;
 
     protected AbstractPlot(int id, UUID plotOwnerUUID) {
         this.id = id;
@@ -67,6 +67,7 @@ public abstract class AbstractPlot {
 
     /**
      * sets the plot owner of the current plot
+     *
      * @param plotOwner uuid of player
      * @return if true, the execution was successful
      */
@@ -138,27 +139,48 @@ public abstract class AbstractPlot {
      * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertFromGeo(double, double)
      */
     public BlockVector3 getCoordinates() throws IOException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
-        try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)) {
-            Clipboard clipboard = reader.read();
-            if (clipboard != null) return clipboard.getOrigin();
-        }
-        return null;
+        return getSchematicMetadata().origin();
     }
 
     public BlockVector3 getCenter() {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(getInitialSchematicBytes());
-        try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(inputStream)){
-            Clipboard clipboard = reader.read();
-            if (clipboard != null) {
-                Vector3 clipboardCenter = clipboard.getRegion().getCenter();
-                return BlockVector3.at(clipboardCenter.x(), this.getWorld().getPlotHeightCentered(), clipboardCenter.z());
-            }
+        try {
+            return getSchematicMetadata().center().withY(this.getWorld().getPlotHeightCentered());
         } catch (IOException ex) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to load schematic file to clipboard!"), ex);
         }
         return null;
     }
+
+    public SchematicMetadata getSchematicMetadata() throws IOException {
+        SchematicMetadata cachedMetadata = schematicMetadata;
+        if (cachedMetadata != null) return cachedMetadata;
+
+        synchronized (this) {
+            if (schematicMetadata != null) return schematicMetadata;
+            try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(getInitialSchematicBytes()))) {
+                Clipboard clipboard = reader.read();
+                if (clipboard == null) throw new IOException("Could not read schematic metadata");
+                schematicMetadata = new SchematicMetadata(
+                        clipboard.getOrigin(),
+                        clipboard.getMinimumPoint(),
+                        clipboard.getMaximumPoint(),
+                        clipboard.getRegion().getCenter().toBlockPoint()
+                );
+                return schematicMetadata;
+            }
+        }
+    }
+
+    protected void invalidateSchematicMetadata() {
+        schematicMetadata = null;
+    }
+
+    public record SchematicMetadata(
+            BlockVector3 origin,
+            BlockVector3 minimumPoint,
+            BlockVector3 maximumPoint,
+            BlockVector3 center
+    ) {}
 
     /**
      * @return plot permission manager to add or remove build rights

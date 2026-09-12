@@ -10,7 +10,7 @@ public class TutorialNPCTurnTracker implements Runnable {
     @Override
     public void run() {
         for (AbstractTutorial tutorial : AbstractTutorial.getActiveTutorials()) {
-            if (tutorial.getNPC() == null) continue;
+            if (tutorial.getNPC() == null || tutorial.getNPC().getNpc() == null) continue;
             Location playerLoc = tutorial.getPlayer().getLocation();
             Location npcLoc = tutorial.getNPC().getNpc().getData().getLocation();
             if (npcLoc == null || !npcLoc.getWorld().getName()

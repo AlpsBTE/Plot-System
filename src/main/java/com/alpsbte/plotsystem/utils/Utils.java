@@ -40,6 +40,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_END;
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.TEXT_HIGHLIGHT_START;
@@ -100,6 +102,40 @@ public class Utils {
         if (customModelData != null) builder.setItemModel(customModelData);
 
         return builder.build();
+    }
+
+    public static CompletableFuture<Void> runSync(Callable<Void> task) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Runnable runnable = () -> {
+            try {
+                var result = task.call();
+                future.complete(result);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        };
+
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Bukkit.getScheduler().getMainThreadExecutor(PlotSystem.getPlugin()).execute(runnable);
+
+        return future;
+    }
+
+    public static <T> CompletableFuture<T> supplySync(Callable<T> task) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        Runnable runnable = () -> {
+            try {
+                var result = task.call();
+                future.complete(result);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        };
+
+        if (Bukkit.isPrimaryThread()) runnable.run();
+        else Bukkit.getScheduler().getMainThreadExecutor(PlotSystem.getPlugin()).execute(runnable);
+
+        return future;
     }
 
     public static class SoundUtils {

@@ -14,6 +14,7 @@ import org.ipvp.canvas.mask.Mask;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class ContinentMenu extends AbstractMenu {
     private final HashMap<Integer, Continent> layout = new HashMap<>();
@@ -47,18 +48,19 @@ public class ContinentMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> { // Set click event for random selection item
-            List<Continent> layout2 = new java.util.ArrayList<>(layout.values().stream().toList());
-            while (!layout2.isEmpty()) {
-                var rndContinent = layout2.get(Utils.getRandom().nextInt(layout2.size()));
-                var successful = CountryMenu.generateRandomPlot(clickPlayer, DataProvider.COUNTRY.getCountriesByContinent(rndContinent), null);
-                if (successful) {
-                    return;
-                } else {
-                    layout2.remove(rndContinent);
-                }
-            }
-        });
+        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->
+                CompletableFuture.runAsync(() -> { // Set click event for random selection item
+                    List<Continent> layout2 = new java.util.ArrayList<>(layout.values().stream().toList());
+                    while (!layout2.isEmpty()) {
+                        var rndContinent = layout2.get(Utils.getRandom().nextInt(layout2.size()));
+                        var successful = CountryMenu.generateRandomPlot(clickPlayer, DataProvider.COUNTRY.getCountriesByContinent(rndContinent), null);
+                        if (successful) {
+                            return;
+                        } else {
+                            layout2.remove(rndContinent);
+                        }
+                    }
+                }));
 
         for (Map.Entry<Integer, Continent> continent : layout.entrySet()) {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));

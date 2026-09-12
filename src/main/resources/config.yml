@@ -92,6 +92,28 @@ shortlink:
 
 
 # -----------------------------------------------------
+# | Map Links
+# | Optional overrides for provider links shown in /plot messages.
+# | You can disable defaults or add custom providers.
+# | Supported placeholders in url-template: {lat}, {lon}
+# -----------------------------------------------------
+# map-links:
+#   links:
+#     googleMaps:
+#       enabled: true
+#     googleEarth:
+#       enabled: true
+#     osm:
+#       enabled: true
+#     appleLookAround:
+#       enabled: true
+#     bingMaps:
+#       name: "Bing Maps"
+#       url-template: "https://www.bing.com/maps?q={lat},{lon}"
+#       enabled: true
+
+
+# -----------------------------------------------------
 # | Tutorials
 # -----------------------------------------------------
 tutorials:
@@ -104,4 +126,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 4.2
+config-version: 4.3

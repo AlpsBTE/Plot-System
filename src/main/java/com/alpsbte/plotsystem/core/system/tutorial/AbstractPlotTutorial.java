@@ -6,7 +6,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
-import com.alpsbte.plotsystem.core.system.plot.generator.TutorialPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
@@ -19,7 +19,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils.Sound;
 import static net.kyori.adventure.text.Component.text;
@@ -41,7 +42,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public abstract class AbstractPlotTutorial extends AbstractTutorial implements PlotTutorial {
     protected TutorialPlot tutorialPlot;
-    private TutorialPlotGenerator plotGenerator;
+    private TutorialPlotLoader plotGenerator;
     private boolean isPasteSchematic;
 
     protected AbstractPlotTutorial(Player player, int tutorialId, int stageId) {
@@ -77,10 +78,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
     @Override
     protected TutorialNPC initNpc() {
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
         return new TutorialNPC(
                 "ps-tutorial-" + tutorialPlot.getId(),
-                ChatColor.GOLD + ChatColor.BOLD.toString() + PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME),
-                ChatColor.GRAY + "(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")",
+                serializer.serialize(text(PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_NAME), GOLD).decorate(BOLD)),
+                serializer.serialize(text("(" + LangUtil.getInstance().get(getPlayer(), LangPaths.Note.Action.RIGHT_CLICK) + ")", GRAY)),
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_TEXTURE),
                 PlotSystem.getPlugin().getConfig().getString(ConfigPaths.TUTORIAL_NPC_SIGNATURE));
     }
@@ -92,7 +94,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws IOException {
+    public void onPlotSchematicPaste(@NotNull UUID playerUUID, int schematicId) throws Exception {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         if (schematicId < 0) return;
         if (plotGenerator != null && tutorialPlot.getWorld().isWorldGenerated() && tutorialPlot.getWorld().isWorldLoaded()) {
@@ -122,22 +124,32 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             if (stage != currentStage) return;
 
             // paste initial schematic outlines of stage
-            if (pasteSchematic) {
-                try {
-                    onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
-                } catch (IOException ex) {
-                    onException(ex);
+            CompletableFuture<Void> schematicPaste = pasteSchematic
+                    ? CompletableFuture.runAsync(() -> {
+                        try {
+                            onPlotSchematicPaste(getPlayerUUID(), ((AbstractPlotStage) stage).getInitSchematicId());
+                        } catch (Exception ex) {
+                            throw new CompletionException(ex);
+                        }
+                    })
+                    : CompletableFuture.completedFuture(null);
+
+            schematicPaste.whenComplete((ignored, throwable) -> Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+                if (throwable != null) {
+                    Throwable cause = throwable instanceof CompletionException && throwable.getCause() != null ? throwable.getCause() : throwable;
+                    onException(cause instanceof Exception exception ? exception : new Exception(cause));
                     return;
                 }
-            }
-            isPasteSchematic = false;
+                if (stage != currentStage) return;
+                isPasteSchematic = false;
 
-            // Send a new stage unlocked message to the player
-            sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
-            getPlayer().playSound(getPlayer().getLocation(), Sound.STAGE_COMPLETED, 1f, 0.7f);
+                // Send a new stage unlocked message to the player
+                sendStageUnlockedMessage(getPlayer(), currentStage.getTitle());
+                getPlayer().playSound(getPlayer().getLocation(), Sound.STAGE_COMPLETED, 1f, 0.7f);
 
-            // Mark stage preparation as done
-            action.setDone();
+                // Mark stage preparation as done
+                action.setDone();
+            }));
         }, 20);
     }
 
@@ -153,21 +165,29 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     }
 
     @Override
-    public void onSwitchWorld(@NotNull UUID playerUUID, int tutorialWorldIndex) {
-        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
-        int schematicId = ((AbstractPlotStage) currentStage).getInitSchematicId();
-        tutorialPlot.setTutorialSchematic(schematicId);
-
-        if (tutorialWorldIndex == 1 && (plotGenerator == null || !plotGenerator.getPlot().getWorld().isWorldGenerated())) {
-            plotGenerator = new TutorialPlotGenerator(tutorialPlot, Builder.byUUID(playerUUID));
-            try {
-                onPlotSchematicPaste(playerUUID, schematicId);
-            } catch (IOException ex) {
-                onException(ex);
-                return;
-            }
+    public CompletableFuture<Void> switchWorldAsync(@NotNull UUID playerUUID, int tutorialWorldIndex) {
+        if (!getPlayerUUID().toString().equals(playerUUID.toString())) return CompletableFuture.completedFuture(null);
+        if (tutorialWorldIndex == 1 && (plotGenerator == null || !tutorialPlot.getWorld().isWorldGenerated())) {
+            return CompletableFuture.runAsync(() -> {
+                plotGenerator = new TutorialPlotLoader(tutorialPlot, Builder.byUUID(playerUUID));
+                try {
+                    int schematicId = ((AbstractPlotStage) currentStage).getInitSchematicId();
+                    tutorialPlot.setTutorialSchematic(schematicId);
+                    onPlotSchematicPaste(playerUUID, schematicId);
+                } catch (Exception ex) {
+                    throw new CompletionException(ex);
+                }
+            }).thenCompose(ignored -> {
+                CompletableFuture<Void> future = new CompletableFuture<>();
+                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
+                        super.switchWorldAsync(playerUUID, tutorialWorldIndex).whenComplete((result, throwable) -> {
+                            if (throwable != null) future.completeExceptionally(throwable);
+                            else future.complete(result);
+                        }));
+                return future;
+            });
         }
-        super.onSwitchWorld(playerUUID, tutorialWorldIndex);
+        return super.switchWorldAsync(playerUUID, tutorialWorldIndex);
     }
 
     @Override

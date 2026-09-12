@@ -8,7 +8,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.generator.DefaultPlotGenerator;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
@@ -16,6 +16,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class CityProjectMenu extends AbstractPaginatedMenu {
@@ -64,7 +66,8 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     @Override
     protected void setItemClickEventsAsync() {
         getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->
-                generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty));
+                CompletableFuture.runAsync(() ->
+                        generateRandomPlot(clickPlayer, getValidCityProjects(selectedPlotDifficulty, clickPlayer, country), selectedPlotDifficulty)));
 
         getMenu().getSlot(1).setClickHandler((clickPlayer, clickInformation) -> new CountryMenu(clickPlayer, country.getContinent(), selectedPlotDifficulty));
 
@@ -96,10 +99,32 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         CompanionMenu.clickEventTutorialItem(getMenu());
     }
 
+    public void handleCityProjectClick(Player player, CityProject city) {
+        Builder builder = Builder.byUUID(player.getUniqueId());
+
+        PlotDifficulty plotDifficultyForCity;
+        try {
+            plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
+        } catch (ExecutionException | InterruptedException ex) {
+            sqlError(player, ex);
+            return;
+        }
+
+        List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
+        if (unclaimedPlots.isEmpty()) {
+            player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.NO_PLOTS_LEFT)));
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1));
+            return;
+        }
+
+        Plot plot = unclaimedPlots.get(Utils.getRandom().nextInt(unclaimedPlots.size()));
+        PlotHandler.assignAndGeneratePlot(builder, plot);
+    }
+
     public static boolean generateRandomPlot(Player player, @NotNull List<CityProject> items, PlotDifficulty selectedPlotDifficulty) {
         PlotDifficulty difficulty = selectedPlotDifficulty;
         if (items.isEmpty()) {
-            player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1);
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player, Utils.SoundUtils.ERROR_SOUND, 1, 1));
             return false;
         }
         CityProject randomCity = items.get(Utils.getRandom().nextInt(items.size()));
@@ -108,15 +133,14 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
         try {
             if (difficulty == null) difficulty = Plot.getPlotDifficultyForBuilder(randomCity, Builder.byUUID(player.getUniqueId())).get();
             if (difficulty == null) difficulty = PlotDifficulty.EASY;
-
-            player.closeInventory();
-            new DefaultPlotGenerator(randomCity, difficulty, builder);
         } catch (InterruptedException | ExecutionException e) {
             sqlError(player, e);
             return false;
         }
-        player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1);
-        return true;
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.closeInventory());
+        boolean successful = PlotHandler.assignAndGenerateRandomPlot(builder, randomCity, difficulty);
+        if (successful) Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> player.playSound(player, Utils.SoundUtils.DONE_SOUND, 1, 1));
+        return successful;
     }
 
     public static @NotNull @Unmodifiable List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, @NotNull Country country) {
@@ -175,29 +199,9 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
                     clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
                     return;
                 }
-
                 clickPlayer.closeInventory();
-                Builder builder = Builder.byUUID(clickPlayer.getUniqueId());
 
-                try {
-                    PlotDifficulty plotDifficultyForCity = selectedPlotDifficulty != null ? selectedPlotDifficulty : Plot.getPlotDifficultyForBuilder(city, builder).get();
-                    List<Plot> unclaimedPlots = DataProvider.PLOT.getPlots(city, plotDifficultyForCity, Status.unclaimed);
-                    if (unclaimedPlots.isEmpty()) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.NO_PLOTS_LEFT)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        return;
-                    }
-
-                    if (selectedPlotDifficulty != null && PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT) && !DataProvider.DIFFICULTY.builderMeetsRequirements(builder, selectedPlotDifficulty)) {
-                        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.PLAYER_NEEDS_HIGHER_SCORE)));
-                        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
-                        return;
-                    }
-
-                    new DefaultPlotGenerator(city, plotDifficultyForCity, builder);
-                } catch (ExecutionException | InterruptedException ex) {
-                    sqlError(clickPlayer, ex);
-                }
+                CompletableFuture.runAsync(() -> handleCityProjectClick(clickPlayer, city));
             });
             slot++;
         }
@@ -205,8 +209,10 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     private static void sqlError(@NotNull Player clickPlayer, Exception ex) {
         Utils.logSqlException(ex);
-        clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
-        clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
+            clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+            clickPlayer.playSound(clickPlayer.getLocation(), Utils.SoundUtils.ERROR_SOUND, 1, 1);
+        });
         Thread.currentThread().interrupt();
     }
 }

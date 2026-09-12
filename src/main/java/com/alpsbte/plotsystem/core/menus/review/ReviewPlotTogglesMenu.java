@@ -7,7 +7,7 @@ import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
@@ -19,7 +19,6 @@ import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
-import com.sk89q.worldedit.WorldEditException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,9 +30,9 @@ import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
@@ -81,7 +80,8 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         }));
 
         // Set click event for submit item
-        getMenu().getSlot(50).setClickHandler(((player, clickInformation) -> submitReview()));
+        getMenu().getSlot(50).setClickHandler(((player, clickInformation) ->
+                CompletableFuture.runAsync(this::submitReview)));
 
         // Set click event for toggle items
         for (int i = 0; i < Math.min(buildTeamCriteria.size(), 36); i++) {
@@ -128,10 +128,10 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         Component reviewerConfirmationMessage;
         if (!isRejected) {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getId()), getParticipantsString()));
-            if(!acceptPlot(review.getScore(), review.getSplitScore())) return;
+            if (!acceptPlot(review.getScore(), review.getSplitScore())) return;
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
-            PlotUtils.Actions.undoSubmit(plot);
+            PlotHandler.undoSubmit(plot);
         }
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -169,19 +169,25 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
     }
 
     private boolean acceptPlot(int score, int splitScore) {
-        getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
-        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-            try {
-                if (!PlotUtils.savePlotAsSchematic(plot)) {
-                    getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
-                    PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
-                }
-            } catch (IOException | WorldEditException ex) {
-                PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
-            }
+        Utils.runSync(() -> {
+            getMenuPlayer().sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.SAVING_PLOT)));
+            return null;
         });
+        try {
+            if (!PlotHandler.savePlotAsSchematic(plot)) {
+                Utils.runSync(() -> {
+                    getMenuPlayer().sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Error.ERROR_OCCURRED)));
+                    return null;
+                });
+                PlotSystem.getPlugin().getComponentLogger().warn(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"));
+                return false;
+            }
+        } catch (Exception ex) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not save finished plot schematic (ID: " + plot.getId() + ")!"), ex);
+            return false;
+        }
 
-        plot.setStatus(Status.completed);
+        if (!plot.setStatus(Status.completed)) return false;
 
         // Remove Plot from Owner
         if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getId()), -1)) return false;
@@ -249,11 +255,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 .setLore(new LoreBuilder()
                         .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SUBMIT_REVIEW), NamedTextColor.GRAY), true)
                         .emptyLine()
-                        .addLine(text( accuracyPointsText + ": ", NamedTextColor.GRAY)
+                        .addLine(text(accuracyPointsText + ": ", NamedTextColor.GRAY)
                                 .append(text(rating.getAccuracyPoints(), NamedTextColor.WHITE)))
-                        .addLine(text( blockPalettePointsText + ": ", NamedTextColor.GRAY)
+                        .addLine(text(blockPalettePointsText + ": ", NamedTextColor.GRAY)
                                 .append(text(rating.getBlockPalettePoints(), NamedTextColor.WHITE)))
-                        .addLine(text( togglesPointsText + ": ", NamedTextColor.GRAY)
+                        .addLine(text(togglesPointsText + ": ", NamedTextColor.GRAY)
                                 .append(text(togglePoints, NamedTextColor.WHITE))
                                 .append(text(" (" + checkedToggles + "/" + totalToggles + " → " + String.format("%.02f", togglePercentage) + "%)", NamedTextColor.DARK_GRAY)))
                         .addLine(text("-----", NamedTextColor.DARK_GRAY))

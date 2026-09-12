@@ -100,7 +100,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                 long inactivityIntervalDays = PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.INACTIVITY_INTERVAL);
                 long rejectedInactivityIntervalDays = (PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
                 long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (interval > -1) {
+                if (interval > -1 && plot.getLastActivity() != null) {
                     loreBuilder
                             .emptyLine()
                             .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED_IN_DAYS, String.valueOf(DAYS.between(LocalDate.now(), plot.getLastActivity().plusDays(interval)))), GRAY));

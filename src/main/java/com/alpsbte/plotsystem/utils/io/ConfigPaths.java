@@ -44,6 +44,9 @@ public abstract class ConfigPaths {
     public static final String SHORTLINK_APIKEY = SHORTLINK + "apikey";
     public static final String SHORTLINK_HOST = SHORTLINK + "host";
 
+    // MAP LINKS
+    public static final String MAP_LINKS = "map-links";
+
     // TUTORIALS
     private static final String TUTORIALS = "tutorials.";
     public static final String TUTORIAL_ENABLE = TUTORIALS + "tutorial-enable";
