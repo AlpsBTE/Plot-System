@@ -82,7 +82,7 @@ menu-title:
   submit: 'Invia'
   teleport: 'Teletrasporto'
   abandon: 'Abbandona'
-  abandon-confirm: 'Abandon plot #{0}?'
+  abandon-confirm: 'Abbandonare la trama di #{0}?'
   undo-submit: 'Annulla Invio'
   manage-members: 'Gestisci Membri'
   feedback: 'Feedback <unk> Recensione #{0}'
@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Seleziona Un Continente'
   companion-select-country: 'Seleziona Un Paese'
   companion-select-city: 'Seleziona Una Città'
-  player-plots: '{0}s Plots'
+  player-plots: '{0}s Trame'
   leave-plot: 'Lascia Il Grafico'
   review-plots: 'Rivedi Trame'
   review-plot: 'Revisione Trama #{0}'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Correggi i tipi di finestra'
     windows_blacked_out: 'Tutte le finestre sono rimosse'
 # NOTE: Do not change
-config-version: 1.0
+config-version: 1.1
