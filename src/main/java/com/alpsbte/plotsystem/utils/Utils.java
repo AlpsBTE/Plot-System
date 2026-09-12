@@ -2,8 +2,6 @@ package com.alpsbte.plotsystem.utils;
 
 import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
-import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
 import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
@@ -18,12 +16,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,7 +32,6 @@ import org.mvplugins.multiverse.external.vavr.control.Option;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
@@ -88,21 +82,6 @@ public class Utils {
                 player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
             } else player.getInventory().setItem(7, ItemStack.empty());
         });
-    }
-
-    public static ItemStack getConfiguredItem(@NotNull String material, Object customModelData) {
-        ItemStack base;
-        if (material.startsWith("head(") && material.endsWith(")")) {
-            String headId = material.substring(material.indexOf("(") + 1, material.lastIndexOf(")"));
-            base = AlpsHeadUtils.getCustomHead(headId);
-        } else {
-            Material mat = Material.getMaterial(material.toUpperCase(Locale.ROOT));
-            base = new ItemStack(mat == null ? Material.BARRIER : mat);
-        }
-        ItemBuilder builder = new ItemBuilder(base);
-        if (customModelData != null) builder.setItemModel(customModelData);
-
-        return builder.build();
     }
 
     public static CompletableFuture<Void> runSync(Callable<Void> task) {
@@ -214,8 +193,8 @@ public class Utils {
         }
 
         public static @NotNull TextComponent getActionFormat(String action) {
-            return text("> ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD)
-                    .append(text(action, NamedTextColor.RED));
+            return text("> ", DARK_GRAY, BOLD)
+                    .append(text(action, RED));
         }
 
         public static @NotNull Component getColoredPointsComponent(int points, int maxPoints) {
