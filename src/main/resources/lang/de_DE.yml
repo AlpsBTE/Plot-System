@@ -97,7 +97,7 @@ menu-title:
   companion-select-continent: 'Wähle Ein Kontinent'
   companion-select-country: 'Wähle Ein Land'
   companion-select-city: 'Wähle Eine Stadt'
-  player-plots: '{0}s Plots'
+  player-plots: '{0}''s Plots'
   leave-plot: 'Plot Verlassen'
   review-plots: 'Plots Bewerten'
   review-plot: 'Plot #{0} Bewerten'
@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Richtige Verstrebungen'
     windows_blacked_out: 'Alle Fenster verdunkelt'
 # NOTE: Do not change
-config-version: 2.6
+config-version: 2.7
