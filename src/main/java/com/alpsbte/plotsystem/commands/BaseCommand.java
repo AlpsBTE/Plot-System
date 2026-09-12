@@ -2,6 +2,9 @@ package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -89,26 +92,65 @@ public abstract class BaseCommand implements CommandExecutor, ICommand {
 
     @Override
     public void sendInfo(CommandSender sender) {
-        List<String> lines = new ArrayList<>();
+        List<Component> lines = new ArrayList<>();
+
         if (!subCommands.isEmpty()) {
-            lines.add("§8--------------------------");
-            getSubCommands().forEach(sub -> {
-                StringBuilder subCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + " §6" + sub.getNames()[0] + "§7");
-                for (String parameter : sub.getParameter()) {
-                    subCommand.append(" <").append(parameter).append(">");
-                }
-                if (sub.getDescription() != null) subCommand.append(" §f- ").append(sub.getDescription());
-                lines.add(subCommand.toString());
-            });
-            lines.add("§8--------------------------");
+            lines.add(Component.text("--------------------------", NamedTextColor.DARK_GRAY));
+
+            getSubCommands().forEach(sub -> lines.add(createUsageLine(
+                    "/" + getNames()[0] + " ",
+                    sub.getNames()[0],
+                    NamedTextColor.GOLD,
+                    sub.getParameter(),
+                    sub.getDescription()
+            )));
+
+            lines.add(Component.text("--------------------------", NamedTextColor.DARK_GRAY));
         } else {
-            StringBuilder baseCommand = new StringBuilder("§7§l> §b/" + getNames()[0] + "§7");
-            for (String parameter : getParameter()) {
-                baseCommand.append(" <").append(parameter).append(">");
-            }
-            if (getDescription() != null) baseCommand.append(" §f- ").append(getDescription());
-            lines.add(baseCommand.toString());
+            lines.add(createUsageLine(
+                    "/" + getNames()[0],
+                    null,
+                    NamedTextColor.AQUA,
+                    getParameter(),
+                    getDescription()
+            ));
         }
+
         lines.forEach(sender::sendMessage);
+    }
+
+    public static Component createUsageLine(
+            String prefix,
+            String command,
+            NamedTextColor commandColor,
+            String[] parameters,
+            String description
+    ) {
+        Component component = Component.empty()
+                .append(
+                        Component.text("> ", NamedTextColor.GRAY)
+                                .decorate(TextDecoration.BOLD)
+                )
+                .append(Component.text(prefix, NamedTextColor.AQUA));
+
+        if (command != null) {
+            component = component.append(
+                    Component.text(command, commandColor)
+            );
+        }
+
+        for (String parameter : parameters) {
+            component = component.append(
+                    Component.text(" <" + parameter + ">", NamedTextColor.GRAY)
+            );
+        }
+
+        if (description != null) {
+            component = component
+                    .append(Component.text(" - ", NamedTextColor.WHITE))
+                    .append(Component.text(description, NamedTextColor.WHITE));
+        }
+
+        return component;
     }
 }

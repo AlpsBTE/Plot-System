@@ -6,8 +6,9 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
-import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -48,7 +49,11 @@ public class CMD_DeletePlot extends BaseCommand {
                 return;
             }
             Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                sender.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully deleted plot with the ID §6#" + plotID + "§a!"));
+                sender.sendMessage(Utils.ChatUtils.getInfoFormat(
+                        Component.text("Successfully deleted plot with the ID ")
+                                .append(Component.text("#" + plotID, NamedTextColor.GOLD))
+                                .append(Component.text("!"))
+                ));
                 if (getPlayer(sender) != null) getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
             });
         });

@@ -97,7 +97,7 @@ public class PlotMemberMenu extends AbstractMenu {
                         .setLore(new LoreBuilder()
                                 .addLines(text(plot.getPlotOwner().getName()),
                                         empty(),
-                                        text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_PLOTS_MENUE))))
+                                        Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_OPEN_PLOTS_MENUE)))
                                 .build())
                         .build());
 
@@ -113,7 +113,7 @@ public class PlotMemberMenu extends AbstractMenu {
                             .setLore(new LoreBuilder()
                                     .addLines(text(builder.getName()),
                                             empty(),
-                                            text(Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER))))
+                                            Utils.ItemUtils.getActionFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.CLICK_TO_REMOVE_PLOT_MEMBER)))
                                     .build())
                             .build());
         }

@@ -18,6 +18,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,7 +29,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -212,8 +213,10 @@ public class Utils {
             return text("Note: ", RED).decoration(BOLD, true).append(text(note, DARK_GRAY).decoration(BOLD, false));
         }
 
-        @Contract(pure = true)
-        public static @NotNull String getActionFormat(String action) {return "§8§l> §c" + action;}
+        public static @NotNull TextComponent getActionFormat(String action) {
+            return text("> ", NamedTextColor.DARK_GRAY, TextDecoration.BOLD)
+                    .append(text(action, NamedTextColor.RED));
+        }
 
         public static @NotNull Component getColoredPointsComponent(int points, int maxPoints) {
             return switch ((int) ((double) points / maxPoints * 5)) {

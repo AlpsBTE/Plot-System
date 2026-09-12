@@ -207,8 +207,10 @@ public class TutorialStagesMenu extends AbstractMenu {
                 Material.LIME_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE), stageId + 1);
         boolean isClickable = stageId != playerCurrentStage && stageId <= playerHighestStage;
 
-        if (isClickable) lore.addLines("", LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.LEFT_CLICK) + " §8» " +
-                "§e" + LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.START));
+        if (isClickable) lore.addLines(Component.empty(),
+                Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.LEFT_CLICK))
+                        .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Note.Action.START), NamedTextColor.YELLOW)));
 
         return new ItemBuilder(stageItem)
                 .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Tutorials.STAGE) + " " + (stageId + 1), titleColor, TextDecoration.BOLD))
