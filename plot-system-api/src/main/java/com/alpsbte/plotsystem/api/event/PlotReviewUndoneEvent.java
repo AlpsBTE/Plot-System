@@ -1,19 +1,19 @@
 package com.alpsbte.plotsystem.api.event;
 
-import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.api.model.ReviewSnapshot;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public final class PlotFeedbackUpdatedEvent extends Event {
+public final class PlotReviewUndoneEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final PlotReview review;
+    private final ReviewSnapshot review;
 
-    public PlotFeedbackUpdatedEvent(@NotNull PlotReview review) {
+    public PlotReviewUndoneEvent(@NotNull ReviewSnapshot review) {
         this.review = review;
     }
 
-    public @NotNull PlotReview getReview() {
+    public @NotNull ReviewSnapshot getReview() {
         return review;
     }
 

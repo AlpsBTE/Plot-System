@@ -5,6 +5,7 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.api.event.PlotRejectedEvent;
 import com.alpsbte.plotsystem.api.event.PlotReviewedEvent;
+import com.alpsbte.plotsystem.core.integration.PlotEventSnapshots;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -131,11 +132,11 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
         if (!isRejected) {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_MARKED_REVIEWED, Integer.toString(plot.getId()), getParticipantsString()));
             if (!acceptPlot(review.getScore(), review.getSplitScore())) return;
-            Bukkit.getPluginManager().callEvent(new PlotReviewedEvent(review));
+            Bukkit.getPluginManager().callEvent(new PlotReviewedEvent(PlotEventSnapshots.review(review)));
         } else {
             reviewerConfirmationMessage = Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Message.Info.PLOT_REJECTED, Integer.toString(plot.getId()), getParticipantsString()));
             PlotHandler.undoSubmit(plot);
-            Bukkit.getPluginManager().callEvent(new PlotRejectedEvent(review));
+            Bukkit.getPluginManager().callEvent(new PlotRejectedEvent(PlotEventSnapshots.review(review)));
         }
 
         Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {

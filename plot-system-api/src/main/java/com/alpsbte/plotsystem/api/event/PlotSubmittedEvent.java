@@ -1,20 +1,20 @@
 package com.alpsbte.plotsystem.api.event;
 
-import com.alpsbte.plotsystem.core.system.review.PlotReview;
+import com.alpsbte.plotsystem.api.model.PlotSnapshot;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public final class PlotRejectedEvent extends Event {
+public final class PlotSubmittedEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final PlotReview review;
+    private final PlotSnapshot plot;
 
-    public PlotRejectedEvent(@NotNull PlotReview review) {
-        this.review = review;
+    public PlotSubmittedEvent(@NotNull PlotSnapshot plot) {
+        this.plot = plot;
     }
 
-    public @NotNull PlotReview getReview() {
-        return review;
+    public @NotNull PlotSnapshot getPlot() {
+        return plot;
     }
 
     public static @NotNull HandlerList getHandlerList() {

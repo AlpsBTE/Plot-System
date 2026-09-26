@@ -5,6 +5,8 @@ import com.alpsbte.plotsystem.api.event.PlotAbandonedEvent;
 import com.alpsbte.plotsystem.api.event.PlotCreatedEvent;
 import com.alpsbte.plotsystem.api.event.PlotSubmissionUndoneEvent;
 import com.alpsbte.plotsystem.api.event.PlotSubmittedEvent;
+import com.alpsbte.plotsystem.api.model.PlotAbandonReason;
+import com.alpsbte.plotsystem.core.integration.PlotEventSnapshots;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
@@ -138,7 +140,7 @@ public class PlotHandler {
 
         DefaultPlotLoader loader = new DefaultPlotLoader(plot, builder, type, PlotWorld.getByType(type, plot));
         if (loader.isSuccessful()) {
-            Bukkit.getPluginManager().callEvent(new PlotCreatedEvent(plot));
+            Bukkit.getPluginManager().callEvent(new PlotCreatedEvent(PlotEventSnapshots.plot(plot)));
         }
         return loader.isSuccessful();
     }
@@ -164,10 +166,10 @@ public class PlotHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean abandonPlot(AbstractPlot plot) {
-        return abandonPlot(plot, PlotAbandonedEvent.Reason.MANUAL);
+        return abandonPlot(plot, PlotAbandonReason.MANUAL);
     }
 
-    public static boolean abandonPlot(AbstractPlot plot, PlotAbandonedEvent.Reason reason) {
+    public static boolean abandonPlot(AbstractPlot plot, PlotAbandonReason reason) {
         try {
             boolean successfullyAbandoned = plot.getWorld().onAbandon();
             if (!successfullyAbandoned) {
@@ -204,13 +206,13 @@ public class PlotHandler {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
         }
         if (successful) {
-            Bukkit.getPluginManager().callEvent(new PlotAbandonedEvent(plot, reason));
+            Bukkit.getPluginManager().callEvent(new PlotAbandonedEvent(PlotEventSnapshots.plot(plot), reason));
         }
         return successful;
     }
 
     public static boolean deletePlot(Plot plot) {
-        if (!abandonPlot(plot, PlotAbandonedEvent.Reason.INACTIVITY)) {
+        if (!abandonPlot(plot, PlotAbandonReason.INACTIVITY)) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + "!"));
             return false;
         }
@@ -231,7 +233,7 @@ public class PlotHandler {
             if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
             CompletableFuture.runAsync(() -> {
-                if (!abandonPlot(plot, PlotAbandonedEvent.Reason.COMMAND)) {
+                if (!abandonPlot(plot, PlotAbandonReason.COMMAND)) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     return;
                 }
@@ -255,7 +257,7 @@ public class PlotHandler {
                 plot.getPermissions().removeBuilderPerms(builder.getUUID());
             }
         }
-        Bukkit.getPluginManager().callEvent(new PlotSubmittedEvent(plot));
+        Bukkit.getPluginManager().callEvent(new PlotSubmittedEvent(PlotEventSnapshots.plot(plot)));
     }
 
     public static void undoSubmit(@NotNull Plot plot) {
@@ -267,7 +269,7 @@ public class PlotHandler {
                 plot.getPermissions().addBuilderPerms(builder.getUUID());
             }
         }
-        Bukkit.getPluginManager().callEvent(new PlotSubmissionUndoneEvent(plot));
+        Bukkit.getPluginManager().callEvent(new PlotSubmissionUndoneEvent(PlotEventSnapshots.plot(plot)));
     }
 
     public static void removePlayerFromGenerationHistory(UUID playerUuid) {

@@ -1,19 +1,19 @@
 package com.alpsbte.plotsystem.api.event;
 
-import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.api.model.PlotSnapshot;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlotSubmissionUndoneEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Plot plot;
+    private final PlotSnapshot plot;
 
-    public PlotSubmissionUndoneEvent(@NotNull Plot plot) {
+    public PlotSubmissionUndoneEvent(@NotNull PlotSnapshot plot) {
         this.plot = plot;
     }
 
-    public @NotNull Plot getPlot() {
+    public @NotNull PlotSnapshot getPlot() {
         return plot;
     }
 
