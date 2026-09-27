@@ -1,6 +1,13 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.api.event.PlotAbandonedEvent;
+import com.alpsbte.plotsystem.api.event.PlotCreatedEvent;
+import com.alpsbte.plotsystem.api.event.PlotInactivityWarningEvent;
+import com.alpsbte.plotsystem.api.event.PlotSubmissionUndoneEvent;
+import com.alpsbte.plotsystem.api.event.PlotSubmittedEvent;
+import com.alpsbte.plotsystem.api.model.PlotAbandonReason;
+import com.alpsbte.plotsystem.core.integration.PlotEventSnapshots;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.CityProject;
@@ -26,13 +33,12 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.world.World;
+import org.bukkit.Bukkit;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -134,6 +140,9 @@ public class PlotHandler {
         }
 
         DefaultPlotLoader loader = new DefaultPlotLoader(plot, builder, type, PlotWorld.getByType(type, plot));
+        if (loader.isSuccessful()) {
+            publishEvent(new PlotCreatedEvent(PlotEventSnapshots.plot(plot)));
+        }
         return loader.isSuccessful();
     }
 
@@ -158,6 +167,11 @@ public class PlotHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean abandonPlot(AbstractPlot plot) {
+        return abandonPlot(plot, PlotAbandonReason.MANUAL);
+    }
+
+    public static boolean abandonPlot(AbstractPlot plot, PlotAbandonReason reason) {
+        var snapshot = PlotEventSnapshots.plot(plot);
         try {
             boolean successfullyAbandoned = plot.getWorld().onAbandon();
             if (!successfullyAbandoned) {
@@ -169,7 +183,10 @@ public class PlotHandler {
             return false;
         }
 
-        if (plot.getPlotType() == PlotType.TUTORIAL) return true;
+        if (plot.getPlotType() == PlotType.TUTORIAL) {
+            publishEvent(new PlotAbandonedEvent(snapshot, reason));
+            return true;
+        }
 
         Plot dPlot = (Plot) plot;
         boolean successful = DataProvider.REVIEW.removeAllReviewsOfPlot(dPlot.getId());
@@ -193,11 +210,14 @@ public class PlotHandler {
         if (!successful) {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
         }
+        if (successful) {
+            publishEvent(new PlotAbandonedEvent(snapshot, reason));
+        }
         return successful;
     }
 
     public static boolean deletePlot(Plot plot) {
-        if (!abandonPlot(plot)) {
+        if (!abandonPlot(plot, PlotAbandonReason.COMMAND)) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + "!"));
             return false;
         }
@@ -217,14 +237,24 @@ public class PlotHandler {
             long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
             if (interval == -2 || lastActivity == null || lastActivity.plusDays(interval).isAfter(LocalDate.now())) continue;
 
+            publishEvent(new PlotInactivityWarningEvent(
+                    PlotEventSnapshots.plot(plot),
+                    lastActivity.plusDays(interval)));
             CompletableFuture.runAsync(() -> {
-                if (!abandonPlot(plot)) {
+                if (!abandonPlot(plot, PlotAbandonReason.INACTIVITY)) {
                     PlotSystem.getPlugin().getComponentLogger().warn(text("An error occurred while abandoning plot #" + plot.getId() + " due to inactivity!"));
                     return;
                 }
                 PlotSystem.getPlugin().getComponentLogger().info(text("Abandoned plot #" + plot.getId() + " due to inactivity!"));
             });
         }
+    }
+
+    private static void publishEvent(org.bukkit.event.Event event) {
+        Utils.runSync(() -> {
+            Bukkit.getPluginManager().callEvent(event);
+            return null;
+        });
     }
 
     public static void submitPlot(@NotNull Plot plot) {
@@ -242,6 +272,7 @@ public class PlotHandler {
                 plot.getPermissions().removeBuilderPerms(builder.getUUID());
             }
         }
+        publishEvent(new PlotSubmittedEvent(PlotEventSnapshots.plot(plot)));
     }
 
     public static void undoSubmit(@NotNull Plot plot) {
@@ -253,6 +284,7 @@ public class PlotHandler {
                 plot.getPermissions().addBuilderPerms(builder.getUUID());
             }
         }
+        publishEvent(new PlotSubmissionUndoneEvent(PlotEventSnapshots.plot(plot)));
     }
 
     public static void removePlayerFromGenerationHistory(UUID playerUuid) {
