@@ -8,8 +8,6 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
-import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
-import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
@@ -114,24 +112,6 @@ public abstract class AbstractPlot {
     public abstract byte[] getInitialSchematicBytes();
 
     /**
-     * Returns geographic coordinates in numeric format
-     *
-     * @return WG84 EPSG:4979 coordinates as double array {lon,lat} in degrees
-     * @throws IOException fails to load schematic file
-     * @see com.alpsbte.plotsystem.utils.conversion.CoordinateConversion#convertToGeo(double, double)
-     */
-    public String getGeoCoordinates() throws IOException {
-        // Convert MC coordinates to geo coordinates
-        BlockVector3 mcCoordinates = getCoordinates();
-        try {
-            return CoordinateConversion.formatGeoCoordinatesNumeric(CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z()));
-        } catch (OutOfProjectionBoundsException ex) {
-            PlotSystem.getPlugin().getComponentLogger().error(text("Could not convert MC coordinates to geo coordinates!"), ex);
-        }
-        return null;
-    }
-
-    /**
      * Returns in-game Minecraft coordinates on a Terra121 world
      *
      * @return the in-game coordinates (x, z)
@@ -188,22 +168,6 @@ public abstract class AbstractPlot {
     public PlotPermissions getPermissions() {
         if (plotPermissions == null) plotPermissions = new PlotPermissions(getWorld());
         return plotPermissions;
-    }
-
-    public String getOSMMapsLink() throws IOException {
-        return "https://www.openstreetmap.org/#map=19/" + getGeoCoordinates().replace(",", "/");
-    }
-
-    public String getGoogleMapsLink() throws IOException {
-        return "https://www.google.com/maps/place/" + getGeoCoordinates();
-    }
-
-    public String getGoogleEarthLink() throws IOException {
-        return "https://earth.google.com/web/@" + getGeoCoordinates() + ",0a,1000d,20y,-0h,0t,0r";
-    }
-
-    public String getAppleLookAroundLink() throws IOException {
-        return "https://lookmap.eu.pythonanywhere.com/#c=20/" + getGeoCoordinates().replace(",", "/");
     }
 
     protected List<BlockVector2> getOutlinePoints(String outlinePoints) {

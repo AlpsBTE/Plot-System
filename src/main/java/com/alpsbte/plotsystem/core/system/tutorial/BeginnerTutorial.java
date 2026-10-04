@@ -1,6 +1,8 @@
 package com.alpsbte.plotsystem.core.system.tutorial;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
+import com.alpsbte.alpslib.utils.MapLink;
+import com.alpsbte.alpslib.utils.MapLinks;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.holograms.PlotTutorialHologram;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
@@ -16,11 +18,14 @@ import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.events.commands.W
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.message.ChatMessageTask;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.io.TutorialPaths;
+import com.sk89q.worldedit.math.BlockVector3;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -190,7 +195,12 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        public StageTimeline getTimeline() throws IOException {
+        public StageTimeline getTimeline() throws IOException, OutOfProjectionBoundsException {
+            BlockVector3 mcCoordinates = getPlot().getCoordinates();
+            double[] geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
+            MapLinks links = new MapLinks(geoCoordinates[1], geoCoordinates[0]);
+            MapLink mapsLink = links.getById(MapLinks.GOOGLE_MAPS);
+            MapLink earthLink = links.getById(MapLinks.GOOGLE_EARTH);
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
@@ -199,13 +209,13 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             deserialize(getMessages().get(2)),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(3)).color(GRAY),
-                                    text(GOOGLE_MAPS, GRAY), ClickEvent.openUrl(getPlot().getGoogleMapsLink()))
+                                    text(mapsLink.name(), GRAY), ClickEvent.openUrl(mapsLink.url()))
                     }, Sound.NPC_TALK, true)
                     .sendChatMessage(new Object[]{
                             deserialize(getMessages().get(4)),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(5)).color(GRAY),
-                                    text(GOOGLE_EARTH, GRAY), ClickEvent.openUrl(getPlot().getGoogleEarthLink()))
+                                    text(earthLink.name(), GRAY), ClickEvent.openUrl(earthLink.url()))
                     }, Sound.NPC_TALK, true)
                     .sendChatMessage(deserialize(getMessages().get(6)), Sound.NPC_TALK, true);
         }
@@ -246,7 +256,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        public StageTimeline getTimeline() throws IOException {
+        public StageTimeline getTimeline() throws IOException, OutOfProjectionBoundsException {
+            BlockVector3 mcCoordinates = getPlot().getCoordinates();
+            double[] geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
+            MapLink mapsLink = new MapLinks(geoCoordinates[1], geoCoordinates[0]).getById(MapLinks.GOOGLE_MAPS);
             return new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
@@ -254,7 +267,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             deserialize(getMessages().get(1)),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(2)).color(GRAY),
-                                    text(Stage2.GOOGLE_MAPS, GRAY), ClickEvent.openUrl(getPlot().getGoogleMapsLink()))
+                                    text(mapsLink.name(), GRAY), ClickEvent.openUrl(mapsLink.url()))
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
                     .createHolograms(getHolograms().getFirst())
@@ -416,7 +429,10 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
         }
 
         @Override
-        public @NotNull StageTimeline getTimeline() throws IOException {
+        public @NotNull StageTimeline getTimeline() throws IOException, OutOfProjectionBoundsException {
+            BlockVector3 mcCoordinates = getPlot().getCoordinates();
+            double[] geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
+            MapLink earthLink = new MapLinks(geoCoordinates[1], geoCoordinates[0]).getById(MapLinks.GOOGLE_EARTH);
             StageTimeline stage = new StageTimeline(getPlayer())
                     .delay(Delay.TIMELINE_START)
                     .sendChatMessage(deserialize(getMessages().get(0)), Sound.NPC_TALK, true)
@@ -425,7 +441,7 @@ public class BeginnerTutorial extends AbstractPlotTutorial {
                             deserialize(getMessages().get(2)),
                             "",
                             new ChatMessageTask.ClickableTaskMessage(deserialize(getMessages().get(3)).color(GRAY),
-                                    text(Stage2.GOOGLE_EARTH, GRAY), ClickEvent.openUrl(getPlot().getGoogleEarthLink()))
+                                    text(earthLink.name(), GRAY), ClickEvent.openUrl(earthLink.url()))
                     }, Sound.NPC_TALK, false)
                     .delay(Delay.TASK_START)
                     .createHolograms(getHolograms().getFirst());
