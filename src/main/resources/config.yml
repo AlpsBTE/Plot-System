@@ -107,9 +107,9 @@ shortlink:
 #       enabled: true
 #     appleLookAround:
 #       enabled: true
-#     bingMaps:
-#       name: "Bing Maps"
-#       url-template: "https://www.bing.com/maps?q={lat},{lon}"
+#     mapillary:
+#       name: "Mapillary"
+#       url-template: "https://www.mapillary.com/app/?lat={lat}&lng={lon}&z=18"
 #       enabled: true
 
 

@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.system.tutorial.stage;
 
 import com.alpsbte.plotsystem.core.system.tutorial.AbstractTutorialHologram;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.tasks.AbstractTask;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -62,7 +63,7 @@ public abstract class AbstractStage {
      *
      * @return timeline
      */
-    public abstract StageTimeline getTimeline() throws IOException;
+    public abstract StageTimeline getTimeline() throws IOException, OutOfProjectionBoundsException;
 
     public Player getPlayer() {
         return player;

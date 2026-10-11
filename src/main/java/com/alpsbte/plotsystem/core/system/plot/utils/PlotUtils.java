@@ -17,6 +17,8 @@ import com.alpsbte.plotsystem.core.system.review.ReviewNotification;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.ShortLink;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.conversion.CoordinateConversion;
+import com.alpsbte.plotsystem.utils.conversion.projection.OutOfProjectionBoundsException;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -376,12 +378,11 @@ public final class PlotUtils {
             Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
                 List<Component> linkMessages;
                 try {
-                    String[] coordsSplit = plot.getGeoCoordinates().split(",");
-                    double lat = Double.parseDouble(coordsSplit[0]);
-                    double lon = Double.parseDouble(coordsSplit[1]);
+                    BlockVector3 mcCoordinates = plot.getCoordinates();
+                    double[] geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
 
                     MapLinksConfig mapLinksConfig = getMapLinksConfigFromPlugin();
-                    MapLinks mapLinks = mapLinksConfig == null ? new MapLinks(lat, lon) : new MapLinks(lat, lon, mapLinksConfig);
+                    MapLinks mapLinks = mapLinksConfig == null ? new MapLinks(geoCoordinates[1], geoCoordinates[0]) : new MapLinks(geoCoordinates[1], geoCoordinates[0], mapLinksConfig);
 
                     if (mapLinks.getAllLinks().isEmpty()) {
                         PlotSystem.getPlugin().getComponentLogger().warn(text("No map links are enabled for plot #" + plot.getId()));
@@ -393,7 +394,7 @@ public final class PlotUtils {
                     for (MapLink link : mapLinks.getAllLinks()) {
                         linkMessages.add(buildMapLinkMessage(player, link.name(), link.url(), shortLinksEnabled));
                     }
-                } catch (IOException | URISyntaxException | NumberFormatException | NullPointerException ex) {
+                } catch (IOException | URISyntaxException | NumberFormatException | NullPointerException | OutOfProjectionBoundsException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text("An error occurred while creating map links!"), ex);
                     return;
                 }
@@ -401,16 +402,15 @@ public final class PlotUtils {
                 // Temporary fix for bedrock players
                 Component coords = null;
                 try {
-                    String[] coordsSplit = plot.getGeoCoordinates().split(",");
-                    double lat = Double.parseDouble(coordsSplit[0]);
-                    double lon = Double.parseDouble(coordsSplit[1]);
+                    BlockVector3 mcCoordinates = plot.getCoordinates();
+                    double[] geoCoordinates = CoordinateConversion.convertToGeo(mcCoordinates.x(), mcCoordinates.z());
                     DecimalFormat df = new DecimalFormat("##.#####");
                     df.setRoundingMode(RoundingMode.FLOOR);
-                    String formattedCoords = df.format(lat) + ", " + df.format(lon);
+                    String formattedCoords = df.format(geoCoordinates[1]) + ", " + df.format(geoCoordinates[0]);
                     coords = text(formattedCoords, GREEN)
                             .clickEvent(ClickEvent.copyToClipboard(formattedCoords))
                             .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_COPY_TO_CLIPBOARD), GRAY));
-                } catch (IOException ex) {
+                } catch (IOException | OutOfProjectionBoundsException ex) {
                     PlotSystem.getPlugin().getComponentLogger().error(text(ex.getMessage()), ex);
                 }
 
