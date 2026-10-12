@@ -268,8 +268,10 @@ public class EventListener implements Listener {
         // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
         if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
             if (!player.hasPlayedBefore()) {
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
-                        () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
+                // If disabled, the player has to start the tutorial manually
+                if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.BEGINNER_TUTORIAL_START_ON_FIRST_JOIN, true))
+                    Bukkit.getScheduler().runTask(PlotSystem.getPlugin(),
+                            () -> player.performCommand("tutorial " + TutorialCategory.BEGINNER.getId()));
             } else {
                 AbstractPlotTutorial.sendTutorialRequiredMessage(player, TutorialCategory.BEGINNER.getId());
                 player.playSound(player.getLocation(), Utils.SoundUtils.NOTIFICATION_SOUND, 1f, 1f);
