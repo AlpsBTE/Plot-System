@@ -1,6 +1,9 @@
 package com.alpsbte.plotsystem.core.system.review;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.api.event.PlotFeedbackUpdatedEvent;
+import com.alpsbte.plotsystem.api.event.PlotReviewUndoneEvent;
+import com.alpsbte.plotsystem.core.integration.PlotEventSnapshots;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
@@ -67,6 +70,7 @@ public class PlotReview {
     public boolean updateFeedback(String feedback) {
         if (DataProvider.REVIEW.updateFeedback(reviewId, feedback)) {
             this.feedback = feedback;
+            PlotSystem.getPlugin().getServer().getPluginManager().callEvent(new PlotFeedbackUpdatedEvent(PlotEventSnapshots.review(this)));
             return true;
         }
         return false;
@@ -99,6 +103,9 @@ public class PlotReview {
             PlotSystem.getPlugin().getComponentLogger().error("Failed to remove plot review with ID {} from database!", reviewId);
         }
 
+        if (successful) {
+            PlotSystem.getPlugin().getServer().getPluginManager().callEvent(new PlotReviewUndoneEvent(PlotEventSnapshots.review(this)));
+        }
         return successful;
     }
 

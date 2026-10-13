@@ -47,6 +47,7 @@ val guavaPackage = "com.google.guava"
 val gsonPackage = "com.google.code.gson"
 
 dependencies {
+    implementation(project(":plot-system-api"))
     implementation(libs.com.alpsbte.canvas)
     implementation(libs.com.alpsbte.alpslib.alpslib.io)
     implementation(libs.com.alpsbte.alpslib.alpslib.hologram)
