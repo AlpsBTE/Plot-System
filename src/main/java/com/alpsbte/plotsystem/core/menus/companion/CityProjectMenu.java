@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class CityProjectMenu extends AbstractPaginatedMenu {
+    static final String HIDDEN_CITY_PERMISSION = "plotsystem.bypass.cityvisibility";
+
     final Country country;
     List<CityProject> projects;
     private PlotDifficulty selectedPlotDifficulty;
@@ -120,14 +122,15 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
     }
 
     public static @NotNull @Unmodifiable List<CityProject> getValidCityProjects(PlotDifficulty selectedPlotDifficulty, Player player, @NotNull Country country) {
-        return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true).stream().filter(test -> {
+        boolean canUseHiddenCities = player.hasPermission(HIDDEN_CITY_PERMISSION);
+        return DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), !canUseHiddenCities).stream().filter(test -> {
             if (!(test instanceof CityProject project)) return false;
             var pd = selectedPlotDifficulty;
             try {
                 if (pd == null) pd = Plot.getPlotDifficultyForBuilder(project, Builder.byUUID(player.getUniqueId())).get();
                 if (pd == null) pd = PlotDifficulty.EASY;
 
-                return project.isVisible() && !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
+                return !DataProvider.PLOT.getPlots(project, pd, Status.unclaimed).isEmpty();
             } catch (ExecutionException | InterruptedException e) {
                 sqlError(player, e);
             }
@@ -150,7 +153,10 @@ public class CityProjectMenu extends AbstractPaginatedMenu {
 
     @Override
     protected List<?> getSource() {
-        if (projects == null) projects = DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), true);
+        if (projects == null) {
+            boolean canUseHiddenCities = getMenuPlayer().hasPermission(HIDDEN_CITY_PERMISSION);
+            projects = DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), !canUseHiddenCities);
+        }
         return projects;
     }
 

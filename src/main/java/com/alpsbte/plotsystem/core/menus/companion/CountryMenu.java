@@ -140,7 +140,8 @@ public class CountryMenu extends AbstractMenu {
         for (Country country : countryProjects) {
             ItemStack item = country.getCountryItem();
 
-            List<CityProject> cities = country.getCityProjects();
+            boolean canUseHiddenCities = getMenuPlayer().hasPermission(CityProjectMenu.HIDDEN_CITY_PERMISSION);
+            List<CityProject> cities = DataProvider.CITY_PROJECT.getByCountryCode(country.getCode(), !canUseHiddenCities);
             int plotsOpen = DataProvider.PLOT.getPlots(cities, Status.unclaimed).size();
             int plotsInProgress = DataProvider.PLOT.getPlots(cities, Status.unfinished, Status.unreviewed).size();
             int plotsCompleted = DataProvider.PLOT.getPlots(cities, Status.completed).size();

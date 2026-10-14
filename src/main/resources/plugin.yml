@@ -61,3 +61,6 @@ permissions:
     description: Reviewer permissions
   plotsystem.admin:
     description: Administrator permissions
+  plotsystem.bypass.cityvisibility:
+    description: Allows using hidden city projects
+    default: op
