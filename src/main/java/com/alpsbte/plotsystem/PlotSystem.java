@@ -10,6 +10,8 @@ import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
 import com.alpsbte.plotsystem.commands.CommandManager;
 import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
+import com.alpsbte.plotsystem.core.database.DataProvider;
+import com.alpsbte.plotsystem.core.integration.PlotEventSnapshots;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -23,6 +25,7 @@ import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPCTurnTracker;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialUtils;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.api.provider.PlotSnapshotProvider;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
@@ -33,6 +36,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.ServicePriority;
 import org.ipvp.canvas.MenuFunctionListener;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,6 +91,12 @@ public class PlotSystem extends JavaPlugin {
         // Initialize database connection
         try {
             initDatabase();
+            Bukkit.getServicesManager().register(
+                    PlotSnapshotProvider.class,
+                    plotId -> java.util.Optional.ofNullable(DataProvider.PLOT.getPlotById(plotId))
+                            .map(PlotEventSnapshots::plot),
+                    this,
+                    ServicePriority.Normal);
             getComponentLogger().info(successPrefix.append(text("Successfully initialized database connection.")));
         } catch (Exception ex) {
             getComponentLogger().error(errorPrefix.append(text("Could not initialize database connection.")), ex);

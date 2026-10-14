@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.api.event.PlotAbandonedEvent;
+import com.alpsbte.plotsystem.api.event.PlotArchivedEvent;
 import com.alpsbte.plotsystem.api.event.PlotCreatedEvent;
 import com.alpsbte.plotsystem.api.event.PlotInactivityWarningEvent;
 import com.alpsbte.plotsystem.api.event.PlotSubmissionUndoneEvent;
@@ -167,10 +168,14 @@ public class PlotHandler {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean abandonPlot(AbstractPlot plot) {
-        return abandonPlot(plot, PlotAbandonReason.MANUAL);
+        return abandonPlot(plot, PlotAbandonReason.MANUAL, null);
     }
 
     public static boolean abandonPlot(AbstractPlot plot, PlotAbandonReason reason) {
+        return abandonPlot(plot, reason, null);
+    }
+
+    public static boolean abandonPlot(AbstractPlot plot, PlotAbandonReason reason, UUID actor) {
         var snapshot = PlotEventSnapshots.plot(plot);
         try {
             boolean successfullyAbandoned = plot.getWorld().onAbandon();
@@ -184,6 +189,7 @@ public class PlotHandler {
         }
 
         if (plot.getPlotType() == PlotType.TUTORIAL) {
+            publishEvent(new PlotArchivedEvent(snapshot, reason, actor));
             publishEvent(new PlotAbandonedEvent(snapshot, reason));
             return true;
         }
@@ -211,13 +217,18 @@ public class PlotHandler {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
         }
         if (successful) {
+            publishEvent(new PlotArchivedEvent(snapshot, reason, actor));
             publishEvent(new PlotAbandonedEvent(snapshot, reason));
         }
         return successful;
     }
 
     public static boolean deletePlot(Plot plot) {
-        if (!abandonPlot(plot, PlotAbandonReason.COMMAND)) {
+        return deletePlot(plot, null);
+    }
+
+    public static boolean deletePlot(Plot plot, UUID actor) {
+        if (!abandonPlot(plot, PlotAbandonReason.COMMAND, actor)) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Failed to delete plot with the ID " + plot.getId() + "!"));
             return false;
         }
