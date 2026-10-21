@@ -32,9 +32,9 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile(plugin, 1.1, Language.ro_RO),
                 new LanguageFile(plugin, 1.1, Language.da_DK),
                 new LanguageFile(plugin, 1.2, Language.it_IT),
-                new LanguageFile(plugin, 1.0, Language.cs_CZ),
+                new LanguageFile(plugin, 1, Language.cs_CZ),
                 new LanguageFile(plugin, 1.1, Language.pl_PL),
-                new LanguageFile(plugin, 1.0, Language.sk_SK),
+                new LanguageFile(plugin, 1, Language.sk_SK),
         });
         langUtilInstance = new LangUtil();
     }

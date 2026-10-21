@@ -72,6 +72,7 @@ jobs:
 
           project_id: ${{ vars.CROWDIN_PROJECT_ID }}
           token: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          download_bundle: ${{ vars.CROWDIN_BUNDLE_ID }}
 
           source: "src/main/resources/lang/en_GB.yml"
           translation: "src/main/resources/lang/%locale_with_underscore%.%file_extension%"
@@ -220,7 +221,7 @@ jobs:
               )
 
               new_version = (
-                  "1.0"
+                  "1"
                   if old_version is None
                   else bump_minor(old_version)
               )
