@@ -90,7 +90,7 @@ menu-title:
   banner-maker: 'Zászló Készítő'
   special-tools: 'Speciális Kockák és Tárgyak'
   review-point: 'Pont'
-  review-points: 'Pontok'
+  review-points: 'Pont'
   cancel: 'Mégse'
   add-member-to-plot: 'Tag Hozzáadása a Telekhez'
   companion: 'Navigátor'
@@ -119,7 +119,7 @@ menu-title:
 menu-description:
   error-desc: 'Hiba történt...'
   plot-difficulty-desc: 'Kattints a Váltáshoz...'
-  slot-desc: 'Kattints a város projektre egy új telek létrehozásához'
+  slot-desc: 'Kattints az egyik elérhető ország egyik városára egy új telek létrehozásához'
   builder-utilities-desc: 'Hozzáférhetsz egyedi fej kockákhoz, zászlókhoz és különleges kockákhoz'
   show-plots-desc: 'Összes telked megtekintése'
   settings-desc: 'Felhasználói beállításaid módosítása'
@@ -162,15 +162,15 @@ review:
   player-language: "Játékos Nyelve"
   no-feedback: "Nincs visszajelzés"
   accuracy-points: "Pontosság pontozása"
-  block-palette-points: "Kocka paletta pontozása"
+  block-palette-points: "Kocka-paletta pontozása"
   toggle-points: "Pontok megjelenítése"
   total-points: "Összesített pontszám"
   abandoned-in-days: "§6Fel lesz adva §6{0} nap múlva"
   criteria:
     accuracy: "Pontosság"
     accuracy-desc: "Mennyire pontos az épület?%newline%%newline%- Olyan mint a valóságban%newline%- Helyes körvonalak%newline%- Helyes magasság%newline%- Készen van"
-    block-palette: "Kocka paletta"
-    block-palette-desc: "Hány különböző kockát használtak és mennyire voltak kreatívak?%newline%%newline%- Kockák színének/textúrájának választása%newline%- Random kockák"
+    block-palette: "Kocka-paletta"
+    block-palette-desc: "Hány különböző kockát használtak és mennyire voltak kreatívak?%newline%%newline%- Kockák színének/textúrájának választása%newline%- Random kockák használata"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
@@ -445,10 +445,10 @@ database:
     built_on_outlines: 'Körvonalakra épült'
     correct_height: 'Helyes épület magasság'
     correct_facade_colour: 'Helyes épület szín'
-    correct_roof_colour: 'Helyes tető szín'
-    correct_roof_shape: 'Helyes tető forma'
+    correct_roof_colour: 'Helyes tetőszín'
+    correct_roof_shape: 'Helyes tetőforma'
     correct_amount_windows_doors: 'Helyes számú ablak és ajtó'
-    correct_window_type: 'Helyes ablak fajta'
-    windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
+    correct_window_type: 'Helyes ablaktípus'
+    windows_blacked_out: 'Minden ablak belülről ki van takarva'
 # NOTE: Do not change
-config-version: 1.3
+config-version: 1.4
