@@ -1,8 +1,8 @@
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
@@ -22,6 +22,7 @@ import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
@@ -60,7 +61,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     protected void setMenuItemsAsync() {
         // Set player stats item
         getMenu().getSlot(4)
-                .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                .setItem(new ItemBuilder(Objects.requireNonNull(PlotSystem.getPlugin().getHeadLookupService().getPlayerHead(builder.getUUID())))
                         .setName(text(builder.getName(), GOLD).decoration(BOLD, true))
                         .setLore(new LoreBuilder()
                                 .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.SCORE) + ": ", GRAY)
@@ -186,7 +187,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
      * @return Menu item
      */
     public static ItemStack getMenuItem(@NotNull Player p) {
-        return new ItemBuilder(AlpsHeadUtils.getPlayerHead(p.getUniqueId()))
+        return new ItemBuilder(Objects.requireNonNull(PlotSystem.getPlugin().getHeadLookupService().getPlayerHead(p.getUniqueId())))
                 .setName(text(LangUtil.getInstance().get(p, LangPaths.MenuTitle.SHOW_PLOTS), AQUA, BOLD))
                 .setLore(new LoreBuilder()
                         .addLine(LangUtil.getInstance().get(p, LangPaths.MenuDescription.SHOW_PLOTS), true).build())

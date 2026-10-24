@@ -1,6 +1,5 @@
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -22,6 +21,7 @@ import org.ipvp.canvas.mask.Mask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -92,7 +92,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
         // Set plot owner item
         getMenu().getSlot(10)
-                .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(plot.getPlotOwner().getUUID()))
+                .setItem(new ItemBuilder(Objects.requireNonNull(PlotSystem.getPlugin().getHeadLookupService().getPlayerHead(plot.getPlotOwner().getUUID())))
                         .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.OWNER), GOLD, BOLD))
                         .setLore(new LoreBuilder()
                                 .addLines(text(plot.getPlotOwner().getName()),
@@ -108,7 +108,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
             Builder builder = builders.get(i - 12);
             getMenu().getSlot(i)
-                    .setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(builder.getUUID()))
+                    .setItem(new ItemBuilder(Objects.requireNonNull(PlotSystem.getPlugin().getHeadLookupService().getPlayerHead(builder.getUUID())))
                             .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Plot.MEMBER), AQUA, BOLD))
                             .setLore(new LoreBuilder()
                                     .addLines(text(builder.getName()),

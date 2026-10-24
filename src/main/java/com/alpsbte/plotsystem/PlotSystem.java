@@ -6,7 +6,7 @@ import com.alpsbte.alpslib.io.config.ConfigNotImplementedException;
 import com.alpsbte.alpslib.io.database.DatabaseConfigPaths;
 import com.alpsbte.alpslib.io.database.DatabaseConnection;
 import com.alpsbte.alpslib.utils.AlpsUtils;
-import com.alpsbte.alpslib.utils.head.AlpsHeadEventListener;
+import com.alpsbte.alpslib.utils.head.HeadLookupService;
 import com.alpsbte.plotsystem.commands.CommandManager;
 import com.alpsbte.plotsystem.core.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
@@ -54,6 +54,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 public class PlotSystem extends JavaPlugin {
     private static PlotSystem plugin;
     private boolean pluginEnabled = false;
+    private HeadLookupService headLookupService;
 
     @Override
     public void onEnable() {
@@ -98,7 +99,7 @@ public class PlotSystem extends JavaPlugin {
         try {
             this.getServer().getPluginManager().registerEvents(new EventListener(), this);
             this.getServer().getPluginManager().registerEvents(new MenuFunctionListener(), this);
-            this.getServer().getPluginManager().registerEvents(new AlpsHeadEventListener(), this);
+            headLookupService = HeadLookupService.createForPlugin(this).registerEvents(this);
             if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
                 this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
             getComponentLogger().info(successPrefix.append(text("Successfully registered event listeners.")));
@@ -212,5 +213,9 @@ public class PlotSystem extends JavaPlugin {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, String id) {
         return new SkeletonWorldGenerator.EmptyChunkGenerator();
+    }
+
+    public HeadLookupService getHeadLookupService() {
+        return headLookupService;
     }
 }
