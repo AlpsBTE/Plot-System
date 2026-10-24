@@ -347,7 +347,7 @@ public abstract class AbstractPlotLoader {
     protected void onException(Exception e) {
         if (abandonOnFailure) {
             try {
-                if (!PlotHandler.abandonPlot(this.plot)) {
+                if (!PlotHandler.abandonPlot(this.plot, com.alpsbte.plotsystem.api.model.PlotAbandonReason.SYSTEM)) {
                     PlotSystem.getPlugin().getComponentLogger().error("Failed to clean up plot #{} after generation error!", plot.getId());
                 }
             } catch (Exception ex) {
