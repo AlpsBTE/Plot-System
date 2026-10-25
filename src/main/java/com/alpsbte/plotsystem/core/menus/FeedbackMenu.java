@@ -1,8 +1,8 @@
 package com.alpsbte.plotsystem.core.menus;
 
-import com.alpsbte.alpslib.utils.head.AlpsHeadUtils;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+
+import java.util.Objects;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -88,7 +90,7 @@ public class FeedbackMenu extends AbstractMenu {
                 .build());
 
         // Set reviewer item
-        getMenu().getSlot(16).setItem(new ItemBuilder(AlpsHeadUtils.getPlayerHead(review.getReviewerUUID()))
+        getMenu().getSlot(16).setItem(new ItemBuilder(Objects.requireNonNull(PlotSystem.getPlugin().getHeadLookupService().getPlayerHead(review.getReviewerUUID())))
                 .setName(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.REVIEWER), AQUA, BOLD))
                 .setLore(new LoreBuilder().addLine(review.getReviewer().getName()).build())
                 .build());
