@@ -221,7 +221,7 @@ jobs:
               )
 
               new_version = (
-                  "1.0"
+                  "1"
                   if old_version is None
                   else bump_minor(old_version)
               )
