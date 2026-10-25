@@ -81,7 +81,7 @@ public class TutorialsMenu extends AbstractMenu {
         );
 
         // Set back item
-        getMenu().getSlot(49).setItem(!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL)
+        getMenu().getSlot(49).setItem(!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.BEGINNER_TUTORIAL_REQUIRED)
                 || isBeginnerTutorialCompleted ? MenuItems.backMenuItem( getMenuPlayer()) : MenuItems.borderItem());
     }
 
@@ -98,7 +98,7 @@ public class TutorialsMenu extends AbstractMenu {
         getMenu().getSlot(34).setClickHandler((clickPlayer, clickInfo) -> setTutorialClickEvent(-1, clickInfo.getClickType()));
 
         // Set click event for back item
-        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_REQUIRE_BEGINNER_TUTORIAL) || isBeginnerTutorialCompleted)
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.BEGINNER_TUTORIAL_REQUIRED) || isBeginnerTutorialCompleted)
             getMenu().getSlot(49).setClickHandler((clickPlayer, clickInfo) -> clickPlayer.performCommand("companion"));
     }
 
