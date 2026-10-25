@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Corrigir tipos de janelas'
     windows_blacked_out: 'Todas as janelas apaguaram'
 # NOTE: Do not change
-config-version: "2.6"
+config-version: 2.6

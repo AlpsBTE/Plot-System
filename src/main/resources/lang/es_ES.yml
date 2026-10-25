@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Tipos correctos de ventanas'
     windows_blacked_out: 'Todas las ventanas bloqueadas'
 # NOTE: Do not change
-config-version: "1.2"
+config-version: 1.2

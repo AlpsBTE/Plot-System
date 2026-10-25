@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Helyes ablak fajta'
     windows_blacked_out: 'Minden ablak mögé nem lehet belátni'
 # NOTE: Do not change
-config-version: "1.3"
+config-version: 1.3

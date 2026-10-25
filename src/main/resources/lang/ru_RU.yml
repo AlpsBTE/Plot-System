@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Правильные типы окон'
     windows_blacked_out: 'Все окна затемнены'
 # NOTE: Do not change
-config-version: "2.6"
+config-version: 2.6
