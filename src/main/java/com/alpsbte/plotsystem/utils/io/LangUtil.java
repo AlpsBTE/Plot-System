@@ -27,14 +27,14 @@ public class LangUtil extends LanguageUtil {
                 new LanguageFile(plugin, 2.6, Language.zh_TW, "zh_HK"),
                 new LanguageFile(plugin, 1.2, Language.he_IL),
                 new LanguageFile(plugin, 1.2, Language.es_ES),
-                new LanguageFile(plugin, 1.3, Language.hu_HU),
+                new LanguageFile(plugin, 1.4, Language.hu_HU),
                 new LanguageFile(plugin, 1.2, Language.nl_NL),
                 new LanguageFile(plugin, 1.1, Language.ro_RO),
                 new LanguageFile(plugin, 1.1, Language.da_DK),
                 new LanguageFile(plugin, 1.2, Language.it_IT),
-                new LanguageFile(plugin, 1, Language.cs_CZ),
+                new LanguageFile(plugin, 2, Language.cs_CZ),
                 new LanguageFile(plugin, 1.1, Language.pl_PL),
-                new LanguageFile(plugin, 1, Language.sk_SK),
+                new LanguageFile(plugin, 2, Language.sk_SK),
         });
         langUtilInstance = new LangUtil();
     }

@@ -80,9 +80,9 @@ menu-title:
   show-plots: 'Zobrazit parcely'
   settings: 'Nastavení'
   submit: 'Odeslat'
-  teleport: 'Teleport'
+  teleport: 'Teleportovat'
   abandon: 'Opustit'
-  abandon-confirm: 'Abandon plot #{0}?'
+  abandon-confirm: 'Smazat parcelu #{0}?'
   undo-submit: 'Zrušit odeslání'
   manage-members: 'Spravovat členy'
   feedback: 'Zpětná vazba | Hodnocení #{0}'
@@ -131,324 +131,324 @@ menu-description:
   feedback-desc: 'Klikněte pro zobrazení zpětné vazby k hodnocení vaší parcely'
   custom-heads-desc: 'Kliknutím otevřete menu pro získání různých unikátních hlav'
   banner-maker-desc: 'Klikněte pro vytvoření a uložení vlastních bannerů'
-  special-tools-desc: 'Click to access a variety of inaccessible blocks and items'
-  add-member-to-plot-desc: 'Invite your friends to your plot and start building together'
-  review-points-desc: 'Click to select'
-  submit-review-desc: 'Submit selected points and mark plot as reviewed'
+  special-tools-desc: 'Klikněte pro přístup k řadě nepřístupných bloků a itemů'
+  add-member-to-plot-desc: 'Pozvi své přátele na parcelu a stavte společně'
+  review-points-desc: 'Klikni pro výběr'
+  submit-review-desc: 'Odeslat své hodnocení a označit parcelu jako zkontrolovanou.'
   leave-plot-desc: 'Klikněte, pokud se chcete vzdát této parcely'
-  select-language-desc: 'Choose your language'
-  select-plot-type-desc: 'Choose your plot type'
-  select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
-  select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
-  select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
-  filter-desc: "Show All"
-  information-desc: "A plot can receive a maximum of 20 points. If the plot receives less than 8 points or one category has 0 points, the plot is rejected and the builder gets the plot back to improve it. If the plot receives 0 points, it gets abandoned."
-  tutorials-desc: 'Learn the basics of the BuildTheEarth project and enhance your building skills with tutorials on various topics.'
-  tutorial-end-desc: 'Your progress will be saved.'
-  tutorial-beginner-desc: 'Learn the basics how to build for the BuildTheEarth project.'
-  companion-random-desc: 'Click to select randomly.'
+  select-language-desc: 'Vyber si svůj jazyk.'
+  select-plot-type-desc: 'Vyberte si typ parcely'
+  select-focus-mode-desc: "Stavěj na létajícím ostrově v prázdném světě.%newline%%newline%- Bez okolí%newline%- Bez sousedních parcel"
+  select-local-inspiration-mode-desc: "Stavěj na létajícím ostrově s okolním prostředím jako předlohou.%newline%%newline%+ Okolní prostředí%newline%- Bez sousedních pozemků"
+  select-city-inspiration-mode-desc: "Stavěj na ostrově s okolním prostředím a pozemky ostatních hráčů, které se nacházejí v blízkosti vašeho vlastního.%newline%%newline%+ Okolní prostředí%newline%+ Sousední pozemky"
+  filter-desc: "Zobrazit vše"
+  information-desc: "Parcela může získat maximálně 20 bodů. Pokud získá méně než 8 bodů nebo má v některé kategorii 0 bodů, bude zamítnuta a vrácena staviteli k předělání. Pokud získá celkově 0 bodů, bude zmazaná."
+  tutorials-desc: 'Nauč se základy projektu BuildTheEarth a zlepši své stavitelské dovednosti díky tutoriálům na různá témata.'
+  tutorial-end-desc: 'Tvůj pokrok bude uložen.'
+  tutorial-beginner-desc: 'Nauč se základy stavění pro projekt BuildTheEarth.'
+  companion-random-desc: 'Klikni pro náhodný výběr.'
 # -----------------------------------------------------
 # | Review
 # -----------------------------------------------------
 review:
-  review-plot: "Review Plot"
-  manage-plot: "Manage Plot"
-  manage-and-review-plots: "Manage & Review Plots"
-  accepted: "Accepted"
-  rejected: "Rejected"
-  abandoned: "Abandoned"
-  feedback: "Feedback"
-  reviewer: "Reviewer"
-  player-language: "Player Language"
-  no-feedback: "No feedback"
-  accuracy-points: "Accuracy points"
-  block-palette-points: "Block palette points"
+  review-plot: "Zkontrolovat parcelu"
+  manage-plot: "Spravovat parcelu"
+  manage-and-review-plots: "Spravovat a kontrolovat parcely"
+  accepted: "Schválené"
+  rejected: "Zamítnuté"
+  abandoned: "Smazáno"
+  feedback: "Zpětná vazba"
+  reviewer: "Hodnotitel"
+  player-language: "Jazyk hráče"
+  no-feedback: "Bez zpětné vazby"
+  accuracy-points: "Body za přesnost"
+  block-palette-points: "Body za paletu bloků"
   toggle-points: "Toggle points"
-  total-points: "Total points"
-  abandoned-in-days: "§6Abandoned in §6{0} days"
+  total-points: "Celkový počet bodů"
+  abandoned-in-days: "§6Smazaná za §6{0} dní"
   criteria:
-    accuracy: "Accuracy"
-    accuracy-desc: "How accurate is the building?%newline%%newline%- Looks like in RL%newline%- Correct outlines%newline%- Correct height%newline%- Is completed"
-    block-palette: "Block Palette"
-    block-palette-desc: "How many different blocks are used and how creative are they?%newline%%newline%- Choice of blocks colours/textures%newline%- Random blocks"
+    accuracy: "Přesnost"
+    accuracy-desc: "Jak přesná je stavba?%newline%%newline%- Vzhled jako v reálném životě%newline%- Správné obrysy%newline%- Správná výška%newline%- Je dokončena"
+    block-palette: "Paleta bloků"
+    block-palette-desc: "Kolik různých bloků je použito a jak kreativně jsou použity?%newline%%newline%- Výběr barev/textur bloků%newline%- Náhodné bloky"
 # -----------------------------------------------------
 # | Notes
 # -----------------------------------------------------
 note:
   tip: "Tip"
-  under-construction: 'Under Construction'
-  wont-be-able-continue-building: "You wont be able to continue building on this plot!"
-  score-will-be-split: "Score will be split between all members when reviewed!"
-  player-has-to-be-online: "The player has to be online!"
-  optional: "Optional"
-  required: "Required"
-  criteria-fulfilled: "Fulfilled"
-  criteria-not-fulfilled: "Not fulfilled"
+  under-construction: 'Ve výstavbě'
+  wont-be-able-continue-building: "Na této parcele již nebudeš moci pokračovat ve stavění!"
+  score-will-be-split: "Skóre se po zkontrolování rozdělí mezi všechny členy!"
+  player-has-to-be-online: "Hráč musí být online!"
+  optional: "Volitelné"
+  required: "Povinné"
+  criteria-fulfilled: "Splněno"
+  criteria-not-fulfilled: "Nesplněno"
   legacy: "LEGACY"
   action:
-    read: 'Read'
-    read-more: 'Read More'
-    mark-as-read: 'Mark as read'
-    start: 'Start'
-    continue: "Continue"
-    continue-tutorial: 'Continue Tutorial'
-    create-plot: 'Create Plot'
-    right-click: "Right Click"
-    left-click: "Left Click"
-    accept: 'Accept'
-    reject: 'Reject'
-    click-to-create-plot: 'Click to create new plot...'
-    click-to-proceed: "Click to proceed..."
-    click-to-remove-plot-member: "Click to remove member from plot..."
-    click-to-open-link: "Click here to open the {0} link..."
-    click-to-open-link-with-shortlink: "§6Click Here §7to open the §a{0}§7 link or use this link: §a{1}"
-    click-to-copy-to-clipboard: "Copy to clipboard"
-    click-to-show-feedback: "§6Click Here §ato show your plot feedback..."
-    click-to-show-open-reviews: "§6Click Here §ato show open reviews..."
-    click-to-show-plots: "§6Click Here §ato show your plots..."
-    click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
-    tutorial-show-stages: 'Show Stages'
-    click-to-open-plots-menu: 'Click to open the plots menu...'
-    click-to-toggle: "Click to toggle..."
+    read: 'Číst'
+    read-more: 'Číst více'
+    mark-as-read: 'Označit jako přečtené'
+    start: 'Začít'
+    continue: "Pokračovat"
+    continue-tutorial: 'Pokračovat v tutoriálu'
+    create-plot: 'Vytvořit parcelu'
+    right-click: "Pravý klik"
+    left-click: "Levý klik"
+    accept: 'Schválit'
+    reject: 'Zamítnout'
+    click-to-create-plot: 'Klikni pro vytvoření nové parcely...'
+    click-to-proceed: "Klikni pro pokračování..."
+    click-to-remove-plot-member: "Klikni pro odstranění člena z parcely..."
+    click-to-open-link: "Klikni sem pro otevření odkazu {0}..."
+    click-to-open-link-with-shortlink: "§6Klikni sem §7pro otevření odkazu §a{0}§7 nebo použi tento link: §a{1}"
+    click-to-copy-to-clipboard: "Kopírovat do schránky"
+    click-to-show-feedback: "§6Klikni sem §7pro zobrazení zpětné vazby k tvým parcelám..."
+    click-to-show-open-reviews: "§6Klikni sem §apro zobrazení neskontrolovaných parcel..."
+    click-to-show-plots: "§6Klikni sem §7pro zobrazení tvých parcel..."
+    click-to-play-with-friends: "§7Chceš hrát s kamarády? §6Klikni sem..."
+    tutorial-show-stages: 'Zobrazit fáze'
+    click-to-open-plots-menu: 'Klikni pro otevření menu parcel...'
+    click-to-toggle: "Klikni pro přepnutí..."
 # -----------------------------------------------------
 # | Messages
 # -----------------------------------------------------
 message:
   info:
-    teleporting-plot: "§aTeleporting to plot §6#{0}§a..."
-    teleporting-tpll: "§aTeleporting to §6{0}§a, §6{1}§a..."
-    abandoned-plot: "§aAbandoned plot with ID §6#{0}§a!"
-    finished-plot: "§aPlot §6#{0}§a by §6{1}§a has been finished!"
-    plot-marked-as-reviewed: "§aPlot §6#{0}§a by §6{1}§a has been marked as reviewed!"
-    plot-rejected: "§aPlot §6#{0}§a by §6{1}§a has been rejected!"
-    plot-previously-rejected: "This plot has been rejected before ({0})."
-    plot-previously-rejected-feedback: "Rejection Feedback:"
-    plot-previously-rejected-reviewer: "Rejected by:"
-    undid-submission: "§aUndid submission of plot §6#{0}§a!"
-    undid-review: "§aUndid review of plot §6#{0}§a by §6{1}§a!"
-    reviewed-plot: "§aYour plot §6#{0}§a has been reviewed!"
-    unreviewed-plot: "§aThere is §6{0}§a unreviewed plot!"
-    unreviewed-plots: "§aThere are §6{0}§a unreviewed plots!"
-    unfinished-plot: "§aYou have §6{0}§a unfinished plot!"
-    unfinished-plots: "§aYou have §6{0}§a unfinished plots!"
-    enabled-build-permissions: "§aEnabled build permissions for reviewers on plot §6#{0}§a!"
-    disabled-build-permissions: "§aDisabled build permissions for reviewers on plot §6#{0}§a!"
-    updated-plot-feedback: "§aFeedback for plot §6#{0}§a has been updated!"
-    removed-plot-member: "§aRemoved §6{0}§a from plot §6#{1}§a!"
-    left-plot: "§aLeft plot §6#{0}§a!"
-    plot-will-get-abandoned-warning: "§c§lWARNING: §cThis plot will automatically get abandoned!"
-    plot-will-be-rejected: "Plot will be rejected!"
-    plot-will-be-accepted: "Plot will be accepted"
-    plots-reviewed-singular: "{0} plot has been reviewed!"
-    plots-reviewed-plural: "{0} plots have been reviewed!"
-    saving-plot: "§aSaving plot..."
-    creating-plot: "§aCreating new plot..."
-    created-new-plot: "§aCreated new plot§a for §6{0}§a!"
-    chat-enter-player: 'Please enter the name of the player in the chat.'
-    chat-enter-feedback: "Please enter a feedback for the player in the chat."
-    chat-input-expires-after: "Chat input expires after {0} minutes."
-    beginner-tutorial-required: 'Complete the tutorial to take part in the project.'
-    beginner-tutorial-completed: 'Are you ready to build your own plot? Now it´s your turn!'
-    player-invite-sent: 'An invitation has been sent to {0} to join your plot.'
-    player-invite-to-sent: '{0} has invited you to help building on his plot.'
-    player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
-    player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
-    player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+    teleporting-plot: "§aTeleportování na parcelu §6#{0}§a..."
+    teleporting-tpll: "§aTeleportování na §6{0}§a, §6{1}§a..."
+    abandoned-plot: "Parcela s ID §6#{0}§a byla vymazána!"
+    finished-plot: "§aParcela §6#{0}§a od hráče §6{1}§a byla dokončena!"
+    plot-marked-as-reviewed: "§aParcela §6#{0}§a od hráče §6{1}§a byla označena jako zkontrolovaná!"
+    plot-rejected: "§aParcela §6#{0}§a hráče §6{1}§a byla zamítnuta!"
+    plot-previously-rejected: "Tato parcela již byla dříve zamítnuta ({0})."
+    plot-previously-rejected-feedback: "Zpětná vazba k zamítnutí:"
+    plot-previously-rejected-reviewer: "Zamítl:"
+    undid-submission: "§aOdeslání parcely §6#{0}§a bylo zrušeno!"
+    undid-review: "§aKontrola parcely §6#{0}§a od hráče §6{1}§a byla zrušena!"
+    reviewed-plot: "§aTvoje parcela §6#{0}§a byla zkontrolována!"
+    unreviewed-plot: "§aK dispozici je §6{0}§a nezkontrolovaná parcela!"
+    unreviewed-plots: "§aK dispozici je §6{0}§a nezkontrolovaných parcel!"
+    unfinished-plot: "§aMáš nedokončenou §6{0}§a parcelu!"
+    unfinished-plots: "§aMáš nedokončené §6{0}§a parcely!"
+    enabled-build-permissions: "§aPovolil jsi stavební práva pro hodnotitele na parcele §6#{0}§a!"
+    disabled-build-permissions: "§aZakázal jsi stavební práva pro hodnotitele na parcele §6#{0}§a!"
+    updated-plot-feedback: "§aZpětná vazba pro parcelu §6#{0}§a byla aktualizována!"
+    removed-plot-member: "§aHráč §6{0}§a byl odstraněn z parcely §6#{1}§a!"
+    left-plot: "§aHráč §6{0}§a odešel z parcely!"
+    plot-will-get-abandoned-warning: "§c§lVAROVÁNÍ: §cTato parcela bude automaticky smazána!"
+    plot-will-be-rejected: "Parcela bude zamítnuta!"
+    plot-will-be-accepted: "Parcela bude schválena"
+    plots-reviewed-singular: "Zkontrolovala se {0} parcela!"
+    plots-reviewed-plural: "Zkontrolovalo se {0} parcel!"
+    saving-plot: "§aUkládání parcely..."
+    creating-plot: "§aVytváření nové parcely..."
+    created-new-plot: "§aNová parcela byla vytvořena§a pro hráče §6{0}§a!"
+    chat-enter-player: 'Zadej jméno hráče do chatu.'
+    chat-enter-feedback: "Zadej zpětnou vazbu pro hráče do chatu."
+    chat-input-expires-after: "Čas pro zadání do chatu vyprší za {0} minut."
+    beginner-tutorial-required: 'Pro účast v projektu nejprve dokonči tutoriál.'
+    beginner-tutorial-completed: 'Jsi připraven postavit vlastní parcelu? Teď jsi na řadě!'
+    player-invite-sent: 'Hráči {0} byla odeslána pozvánka na tvoji parcelu.'
+    player-invite-to-sent: 'Hráč {0} tě pozval na pomoc se stavbou jeho parcely.'
+    player-invite-accepted: 'Pozvánka na parcelu hráče {0} byla přijata.'
+    player-invite-to-accepted: 'Hráč {0} přijal tvou pozvánku a byl přidán do tvé parcely.'
+    player-invite-rejected: 'Pozvánka na parcelu hráče {0} byla zamítnuta.'
   error:
-    plot-does-not-exist: "This plot does not exist!"
-    plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
-    plot-has-not-yet-reviewed: "This plot has not yet been reviewed!"
-    can-only-abandon-unfinished-plots: "You can only abandon unfinished plots!"
-    can-only-submit-unfinished-plots: "You can only submit unfinished plots!"
-    can-only-undo-submissions-unreviewed-plots: "You can only undo submissions of unreviewed plots!"
-    can-only-manage-members-unfinished-plots: "You can only manage members of unfinished plots!"
-    cannot-teleport-outside-plot: "You cannot teleport outside the plot!"
-    cannot-undo-review: "You cannot undo a review that you have not reviewed yourself!"
-    cannot-send-feedback: "You cannot send feedback to a plot that you have not reviewed yourself!"
-    cannot-review-own-plot: "You cannot review your own plot!"
-    cannot-modify-legacy-plot: "Legacy plots cannot be modified!"
-    cannot-load-legacy-plot: "Legacy plots cannot be loaded!"
-    player-has-no-permissions: "You do not have permission to do this!"
-    player-has-no-invitations: "You have no invitations!"
-    player-is-not-allowed: "You are not allowed to do this!"
-    player-is-plot-owner: "This player is already the plot owner!"
-    player-is-plot-member: "This player is already a member of this plot!"
-    player-is-not-online: "This player is not online!"
-    player-not-found: "Could not find that player!"
-    player-already-invited: '{0} has already been invited to a plot.'
-    player-invite-expired: 'The invitation from {0} has expired.'
-    player-invite-to-expired: 'The invitation you sent to {0} has expired.'
-    player-invite-to-rejected: '{0} has rejected your invitation.'
-    player-needs-to-be-on-plot: "You need to be on a plot in order to use this!"
-    player-needs-higher-score: "You need a higher score to build in this difficulty level."
-    player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
-    error-occurred: "An error occurred! Please try again!"
-    no-plots-left: "This city project does not have any more plots left. Please select another project."
-    please-wait: "Please wait a few seconds before creating a new plot!"
-    all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
-    chat-input-expired: "The chat input has expired."
-    tutorial-disabled: 'Tutorials are disabled on this server.'
-    tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
-    review-not-found: "Review could not be found!"
+    plot-does-not-exist: "Tato parcela neexistuje!"
+    plot-either-unclaimed-or-unreviewed: "Tato parcela je buď nezabraná, nebo ještě nebyla zkontrolována!"
+    plot-has-not-yet-reviewed: "Tato parcela ještě nebyla zkontrolována!"
+    can-only-abandon-unfinished-plots: "Smazat lze pouze nedokončené pozemky!"
+    can-only-submit-unfinished-plots: "Odeslat ke kontrole lze pouze nedokončené parcely!"
+    can-only-undo-submissions-unreviewed-plots: "Vrátit odeslání lze pouze u nezkontrolovaných parcel!"
+    can-only-manage-members-unfinished-plots: "Spravovat členy lze pouze na nedokončených parcelách!"
+    cannot-teleport-outside-plot: "Nemůžeš se teleportovat mimo parcelu!"
+    cannot-undo-review: "Nemôžeš zrušiť hodnotenie, ktoré si sám nevytvoril!"
+    cannot-send-feedback: "Nemůžeš poslat zpětnou vazbu k parcele, kterou jsi sám nezkontroloval!"
+    cannot-review-own-plot: "Nemůžeš kontrolovat svou vlastní parcelu!"
+    cannot-modify-legacy-plot: "LEGACY parcely nelze upravovat!"
+    cannot-load-legacy-plot: "LEGACY parcely nelze načíst!"
+    player-has-no-permissions: "Pro tuto akci nemáš dostatečná oprávnění!"
+    player-has-no-invitations: "Nemáš žádné pozvánky!"
+    player-is-not-allowed: "Tato akce ti není povolena!"
+    player-is-plot-owner: "Tento hráč je již vlastníkem parcely!"
+    player-is-plot-member: "Tento hráč je již členem tohoto parcely!"
+    player-is-not-online: "Tento hráč není online!"
+    player-not-found: "Nepodařilo se najít tohoto hráče!"
+    player-already-invited: '{0} již byl pozván na parcelu.'
+    player-invite-expired: 'Pozvánka od hráče {0} vypršela.'
+    player-invite-to-expired: 'Pozvánka pro hráče {0} vypršela.'
+    player-invite-to-rejected: '{0} zamítl tvoji pozvánku.'
+    player-needs-to-be-on-plot: "Pro použití tohoto příkazu musíš být na parcele!"
+    player-needs-higher-score: "Pro stavění v této obtížnosti potřebuješ vyšší skóre."
+    player-missing-tutorial: "Hráč musí nejprve dokončit tutoriál, aby mohl být přidán do parcely!"
+    error-occurred: "Vyskytla se chyba! Zkus to znovu."
+    no-plots-left: "V tomto městě již nejsou žádné volné parcely. Vyber si prosím jiný projekt."
+    please-wait: "Před vytvořením nové parcely počkej několik sekund!"
+    all-slots-occupied: "Všechny tvoje sloty jsou obsazené! Nejdříve dokonči rozpracované parcely."
+    chat-input-expired: "Čas pro zadání do chatu vypršel."
+    tutorial-disabled: 'Tutoriály jsou vypnuty na tomto serveru.'
+    tutorial-already-running: "Již máš spuštěný tutoriál! Dokonči jej před zahájením nového."
+    review-not-found: "Hodnocení se nepodařilo najít! "
 leaderboards:
   pages:
-    DAILY: "Daily"
-    WEEKLY: "Weekly"
-    MONTHLY: "Monthly"
-    YEARLY: "Yearly"
-    LIFETIME: "Lifetime"
-  actionbar-position: "Position #{0}"
+    DAILY: "Dnes"
+    WEEKLY: "Týden"
+    MONTHLY: "Měsíc"
+    YEARLY: "Rok"
+    LIFETIME: "Celkově"
+  actionbar-position: "Umístění #{0}"
   actionbar-percentage: "Top {0}%"
-  not-on-leaderboard: "Not on Leaderboard"
+  not-on-leaderboard: "Není na žebříčku"
 tutorials:
-  stage: 'Stage'
-  new-stage-unlocked: 'NEW STAGE UNLOCKED'
-  tutorial-completed: 'TUTORIAL COMPLETED'
+  stage: 'Fáze'
+  new-stage-unlocked: 'ODEMKNUTA NOVÁ FÁZE'
+  tutorial-completed: 'TUTORIÁL DOKONČEN'
   beginner:
     stage-1:
       stage-1-title: 'Porozumění projektu BuildTheEarth'
       stage-1-messages:
-        - 'Hello {0}! Nice to meet you, my name is {1}. You´ve just stepped into the exciting world of the BuildTheEarth project!'
-        - 'Our mission is to recreate the entire planet Earth in Minecraft at a 1:1 scale. Yes, you heard right, at a 1:1 scale!'
-        - 'However, we at Alps BTE are only responsible to recreate the beautiful alpine countries of Austria, Switzerland and Liechtenstein.'
-        - 'Are you ready to learn how to build for BTE? I will guide you through the basics to participate in the project. Let´s continue!'
+        - 'Ahoj {0}! Rád tě poznávám, jmenuji se {1}. Právě jsi vstoupil/a do vzrušujícího světa projektu BuildTheEarth!'
+        - 'Naším cílem je přetvořit celou planetu Zemi v Minecraftu v měřítku 1:1. Ano, slyšíš správně, v měřítku 1:1!'
+        - 'My v Alps BTE jsme však zodpovědní pouze za přetvoření krásných alpských zemí, Rakouska, Švýcarska a Lichtenštejnska.'
+        - 'Jsi připraven/a naučit se stavět pro BTE? Provedu tě základy potřebnými pro účast v projektu. Jdeme na to!'
       stage-1-tasks:
-        - 'Talk to {0} at the construction site.'
+        - 'Promluv si s {0}em na staveništi.'
     stage-2:
-      stage-2-title: 'References'
+      stage-2-title: 'Podklady'
       stage-2-messages:
-        - 'Welcome on your little island. Here we will construct our first building for the Build The Earth project!'
-        - 'Before we begin building, we need to know how the real-life building looks like. For that we use tools like {0} and {1}.'
-        - 'We use {2} to copy coordinates, so we can teleport to a specific point. In addition we can access {3} to have a closer look at the building.'
+        - 'Vítej na svém malém ostrově. Zde postavíme naši první budovu!'
+        - 'Než začneme stavět, musíme vědět, jak budova vypadá ve skutečnosti. K tomu používáme nástroje jako {0} a {1}.'
+        - 'Pomocí {2} kopírujeme souřadnice, abychom se mohli teleportovat na konkrétní místo. Kromě toho máme přístup k {3}, kde si můžeme budovu prohlédnout zblízka.'
         - '{4}'
-        - 'We use {5} to measure the height of the building. This is important to know, so the building has the correct height.'
+        - 'Pro změření výšky budovy používáme {5}. Je důležité, aby budova měla správnou výšku.'
         - '{6}'
-        - 'Use the command {7} if you need the links later.'
+        - 'Pokud budeš odkazy potřebovat později, použij příkaz {7}.'
       stage-2-tasks:
     stage-3:
-      stage-3-title: 'Teleporting'
+      stage-3-title: 'Teleportace'
       stage-3-messages:
-        - 'The building outlines are generated by default, but since they are mostly not accurate, we have to correct them. To correct the outlines we firstly need to teleport to the edges of the building.'
-        - 'Use the command {0} to teleport to the location in-game. {1} on one of the edges of the building to copy the coordinates.'
+        - 'Obrysy budovy se generují automaticky, ale protože většinou nejsou přesné, musíme je opravit. Pro opravu obrysů se nejprve musíme teleportovat na rohy budovy.'
+        - 'Použij příkaz {0} k teleportaci na místo ve hře. Použij {1} na jednom z okrajů budovy pro zkopírování souřadnic.'
         - '{2}'
-        - 'To continue teleport to the marked points. Try again!'
-        - 'Switch to §6Satellite§f view in Google Maps to show the building in 3D.%newline%%newline%Click on §6Layers§f at the bottom left of the map. If no 3D buildings appear, enable the §6Globe View§f under "More".'
+        - 'Pro pokračování se teleportuj na označené body. Zkus to znovu!'
+        - 'Přepni na §6Satelitní§f pohled v Google Maps pro zobrazení budovy ve 3D.%newline%%newline%Klikni na §6Vrstvy§f vlevo dole na mapě. Pokud se 3D budovy nezobrazí, zapni §6Zobrazení glóbu§f v nabídce "Více".'
       stage-3-tasks:
-        - 'Teleport to all {0} edges of the building by using {1}.'
+        - 'Teleportuj se na všechny {0} rohy budovy pomocí {1}.'
     stage-4:
       stage-4-title: 'WorldEdit'
       stage-4-messages:
-        - 'Before we continue with the outlines, we need to know an important tool called {0}. WorldEdit allows us to build faster and more efficiently.'
-        - 'In order to use WorldEdit, you need to get a <gold>wooden axe</gold>.'
-        - 'Now that you have your wooden axe, you can {1} and {2} on blocks to make your selection.'
+        - 'Než budeme pokračovat v obrysech, musíme se seznámit s důležitým nástrojem {0}. WorldEdit nám umožňuje stavět rychleji a efektivněji.'
+        - 'Pro práci s WorldEditem potřebuješ <gold>dřevěnou sekeru</gold>.'
+        - 'Nyní, když máš dřevěnou sekeru, můžeš provést výběr pomocí {1} a {2} na bloky.'
       stage-4-tasks:
-        - 'Use the command {0} to get your wooden axe.'
+        - 'Použij příkaz {0} pro získání dřevěné sekery.'
     stage-5:
-      stage-5-title: 'Draw the Outlines'
+      stage-5-title: 'Zakreslení obrysů'
       stage-5-messages:
-        - 'Now that we know about WorldEdit, we can draw the outlines of the building.'
-        - 'To draw the outlines, we use the command {0}.'
-        - '{1} to select the first point and {2} to select the second point.'
-        - 'To continue connect the points using {0}. Try again!'
+        - 'Nyní když známe WorldEdit, můžeme zakreslit obrys budovy.'
+        - 'Pro zakreslení obrysů používáme příkaz {0}.'
+        - '{1} pro výběr prvního bodu a {2} pro výběr druhého bodu.'
+        - 'Pro pokračování spoj body pomocí {0}. Zkus to znovu!'
       stage-5-tasks:
-        - 'Connect the points by using {0}.'
+        - 'Spoj body pomocí příkazu {0}.'
     stage-6:
-      stage-6-title: 'Building Heights'
+      stage-6-title: 'Výška budovy'
       stage-6-messages:
-        - 'Now that we have the building outlines, we need to <gold>measure</gold> the height of the building.'
-        - 'Calculate the height of the <gold>facade</gold> by subtracting the height of the <gold>ground</gold> from the height of the <gold>roof</gold>.'
-        - 'Enter the height (in metres) of the building facade in the chat to continue.'
+        - 'Teď, když máme obrysy budovy, musíme <gold>změřit</gold> její výšku.'
+        - 'Výšku fasády spočítáš tak, že od výšky střechy odečteš výšku terénu.'
+        - 'Pro pokračování zadej výšku fasády (v metrech) do chatu.'
         - '{0}'
-        - 'Well done! The height of the building is {1} blocks.'
-        - 'You´ve almost made it. The height of the building is {1} blocks.'
-        - 'You´ve almost made it. Try again!'
-        - 'You can §6read§f the elevation in Google Earth at the §6bottom right§f of the map.%newline%%newline%To §6measure§f the height, move your §6mouse pointer§f on the map.'
+        - 'Skvělá práce! Výška budovy je {1} bloků.'
+        - 'Byl jsi moc blízko! Výška budovy je {1} bloků.'
+        - 'Si blízko! Skús to znova!'
+        - 'Nadmorskou výšku v Google Earth najdeš v §6pravém dolním rohu§f mapy.%newline%%newline%Pro §6změření§f výšky stačí namířit §6kurzorem§f na dané místo.'
       stage-6-tasks:
-        - 'Calculate the height of the building.'
+        - 'Změř výšku budovy.'
     stage-7:
-      stage-7-title: 'Building Shells'
+      stage-7-title: 'Plášť budovy'
       stage-7-messages:
-        - 'Now we can finally start on the building! The first steps are the shells, which we can now begin with the outlines and building heights.'
-        - 'Teleport to at least §6one point§f of the roof ridge to §6connect§f the point(s) with the facade.'
-        - 'Use §6different types§f of blocks and colours for the shells to make it easier to §6separate§f the building into sections.'
-        - 'Up next, we can raise the walls and seal the roof. Now it is time to mark the windows and doors.'
-        - 'Use the WorldEdit command §6{0}§f to raise the walls quickly and easily.'
-        - 'Fill the roof by hand or use the WorldEdit command §6{1}§f. Alternatively use the command §6{2}§f to switch the selection for larger and more complex roofs.'
-        - 'Always check the §6height§f of the windows and doors so that it §6matches§f with the facade.'
+        - 'Nyní konečně můžeme začít stavět! Prvním krokem je plášť budovy, který začneme podle obrysů a výšky.'
+        - 'Teleportuj se alespoň na §6jeden bod§f hřebene střechy a §6propoj§f jej s fasádou.'
+        - 'Používej §6různé typy§f bloků a barev pro hrubou stavbu, aby bylo snazší §6rozdělit§f budovu na části.'
+        - 'Dále vztyčíme zdi a uzavřeme střechu. Nyní je čas vyznačit okna a dveře.'
+        - 'Použij příkaz WorldEditu §6{0}§f k rychlému a snadnému vztyčení zdí.'
+        - 'Střechu vyplň ručně nebo použij příkaz WorldEditu §6{1}§f. Případně použij příkaz §6{2}§f pro změnu výběru u větších a složitějších střech.'
+        - 'Vždy kontroluj §6výšku§f oken a dveří, aby §6odpovídala§f fasádě.'
       stage-7-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Přečti si všechny tipy na parcele a označ je jako přečtené.'
     stage-8:
-      stage-8-title: 'Windows'
+      stage-8-title: 'Okna'
       stage-8-messages:
-        - 'The building shell is done! Let´s continue with the windows and doors.'
-        - 'Ohh... it looks like there are two windows missing. Can you help me place them? They look the same as on the right side.'
-        - 'Don´t forget to §6darken§f the §6windows§f and §6doors§f so you can´t see through them. We don´t build interiors!'
-        - 'There are many ways to build windows for BTE by using for example §6banners§f, §6trapdoors§f or §6carpets§f.'
-        - 'Use the same blocks as for the windows on the right. Try again!'
-        - 'Thank you for your help! Now we can continue with the texturing.'
+        - 'Plášť budovy je hotový! Pojďme na okna a dveře'
+        - 'Aha... vypadá to, že chybí dvě okna. Pomůžeš mi je umístit? Vypadají stejně jako ta na pravé straně.'
+        - 'Nezapomeň §6ztmavit§f §6okna§f a §6dveře§f, aby skrz ně nebylo vidět dovnitř. Interiéry nestavíme!'
+        - 'Existuje mnoho způsobů, jak v BTE stavět okna, například pomocí §6praporů§f, §6poklopů§f nebo §6koberců§f.'
+        - 'Použij stejné bloky jako u oken na pravé straně. Zkus to znovu!'
+        - 'Děkuju za pomoc! Teď můžeme pokračovat tvorbou textur.'
       stage-8-tasks:
-        - 'Place the missing window details.'
+        - 'Umísti chybějící detaily oken.'
     stage-9:
-      stage-9-title: 'Texturing'
+      stage-9-title: 'Texturování'
       stage-9-messages:
-        - 'Texturing is an integral part of the building process. It is important to use the right blocks and colours to make the building look realistic.'
-        - 'Use §6Google Street View§f or §6images§f to make the right block choice, as aerial images are sometimes not very accurate.'
-        - 'Use the WorldEdit command §6{0}§f to simply replace the shell with your pattern.'
-        - 'Try to use §6block mixes§f and §6gradients§f for the walls and roof so that the building looks more realistic and stand out.'
+        - 'Texturování je neodmyslitelnou součástí stavění. Správný výběr bloků a barev je klíčový pro to, aby budova působila realisticky.'
+        - 'Pro správný výběr bloků použij §6Google Street View§f nebo §6fotografie§f, protože letecké snímky bývají někdy nepřesné.'
+        - 'Pomocí příkazu WorldEditu §6{0}§f snadno nahradíš plášť budovy svou texturou.'
+        - 'Na zdi a střechu se snaž používat §6kombinace bloků§f a §6přechody§f, aby budova vypadala realističtěji a více vynikla.'
       stage-9-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Přečti si všechny tipy na parcele a označ je jako přečtené.'
     stage-10:
-      stage-10-title: 'Detailing & Further Steps'
+      stage-10-title: 'Dotváření detailů a další kroky'
       stage-10-messages:
-        - 'Detailing is one of the most important processes as it makes the building distinctive and unique.'
+        - 'Přidávání detailů je jedním z nejdůležitějších kroků, protože dává budově osobitý a jedinečný vzhled.'
         - 'Přidejte do svých staveb §6vlastní bannery§f a §6unikátní hlavy§f. Použijte příkaz §6{0}§f a získejte široký výběr unikátních hlav.'
-        - 'There are many ways to §6decorate§f your buildings. Always pay attention to details on the facade and roofs such as §6chimneys§f, §6windows§f and §6gutters§f.'
-        - 'Thank you for your participation. You are now ready to create your own buildings for the BuildTheEarth project!'
-        - 'Click here to learn more about the project.'
-        - 'To <gold>apply as builder</gold>, create and submit <gold>one or more plots</gold> on our server. You can find more information about the application process on our website or {1}.'
-        - 'If you want to explore the current progress of the map, check out the <gold>Terra</gold> server!'
-        - 'Happy building! ☺'
+        - 'Existuje mnoho způsobů, jak §6ozdobit§f budovy. Vždy věnuj pozornost detailům na fasádě a střechách, jako jsou §6komíny§f, §6okna§f a §6okapy§f.'
+        - 'Děkujeme za účast! Teď můžeš začít tvořit vlastní budovy pro projekt BuildTheEarth.'
+        - 'Klepnutím sem se dozvíš více o projektu.'
+        - 'Chceš-li se <gold>přihlásit jako stavitel</gold>, vytvoř a odevzdej <gold>jeden nebo více pozemků</gold> na našem serveru. Více informací o procesu přihlášení najdeš na našem webu nebo {1}.'
+        - 'Pokud se chceš podívat na aktuální pokrok na mapě, navštiv server Terra!'
+        - 'Příjemné stavění! ☺'
       stage-10-tasks:
-        - 'Read all tips on the plot and mark them as read.'
+        - 'Přečti si všechny tipy na parcele a označ je jako přečtené.'
 # -----------------------------------------------------
 # | Database
 # -----------------------------------------------------
 database:
   city-project:
     example-city:
-      name: 'Example City'
-      description: 'Some description'
+      name: 'Vzorové město'
+      description: 'Nějaký popis'
   country:
     AT:
-      name: 'Austria'
+      name: 'Rakousko'
     CH:
-      name: 'Switzerland'
+      name: 'Švýcarsko'
     LI:
-      name: 'Liechtenstein'
+      name: 'Lichtenštejnsko'
   difficulty:
     easy:
-      name: 'Easy'
+      name: 'Lehká'
     medium:
-      name: 'Medium'
+      name: 'Střední'
     hard:
-      name: 'Hard'
+      name: 'Těžká'
   status:
     unclaimed:
-      name: 'Unclaimed'
+      name: 'Nezabrané'
     unfinished:
-      name: 'Unfinished'
+      name: 'Nedokončené'
     unreviewed:
-      name: 'Unreviewed'
+      name: 'Nezkontrolované'
     completed:
-      name: 'Completed'
+      name: 'Dokončené'
   toggle-criteria:
-    built_on_outlines: 'Built on outlines'
-    correct_height: 'Correct building height'
-    correct_facade_colour: 'Correct building colour'
-    correct_roof_colour: 'Correct roof colour'
-    correct_roof_shape: 'Correct roof shape'
-    correct_amount_windows_doors: 'Correct amount of windows and doors'
-    correct_window_type: 'Correct window types'
-    windows_blacked_out: 'All windows blacked out'
+    built_on_outlines: 'Postaveno podle obrysů'
+    correct_height: 'Správná výška budovy'
+    correct_facade_colour: 'Správná barva budovy'
+    correct_roof_colour: 'Správná barva střechy'
+    correct_roof_shape: 'Správný tvar střechy'
+    correct_amount_windows_doors: 'Správný počet oken a dveří'
+    correct_window_type: 'Správný typ oken'
+    windows_blacked_out: 'Všechna okna zacloněna'
 # NOTE: Do not change
-config-version: 1
+config-version: 2
