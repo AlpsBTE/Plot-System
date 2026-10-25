@@ -13,19 +13,35 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static net.kyori.adventure.text.Component.text;
 
 public class CityPlotWorld extends PlotWorld {
+    /**
+     * Minimum build headroom required above the schematic minimum Y after applying the city height offset.
+     * Used only when initializing the shared offset for a city world.
+     */
+    public static final int MIN_BUILDING_HEIGHT = 128;
+
+    private static final ConcurrentHashMap<String, Object> HEIGHT_OFFSET_LOCKS = new ConcurrentHashMap<>();
+
     public CityPlotWorld(@NotNull Plot plot) {
         super("C-" + plot.getCityProject().getId(), plot);
+    }
+
+    private static NamespacedKey heightOffsetKey() {
+        return new NamespacedKey(PlotSystem.getPlugin(), "cim_height_offset");
     }
 
     @Override
@@ -58,51 +74,93 @@ public class CityPlotWorld extends PlotWorld {
     @Beta
     @Override
     public int getPlotHeight() throws IOException {
-        return plot.getVersion() >= 3 ? MIN_WORLD_HEIGHT + getWorldHeight() : getPlotHeightCentered();
+        if (plot.getVersion() < 3) return getPlotHeightCentered();
+        // Paste origin at schematicMinY + cityOffset so every plot in this city shares one Y frame:
+        // finalY = terraY + cityOffset
+        return plot.getSchematicMetadata().minimumPoint().y() + ensureHeightOffset();
     }
 
     @Beta
     @Override
     public int getPlotHeightCentered() throws IOException {
         int maxWorldHeight = getBukkitWorld() == null ? PlotWorld.MAX_WORLD_HEIGHT : getBukkitWorld().getMaxHeight() - 1;
-        return Math.min(MIN_WORLD_HEIGHT + getWorldHeight() + super.getPlotHeightCentered(), maxWorldHeight);
+        return Math.min(ensureHeightOffset() + plot.getSchematicMetadata().center().y(), maxWorldHeight);
     }
 
     /**
-     * Calculate additional height for the plot
+     * Returns the city-wide Y offset stored on this CIM world, initializing it on first use.
+     * Defaults to the same remapping as {@link OnePlotWorld}: the first plot's schematic minimum
+     * lands at {@link #MIN_WORLD_HEIGHT}. That offset is then reused for every plot in the city.
      *
-     * @return The origin plot height from schematic if it is in plot world boundary, else 0
-     * @throws IOException if the outline schematic fails to load
+     * @return additive Y offset applied to all plots in this city world
+     * @throws IOException if schematic metadata cannot be read while computing the initial offset
      */
     @Beta
-    public int getWorldHeight() throws IOException {
-        int plotHeight = plot.getSchematicMetadata().minimumPoint().y();
-
-        // Minimum building height for a plot (this should be configurable depending on minecraft build limit)
-        // This is in the case that a plot is created at y level 300 where the max build limit is 318,
-        // so you don't want builder to only be able to build for 18 blocks
-        int minBuildingHeight = 128;
-
-        // Negative y level of the current minecraft version (1.21)
-        // Additional ground layer the plot use to save as schematic need to be included for plot's y-level
-        int groundLayer = 64;
-
+    public int ensureHeightOffset() throws IOException {
         World bukkitWorld = getBukkitWorld();
-        int minHeight;
-        int maxHeight;
+        AbstractPlot.SchematicMetadata metadata = plot.getSchematicMetadata();
+        if (bukkitWorld == null) return computeHeightOffset(metadata, null);
 
-        if (bukkitWorld != null) {
-            minHeight = bukkitWorld.getMinHeight();
-            maxHeight = bukkitWorld.getMaxHeight() - 1;
-        } else {
-            minHeight = MIN_WORLD_HEIGHT + groundLayer;
-            maxHeight = MAX_WORLD_HEIGHT + groundLayer;
+        Integer existing = bukkitWorld.getPersistentDataContainer().get(heightOffsetKey(), PersistentDataType.INTEGER);
+        if (existing != null) return existing;
+
+        // Initialize on the main thread so PDC writes stay thread-safe and we never hold a lock
+        // across a main-thread handoff (which could deadlock FAWE paste workers).
+        try {
+            return Utils.supplySync(() -> {
+                World world = getBukkitWorld();
+                if (world == null) return computeHeightOffset(metadata, null);
+
+                Object lock = HEIGHT_OFFSET_LOCKS.computeIfAbsent(getWorldName(), ignored -> new Object());
+                synchronized (lock) {
+                    try {
+                        Integer stored = world.getPersistentDataContainer().get(heightOffsetKey(), PersistentDataType.INTEGER);
+                        if (stored != null) return stored;
+
+                        int offset = computeHeightOffset(metadata, world);
+                        world.getPersistentDataContainer().set(heightOffsetKey(), PersistentDataType.INTEGER, offset);
+                        PlotSystem.getPlugin().getComponentLogger().info(
+                                text("Initialized CIM height offset " + offset + " for world " + getWorldName())
+                        );
+                        return offset;
+                    } finally {
+                        HEIGHT_OFFSET_LOCKS.remove(getWorldName(), lock);
+                    }
+                }
+            }).get();
+        } catch (Exception exception) {
+            throw new IOException("Could not initialize CIM height offset for world " + getWorldName(), exception);
+        }
+    }
+
+    /**
+     * Computes a shared Y offset for the city world.
+     * Same baseline as one-plot worlds ({@code schematicMinY + offset = MIN_WORLD_HEIGHT}), then
+     * clamps only if that would leave the schematic out of world bounds or without
+     * {@link #MIN_BUILDING_HEIGHT} headroom.
+     */
+    @Beta
+    public static int computeHeightOffset(@NotNull AbstractPlot.SchematicMetadata metadata, @Nullable World world) {
+        int schematicMinY = metadata.minimumPoint().y();
+        int worldMin = world != null ? world.getMinHeight() : -64;
+        int worldMax = world != null ? world.getMaxHeight() - 1 : MAX_WORLD_HEIGHT + 64;
+
+        // Match OnePlotWorld: paste the reference plot so its schematic min sits at MIN_WORLD_HEIGHT.
+        int offset = MIN_WORLD_HEIGHT - schematicMinY;
+
+        if (schematicMinY + offset < worldMin) {
+            offset = worldMin - schematicMinY;
         }
 
-        // Plots created outside of vanilla build limit or the build-able height is too small
-        if (plotHeight + groundLayer < minHeight + groundLayer || plotHeight + groundLayer + minBuildingHeight > maxHeight)
-            return 0;
-        return plotHeight;
+        if (schematicMinY + offset + MIN_BUILDING_HEIGHT > worldMax) {
+            offset = worldMax - MIN_BUILDING_HEIGHT - schematicMinY;
+        }
+
+        if (schematicMinY + offset < worldMin) {
+            offset = worldMin - schematicMinY;
+        }
+
+        return offset;
     }
 
     /**
