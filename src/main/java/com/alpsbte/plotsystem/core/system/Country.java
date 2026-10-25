@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.core.system;
 
 import com.alpsbte.alpslib.utils.item.Item;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -49,6 +50,6 @@ public class Country {
     }
 
     public ItemStack getCountryItem() {
-        return Item.getConfiguredItem(material, customModelData);
+        return Item.getConfiguredItem(material, customModelData, PlotSystem.getPlugin().getHeadLookupService());
     }
 }

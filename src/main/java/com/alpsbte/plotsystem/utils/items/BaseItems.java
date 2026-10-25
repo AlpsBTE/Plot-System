@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.utils.items;
 
 import com.alpsbte.alpslib.utils.item.Item;
+import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -70,7 +71,7 @@ public enum BaseItems {
         String materialString = ConfigUtil.getInstance().configs[2].getString(configPath + ".material");
         materialString = materialString == null ? Material.BARRIER.name() : materialString;
         Object customModelData = ConfigUtil.getInstance().configs[2].get(configPath + ".modelId");
-        itemStack = Item.getConfiguredItem(materialString, customModelData);
+        itemStack = Item.getConfiguredItem(materialString, customModelData, PlotSystem.getPlugin().getHeadLookupService());
 
         itemStack.getItemMeta().setAttributeModifiers(null);
         itemStack.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
