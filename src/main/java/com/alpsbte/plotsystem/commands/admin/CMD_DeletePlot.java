@@ -12,6 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +45,7 @@ public class CMD_DeletePlot extends BaseCommand {
             }
 
             sender.sendMessage(Utils.ChatUtils.getInfoFormat("Deleting plot..."));
-            if (!PlotHandler.deletePlot(plot)) {
+            if (!PlotHandler.deletePlot(plot, sender instanceof Player player ? player.getUniqueId() : null)) {
                 sender.sendMessage(Utils.ChatUtils.getAlertFormat("An unexpected error has occurred!"));
                 return;
             }
