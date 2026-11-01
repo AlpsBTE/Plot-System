@@ -10,6 +10,7 @@ import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
@@ -67,8 +68,12 @@ public class CMD_Plot_Teleport extends SubCommand implements ICommand {
                 return;
             }
 
-            if (!plot.getWorld().prepareWorld()) return;
-            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> plot.getWorld().teleportPlayer(player));
+            PlotWorld world = PlotHandler.visitWorld(plot);
+            if (!PlotHandler.prepareVisit(plot)) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(player, LangPaths.Message.Error.ERROR_OCCURRED)));
+                return;
+            }
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> world.teleportPlayer(player));
         });
     }
 

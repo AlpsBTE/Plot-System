@@ -6,15 +6,26 @@ import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.io.ConfigPaths;
+import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.Vector2;
+import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.RegionGroup;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.managers.storage.StorageException;
+import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -176,6 +188,81 @@ public class CityPlotWorld extends PlotWorld {
             if (PlotUtils.isPlayerOnPlot(plot, player)) players.add(player);
         }
         return players;
+    }
+
+    /**
+     * Makes sure a visitor can enter this plot in the city world.
+     * City inspiration plots already have this region. Plots built in a private world are only pasted
+     * into the city, so the entry region may be missing and the global region would deny entry.
+     * The region is created without owners, so visitors cannot build.
+     *
+     * @return true when the entry region exists or was created
+     */
+    public boolean ensureVisitorAccess() {
+        if (!isWorldLoaded() && !loadWorld()) return false;
+        if (plot.getCenter() == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not read the center of plot " + plot.getId() + "!"));
+            return false;
+        }
+
+        try {
+            return Boolean.TRUE.equals(Utils.supplySync(this::createVisitorRegionsIfMissing).join());
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not create the visit region for plot " + plot.getId() + "!"), exception);
+            return false;
+        }
+    }
+
+    private @Nullable RegionManager regionManager() {
+        if (getBukkitWorld() == null) return null;
+        RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        return regionContainer.get(BukkitAdapter.adapt(getBukkitWorld()));
+    }
+
+    private boolean createVisitorRegionsIfMissing() {
+        RegionManager regionManager = regionManager();
+        if (regionManager == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
+            return false;
+        }
+        if (regionManager.hasRegion(getRegionName() + "-1")) return true;
+
+        int minWorldHeight = getBukkitWorld().getMinHeight();
+        int maxWorldHeight = getBukkitWorld().getMaxHeight() - 1;
+        if (!regionManager.hasRegion(getRegionName())) {
+            ProtectedRegion buildRegion = new ProtectedPolygonalRegion(getRegionName(), plot.getOutline(), minWorldHeight, maxWorldHeight);
+            buildRegion.setPriority(100);
+            buildRegion.setFlag(Flags.BUILD, StateFlag.State.ALLOW);
+            buildRegion.setFlag(Flags.BUILD.getRegionGroupFlag(), RegionGroup.OWNERS);
+            regionManager.addRegion(buildRegion);
+        }
+
+        CylinderRegion cylinderRegion = new CylinderRegion(
+                BukkitAdapter.adapt(getBukkitWorld()),
+                plot.getCenter(),
+                Vector2.at(PLOT_SIZE, PLOT_SIZE),
+                minWorldHeight,
+                maxWorldHeight
+        );
+        ProtectedRegion entryRegion = new ProtectedPolygonalRegion(getRegionName() + "-1", cylinderRegion.polygonize(-1), minWorldHeight, maxWorldHeight);
+        entryRegion.setPriority(50);
+        entryRegion.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
+        entryRegion.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+        FileConfiguration config = ConfigUtil.getInstance().configs[1];
+        List<String> blockedCommands = new ArrayList<>(config.getStringList(ConfigPaths.BLOCKED_COMMANDS_BUILDERS));
+        blockedCommands.removeIf(command -> command.equals("/cmd1"));
+        entryRegion.setFlag(Flags.BLOCKED_CMDS, new HashSet<>(blockedCommands));
+        entryRegion.setFlag(Flags.BLOCKED_CMDS.getRegionGroupFlag(), RegionGroup.ALL);
+        regionManager.addRegion(entryRegion);
+
+        try {
+            regionManager.saveChanges();
+        } catch (StorageException exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not save the visit region for plot " + plot.getId() + "!"), exception);
+            return false;
+        }
+        return true;
     }
 
     @Override

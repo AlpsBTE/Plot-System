@@ -7,6 +7,8 @@ import com.alpsbte.plotsystem.commands.plot.CMD_Plot_Members;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -136,10 +138,14 @@ public class PlotActionsMenu extends AbstractMenu {
                 return;
             }
             CompletableFuture.runAsync(() -> {
-                if (!plot.getWorld().prepareWorld()) return;
+                PlotWorld world = PlotHandler.visitWorld(plot);
+                if (!PlotHandler.prepareVisit(plot)) {
+                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer, LangPaths.Message.Error.ERROR_OCCURRED)));
+                    return;
+                }
 
                 Utils.runSync(() -> {
-                    plot.getWorld().teleportPlayer(clickPlayer);
+                    world.teleportPlayer(clickPlayer);
                     return null;
                 });
             });

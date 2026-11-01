@@ -3,6 +3,7 @@ package com.alpsbte.plotsystem.core.system.plot.world;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
+import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.AbstractPlotLoader;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.DefaultPlotLoader;
@@ -10,6 +11,7 @@ import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoad
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
+import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import org.bukkit.entity.Player;
@@ -46,7 +48,15 @@ public class OnePlotWorld extends PlotWorld {
     public boolean prepareWorld() {
         if (plot == null || isWorldGenerated()) return super.prepareWorld();
 
-        // Rebuild a missing plot world exactly once, including completed plots.
+        // Finished plots are visited in the city world. Rebuilding the private world here is what left
+        // P-{id} worlds on disk after /p tp, because leaving only unloads them.
+        if (plot instanceof Plot finished && finished.getStatus() == Status.completed) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text(
+                    "Refusing to rebuild the single-plot world for finished plot " + plot.getId() + ". Visit the city world instead."
+            ));
+            return false;
+        }
+
         AbstractPlotLoader loader = plot.getPlotType() == PlotType.TUTORIAL
                 ? new TutorialPlotLoader(plot, plotOwner)
                 : new DefaultPlotLoader(plot, plotOwner, plot.getPlotType(), this, false, false);

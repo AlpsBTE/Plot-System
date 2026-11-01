@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
+import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -11,6 +12,7 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
+import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -26,24 +28,26 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
-import com.sk89q.worldedit.world.World;
 import org.bukkit.SoundCategory;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -195,6 +199,169 @@ public class PlotHandler {
         }
         return successful;
     }
+
+    /**
+     * World a player should be sent to when opening this plot.
+     * Finished builds are pasted into the city world on accept, so visits go there instead of
+     * recreating the private {@code P-{id}} world.
+     */
+    public static PlotWorld visitWorld(Plot plot) {
+        if (plot.getStatus() == Status.completed) return new CityPlotWorld(plot);
+        return plot.getWorld();
+    }
+
+    /**
+     * Loads the world returned by {@link #visitWorld(Plot)}.
+     * When a finished plot's city world does not exist yet, it is created and the stored completed schematic is pasted.
+     * Must be called off the main thread when that city world still has to be generated.
+     *
+     * @return true when the player can be teleported
+     */
+    public static boolean prepareVisit(Plot plot) {
+        if (plot.getStatus() != Status.completed) return plot.getWorld().prepareWorld();
+
+        CityPlotWorld cityWorld = new CityPlotWorld(plot);
+        try {
+            if (!cityWorld.isWorldGenerated()) {
+                if (!pasteCompletedSchematic(plot, cityWorld)) return false;
+            } else if (!cityWorld.loadWorld()) {
+                return false;
+            }
+            return cityWorld.ensureVisitorAccess();
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text(
+                    "Could not prepare the city world for finished plot " + plot.getId() + "!"
+            ), exception);
+            return false;
+        }
+    }
+
+    private static boolean pasteCompletedSchematic(Plot plot, CityPlotWorld cityWorld) throws Exception {
+        byte[] schematic = plot.getCompletedSchematic();
+        if (schematic == null) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text(
+                    "Finished plot " + plot.getId() + " has no completed schematic to paste into the city world!"
+            ));
+            return false;
+        }
+        if (!cityWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityWorld);
+        AbstractPlotLoader.runFaweBlocking(() ->
+                AbstractPlotLoader.pasteSchematic(true, schematic, cityWorld, false, true));
+        return true;
+    }
+
+    /**
+     * Pause between world deletions so loading and removing many worlds does not stall the server.
+     */
+    private static final long FINISHED_WORLD_CLEANUP_PAUSE_MILLIS = 2000L;
+
+    /**
+     * Deletes private {@code P-{id}} worlds whose plot is already finished.
+     * Worlds that still have players in them are left in place.
+     *
+     * @param dryRun when true, worlds are counted and left on disk
+     * @param limit  maximum number of worlds to delete, or null to scan every match
+     */
+    public static FinishedWorldCleanup deleteFinishedOnePlotWorlds(boolean dryRun, Integer limit) throws Exception {
+        CleanupProgress progress = new CleanupProgress();
+        for (MultiverseWorld multiverseWorld : listMultiverseWorlds()) {
+            if (progress.interrupted || reachedCleanupLimit(limit, progress.deleted)) break;
+            cleanupFinishedWorld(multiverseWorld.getName(), dryRun, progress);
+        }
+        return progress.toResult();
+    }
+
+    private static Collection<MultiverseWorld> listMultiverseWorlds() throws Exception {
+        return Utils.supplySync(() -> List.copyOf(DependencyManager.getMultiverseCore().getWorldManager().getWorlds())).get();
+    }
+
+    private static boolean reachedCleanupLimit(Integer limit, int deleted) {
+        return limit != null && deleted >= limit;
+    }
+
+    private static void cleanupFinishedWorld(String worldName, boolean dryRun, CleanupProgress progress) {
+        Plot plot = finishedOnePlot(worldName);
+        if (plot == null) return;
+
+        try {
+            pauseBeforeNextDeletion(dryRun, progress);
+            recordCleanupOutcome(worldName, dryRun, progress, removeFinishedWorld(worldName, plot, dryRun));
+        } catch (InterruptedException interrupted) {
+            Thread.currentThread().interrupt();
+            progress.interrupted = true;
+        } catch (Exception exception) {
+            progress.failed++;
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not delete finished plot world " + worldName + "!"), exception);
+        }
+    }
+
+    private static @Nullable Plot finishedOnePlot(String worldName) {
+        if (!worldName.toLowerCase(Locale.ROOT).startsWith("p-")) return null;
+
+        Integer plotId = AlpsUtils.tryParseInt(worldName.substring(2));
+        if (plotId == null) return null;
+
+        Plot plot = DataProvider.PLOT.getPlotById(plotId);
+        if (plot == null || plot.getStatus() != Status.completed) return null;
+        return plot;
+    }
+
+    private static void pauseBeforeNextDeletion(boolean dryRun, CleanupProgress progress) throws InterruptedException {
+        if (dryRun || !progress.pauseBeforeNextDelete) return;
+        Thread.sleep(FINISHED_WORLD_CLEANUP_PAUSE_MILLIS);
+    }
+
+    private static Boolean removeFinishedWorld(String worldName, Plot plot, boolean dryRun) throws Exception {
+        return Utils.supplySync(() -> deleteOrCountFinishedWorld(worldName, plot, dryRun)).get();
+    }
+
+    private static Boolean deleteOrCountFinishedWorld(String worldName, Plot plot, boolean dryRun) {
+        PlotWorld world = new PlotWorld(worldName, plot);
+        if (worldHasPlayers(world)) return null;
+        if (dryRun) return true;
+        return world.deleteWorld();
+    }
+
+    private static boolean worldHasPlayers(PlotWorld world) {
+        return world.isWorldLoaded() && !world.getBukkitWorld().getPlayers().isEmpty();
+    }
+
+    private static void recordCleanupOutcome(String worldName, boolean dryRun, CleanupProgress progress, Boolean removed) {
+        if (removed == null) {
+            progress.skippedOccupied++;
+            PlotSystem.getPlugin().getComponentLogger().info(text(
+                    "Skipped finished plot world " + worldName + " because players are still in it."
+            ));
+            return;
+        }
+        if (!removed) {
+            progress.failed++;
+            return;
+        }
+
+        progress.deleted++;
+        progress.pauseBeforeNextDelete = !dryRun;
+        PlotSystem.getPlugin().getComponentLogger().info(text(cleanupOutcomeMessage(dryRun, worldName)));
+    }
+
+    private static String cleanupOutcomeMessage(boolean dryRun, String worldName) {
+        if (dryRun) return "Would delete finished plot world " + worldName + ".";
+        return "Deleted finished plot world " + worldName + ".";
+    }
+
+    private static final class CleanupProgress {
+        private int deleted;
+        private int skippedOccupied;
+        private int failed;
+        private boolean pauseBeforeNextDelete;
+        private boolean interrupted;
+
+        private FinishedWorldCleanup toResult() {
+            return new FinishedWorldCleanup(deleted, skippedOccupied, failed);
+        }
+    }
+
+    public record FinishedWorldCleanup(int deleted, int skippedOccupied, int failed) {}
 
     public static boolean deletePlot(Plot plot) {
         if (!abandonPlot(plot)) {
