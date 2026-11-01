@@ -132,6 +132,12 @@ public class ReviewProvider {
         boolean result = DataProvider.PLOT.setMcVersion(plot.getId());
         if (!result) return null;
 
+        // Retain previous feedback when the reviewer provides none for this review
+        String previousFeedback = plot.getLatestReview()
+                .map(PlotReview::getFeedback)
+                .filter(feedback -> !feedback.isBlank())
+                .orElse(null);
+
         // Create Review
         String qInsert = "INSERT INTO plot_review (plot_id, rating, score, reviewed_by) VALUES (?, ?, ?, ?);";
         result = Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qInsert, ps -> {
@@ -151,6 +157,9 @@ public class ReviewProvider {
                 return null;
         }
 
+        if (previousFeedback != null) {
+            review.updateFeedback(previousFeedback);
+        }
 
         // create feedback notifications
         createReviewNotification(review.getReviewId(), plot.getPlotOwner().getUUID());
