@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Helyes ablaktípus'
     windows_blacked_out: 'Minden ablak belülről ki van takarva'
 # NOTE: Do not change
-config-version: 1.4
+config-version: "1.3"
