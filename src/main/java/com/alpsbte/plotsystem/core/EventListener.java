@@ -119,6 +119,10 @@ public class EventListener implements Listener {
         }
     }
 
+    private static boolean isPersistentCityWorld(PlotWorld plotWorld) {
+        return PlotWorld.isCityPlotWorld(plotWorld.getWorldName());
+    }
+
     @EventHandler
     public void onPlayerQuitEvent(@NotNull PlayerQuitEvent event) {
         final World w = event.getPlayer().getWorld();
@@ -137,7 +141,7 @@ public class EventListener implements Listener {
             }
 
             PlotWorld plotWorld = PlotWorld.getPlotWorldByName(w.getName());
-            if (plotWorld != null && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
+            if (plotWorld != null && !isPersistentCityWorld(plotWorld) && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
                 plotWorld.unloadWorld(false);
         }, 60L);
 
@@ -151,7 +155,7 @@ public class EventListener implements Listener {
     public void onPlayerChangedWorldEvent(@NotNull PlayerChangedWorldEvent event) {
         Bukkit.getScheduler().scheduleSyncDelayedTask(PlotSystem.getPlugin(), () -> {
             PlotWorld plotWorld = PlotWorld.getPlotWorldByName(event.getFrom().getName());
-            if (plotWorld != null) plotWorld.unloadWorld(false);
+            if (plotWorld != null && !isPersistentCityWorld(plotWorld)) plotWorld.unloadWorld(false);
         }, 60L);
 
         Utils.updatePlayerInventorySlots(event.getPlayer());

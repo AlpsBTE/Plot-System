@@ -1,6 +1,7 @@
 package com.alpsbte.plotsystem.core.system.plot.generator.world;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
@@ -93,7 +94,7 @@ public class PlotWorldGenerator {
 
         world.setDifficulty(Difficulty.PEACEFUL);
         world.setSpawnFlags(false, false);
-        world.setAutoSave(false);
+        world.setAutoSave(PlotWorld.isCityPlotWorld(worldName));
 
         // Configure multiverse world
         mvWorld.get().setAllowFlight(true);

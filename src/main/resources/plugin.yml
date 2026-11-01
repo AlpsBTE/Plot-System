@@ -41,6 +41,9 @@ commands:
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
+  cleanupworlds:
+    description: Delete single-plot worlds left behind by finished plots.
+    usage: /cleanupworlds <amount> [--dry-run]
   setleaderboard:
     description: Sets the position of a leaderboard.
     usage: /setleaderboard <name>
