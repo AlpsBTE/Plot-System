@@ -57,6 +57,68 @@ public class CityPlotWorld extends PlotWorld {
     }
 
     @Override
+    public boolean loadWorld() {
+        if (!super.loadWorld()) return false;
+        try {
+            Utils.runSync(() -> {
+                enableAutoSave();
+                return null;
+            }).get();
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not enable autosave for world " + getWorldName() + "!"), exception);
+        }
+        return true;
+    }
+
+    /**
+     * City worlds stay loaded. Unloading them while FastAsyncWorldEdit is still sending chunks
+     * makes that update fail. Autosave writes the world, so this does not call a manual save.
+     */
+    @Override
+    public boolean unloadWorld(boolean movePlayers) {
+        if (!isWorldLoaded()) return true;
+        try {
+            Utils.runSync(() -> {
+                persistLoadedWorld(movePlayers);
+                return null;
+            }).get();
+            return true;
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not update city world " + getWorldName() + "!"), exception);
+            return false;
+        }
+    }
+
+    private void persistLoadedWorld(boolean movePlayers) {
+        if (!isWorldLoaded()) return;
+        if (movePlayers) movePlayersToSpawn();
+        enableAutoSave();
+        saveRegions();
+    }
+
+    private void enableAutoSave() {
+        World world = getBukkitWorld();
+        if (world != null) world.setAutoSave(true);
+    }
+
+    private void movePlayersToSpawn() {
+        if (getBukkitWorld().getPlayers().isEmpty()) return;
+        for (Player player : List.copyOf(getBukkitWorld().getPlayers())) {
+            player.teleport(Utils.getSpawnLocation());
+        }
+    }
+
+    private void saveRegions() {
+        RegionManager regions = regionManager();
+        if (regions == null) return;
+        try {
+            regions.saveChanges();
+        } catch (StorageException exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(text("Could not save WorldGuard regions for world " + getWorldName() + "!"), exception);
+        }
+    }
+
+    @Override
     public boolean teleportPlayer(@NotNull Player player) {
         if (!super.teleportPlayer(player)) return false;
 
