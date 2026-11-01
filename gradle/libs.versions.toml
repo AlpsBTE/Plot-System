@@ -14,34 +14,34 @@ com-alpsbte-canvas = "1.3.2"
 # https://github.com/Arcaniax-Development/HeadDatabase-API/releases
 com-arcaniax-headdatabase-api = "1.3.3-SNAPSHOT"
 # https://github.com/DecentSoftware-eu/DecentHolograms/releases
-com-github-decentsoftware-eu-decentholograms = "2.10.0"
+com-github-decentsoftware-eu-decentholograms = "2.10.2"
 # @pin https://github.com/Fierioziy/ParticleNativeAPI/releases - we are stuck at v3 for now. Need to migrate some time or remove it
 com-github-fierioziy-particlenativeapi-particlenativeapi-plugin = "3.3.2"
 # Ref: https://github.com/IntellectualSites/bom
 com-intellectualsites-bom-bom-newest = "1.56"
 # https://maven.enginehub.org/repo/com/sk89q/worldguard/worldguard-bukkit/
-com-sk89q-worldguard-worldguard-bukkit = "7.0.18-SNAPSHOT"
+com-sk89q-worldguard-worldguard-bukkit = "7.1.0-SNAPSHOT"
 # https://github.com/brettwooldridge/HikariCP/tags
 com-zaxxer-hikaricp = "7.1.0"
 # Provided by Minecraft (Libs folder)
 commons-io-commons-io = "2.22.0"
 # https://fancyspaces.net/spaces/fancynpcs/maven-repos/fi-releases/de.oliver:FancyNpcs
-de-oliver-fancynpcs = "2.9.2"
+de-oliver-fancynpcs = "2.12.1"
 # @pin https://artifactory.papermc.io/ui/native/universe/io/papermc/paper/paper-api/ We want to use the latest api buld
-io-papermc-paper-paper-api = "26.1.2.build.+"
+io-papermc-paper-paper-api = "26.3.build.+"
 # https://mvn.alps-bte.com/service/rest/repository/browse/alps-bte/li/cinnazeyy/LangLibs-API/
-li-cinnazeyy-langlibs-api = "1.5.3"
+li-cinnazeyy-langlibs-api = "1.6.0"
 # https://repo.onarandombox.com/#/multiverse-releases/org/mvplugins/multiverse/core/multiverse-core
-multiverse-core = "5.7.0"
+multiverse-core = "5.8.2"
 #  https://central.sonatype.com/artifact/org.mariadb.jdbc/mariadb-java-client
-org-mariadb-jdbc-mariadb-java-client = "3.6.0-SNAPSHOT"
+org-mariadb-jdbc-mariadb-java-client = "3.5.11"
 #
 # Plugins
 #
 # https://github.com/jmongard/Git.SemVersioning.Gradle/releases
-git-semver = "0.19.2"
+git-semver = "0.19.6"
 # https://github.com/GradleUp/shadow/releases
-shadow = "9.4.2"
+shadow = "9.6.1"
 
 [libraries]
 com-alpsbte-alpslib-alpslib-hologram = { module = "com.alpsbte.alpslib:alpslib-hologram", version.ref = "com-alpsbte-alpslib-alpslib-hologram" }
