@@ -257,7 +257,10 @@ public abstract class AbstractPlotLoader {
     protected void generateStructure() throws Exception {
         if (plotType.hasEnvironment()) {
             // The schematic already contains the environment around the plot, so it is pasted as a whole.
-            runFaweBlocking(() -> pasteSchematic(false, this.schematicBytes, this.plotWorld, false, false));
+            // City worlds share space: ignore schematic air so a new plot does not carve voids into
+            // neighbors, and apply the shared height offset so every plot lands on the same Y frame.
+            boolean cityWorld = PlotWorld.isCityPlotWorld(plotWorld.getWorldName());
+            runFaweBlocking(() -> pasteSchematic(cityWorld, this.schematicBytes, this.plotWorld, false, cityWorld));
             return;
         }
         runFaweBlocking(() -> pasteSchematic(true, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false));
@@ -317,36 +320,41 @@ public abstract class AbstractPlotLoader {
         if (!world.loadWorld()) return;
         World weWorld = new BukkitWorld(world.getBukkitWorld());
 
-        // set outline region with air
-        if (clearArea) {
-            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
-                Polygonal2DRegion polyRegion = new Polygonal2DRegion(
-                        weWorld,
-                        world.getPlot().getOutline(),
-                        world.getBukkitWorld().getMinHeight(),
-                        world.getBukkitWorld().getMaxHeight() - 1
-                );
-                editSession.setMask(new RegionMask(polyRegion));
-                editSession.setBlocks((Region) polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
-            }
-        }
-
-        // load schematic
         Clipboard clipboard;
         ByteArrayInputStream inputStream = new ByteArrayInputStream(schematicFile);
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
             clipboard = reader.read();
         }
 
-        int pasteY = world.getPlotHeight();
+        BlockVector3 clipboardOrigin = clipboard.getOrigin();
+        if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
 
+        int pasteY = world.getPlotHeight();
         if (offset) {
-            BlockVector3 clipboardOrigin = clipboard.getOrigin();
-            if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
             pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
         }
 
-        // paste schematic
+        // Clear only the Y band the schematic will occupy. Full world-height clears leave void
+        // shafts under city plots after abandon/reset.
+        if (clearArea) {
+            int minY = world.getBukkitWorld().getMinHeight();
+            int maxY = world.getBukkitWorld().getMaxHeight() - 1;
+            if (offset) {
+                minY = Math.max(minY, pasteY + clipboard.getMinimumPoint().y() - clipboardOrigin.y());
+                maxY = Math.min(maxY, pasteY + clipboard.getMaximumPoint().y() - clipboardOrigin.y());
+            }
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
+                Polygonal2DRegion polyRegion = new Polygonal2DRegion(
+                        weWorld,
+                        world.getPlot().getOutline(),
+                        minY,
+                        maxY
+                );
+                editSession.setMask(new RegionMask(polyRegion));
+                editSession.setBlocks((Region) polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+            }
+        }
+
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)

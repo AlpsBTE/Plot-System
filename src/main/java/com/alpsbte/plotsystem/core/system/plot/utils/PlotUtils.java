@@ -202,7 +202,10 @@ public final class PlotUtils {
         );
 
         BlockArrayClipboard newClipboard = new BlockArrayClipboard(region);
-        newClipboard.setOrigin(BlockVector3.at(region.getCenter().x(), region.getMinimumPoint().y(), region.getCenter().z()));
+        // Match pasteSchematic's destination (schematic center), not the polygon centroid —
+        // otherwise the outline paste is shifted and leaves voids beside the plot.
+        BlockVector3 pasteOrigin = plot.getSchematicMetadata().center();
+        newClipboard.setOrigin(BlockVector3.at(pasteOrigin.x(), region.getMinimumPoint().y(), pasteOrigin.z()));
         ForwardExtentCopy copy = new ForwardExtentCopy(
                 clipboard,
                 region,

@@ -354,15 +354,17 @@ public class CityPlotWorld extends PlotWorld {
             return false;
         }
 
-        // paste initial schematic to reset plot
+        // Reset the plot outline to its initial terrain. Clear only the schematic Y band
+        // (see pasteSchematic), then paste solids with the city height offset. Pasting
+        // schematic air into a shared city world carves voids into neighboring plots.
         try {
             AbstractPlotLoader.runFaweBlocking(() ->
                     AbstractPlotLoader.pasteSchematic(
-                            false,
+                            true,
                             PlotUtils.getOutlinesSchematicBytes(plot, plot.getInitialSchematicBytes()),
                             this,
                             true,
-                            false
+                            true
                     )
             );
         } catch (Exception e) {
