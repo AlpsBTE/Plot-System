@@ -162,9 +162,10 @@ public abstract class AbstractPlotLoader {
                 return null;
             }
 
+            int minWorldHeight = getProtectionMinHeight();
             int maxWorldHeight = plotWorld.getBukkitWorld().getMaxHeight() - 1;
             // Create build region for plot from the outline of the plot
-            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName(), plot.getOutline(), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
+            ProtectedRegion protectedBuildRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName(), plot.getOutline(), minWorldHeight, maxWorldHeight);
             protectedBuildRegion.setPriority(100);
 
             // Create protected plot region for plot
@@ -193,11 +194,23 @@ public abstract class AbstractPlotLoader {
 
     private @NotNull ProtectedRegion getProtectedRegion() {
         World weWorld = new BukkitWorld(plotWorld.getBukkitWorld());
+        int minWorldHeight = getProtectionMinHeight();
         int maxWorldHeight = plotWorld.getBukkitWorld().getMaxHeight() - 1;
-        CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
-        ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName() + "-1", cylinderRegion.polygonize(-1), PlotWorld.MIN_WORLD_HEIGHT, maxWorldHeight);
+        CylinderRegion cylinderRegion = new CylinderRegion(weWorld, plot.getCenter(), Vector2.at(PlotWorld.PLOT_SIZE, PlotWorld.PLOT_SIZE), minWorldHeight, maxWorldHeight);
+        ProtectedRegion protectedRegion = new ProtectedPolygonalRegion(plotWorld.getRegionName() + "-1", cylinderRegion.polygonize(-1), minWorldHeight, maxWorldHeight);
         protectedRegion.setPriority(50);
         return protectedRegion;
+    }
+
+    /**
+     * City plot worlds paste at absolute / shared-offset terra Y, so protection must cover the full
+     * world height range. One-plot worlds keep the legacy {@link PlotWorld#MIN_WORLD_HEIGHT} floor.
+     */
+    private int getProtectionMinHeight() {
+        if (PlotWorld.isCityPlotWorld(plotWorld.getWorldName())) {
+            return plotWorld.getBukkitWorld().getMinHeight();
+        }
+        return PlotWorld.MIN_WORLD_HEIGHT;
     }
 
     /**
