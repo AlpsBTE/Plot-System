@@ -47,6 +47,7 @@ val guavaPackage = "com.google.guava"
 val gsonPackage = "com.google.code.gson"
 
 dependencies {
+    implementation(project(":plot-system-api"))
     implementation(libs.com.alpsbte.canvas)
     implementation(libs.com.alpsbte.alpslib.alpslib.io)
     implementation(libs.com.alpsbte.alpslib.alpslib.hologram)
@@ -75,6 +76,9 @@ dependencies {
     compileOnly(libs.li.cinnazeyy.langlibs.api)
     compileOnly(libs.commons.io.commons.io)
     compileOnly(libs.io.papermc.paper.paper.api)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testImplementation(libs.io.papermc.paper.paper.api)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     if (paperNextEnabled.get()) {
         constraints {
@@ -153,6 +157,10 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.withType<Javadoc>().configureEach {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.register<GradleBuild>("buildPaperNext") {

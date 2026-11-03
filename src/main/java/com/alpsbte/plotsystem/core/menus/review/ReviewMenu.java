@@ -2,7 +2,6 @@ package com.alpsbte.plotsystem.core.menus.review;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractPaginatedMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
@@ -11,7 +10,6 @@ import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
@@ -97,13 +95,11 @@ public class ReviewMenu extends AbstractPaginatedMenu {
                             .append(text(plot.getDifficulty().name().charAt(0) + plot.getDifficulty().name().substring(1).toLowerCase(), WHITE)));
 
             if (plot.getStatus() == Status.unfinished) {
-                long inactivityIntervalDays = PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.INACTIVITY_INTERVAL);
-                long rejectedInactivityIntervalDays = (PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) != -1) ? PlotSystem.getPlugin().getConfig().getLong(ConfigPaths.REJECTED_INACTIVITY_INTERVAL) : inactivityIntervalDays;
-                long interval = plot.isRejected() ? rejectedInactivityIntervalDays : inactivityIntervalDays;
-                if (interval > -1 && plot.getLastActivity() != null) {
+                LocalDate abandonmentDate = plot.getAbandonmentDate();
+                if (abandonmentDate != null) {
                     loreBuilder
                             .emptyLine()
-                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED_IN_DAYS, String.valueOf(DAYS.between(LocalDate.now(), plot.getLastActivity().plusDays(interval)))), GRAY));
+                            .addLine(text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.Review.ABANDONED_IN_DAYS, String.valueOf(DAYS.between(LocalDate.now(), abandonmentDate))), GRAY));
                 }
 
             }
