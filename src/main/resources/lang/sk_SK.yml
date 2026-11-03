@@ -451,4 +451,4 @@ database:
     correct_window_type: 'Správny typ okien'
     windows_blacked_out: 'Všetky okná zaclonené'
 # NOTE: Do not change
-config-version: 2
+config-version: "1"
