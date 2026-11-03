@@ -13,10 +13,11 @@ import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,10 +37,12 @@ public class PlotProvider {
         }));
     }
 
-    public List<Plot> getPlots(@NotNull Status status) {
-        String qAllByStatus = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot WHERE status = ?;";
+    public List<Plot> getPlots(Status @NotNull ... statuses) {
+        String qAllByStatus = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot"
+                + (statuses.length == 0 ? "" : " WHERE status IN (" + "?,".repeat(statuses.length - 1) + "?)")
+                + " ORDER BY plot_id;";
         return Utils.handleSqlException(List.of(), () -> SqlHelper.runQuery(qAllByStatus, ps -> {
-            ps.setString(1, status.name());
+            for (int i = 0; i < statuses.length; i++) ps.setString(i + 1, statuses[i].name());
             ResultSet rs = ps.executeQuery();
             List<Plot> plots = new ArrayList<>();
             while (rs.next()) {
@@ -153,7 +156,7 @@ public class PlotProvider {
 
         Status status = Status.valueOf(rs.getString("status"));
         String outlineBounds = rs.getString("outline_bounds");
-        Date lastActivity = rs.getDate("last_activity_date");
+        Timestamp lastActivity = rs.getTimestamp("last_activity_date");
 
         double version = rs.getDouble("plot_version");
         PlotType type = PlotType.byId(rs.getInt("plot_type"));
@@ -165,7 +168,7 @@ public class PlotProvider {
                 ownerUUID,
                 status,
                 outlineBounds,
-                lastActivity != null ? lastActivity.toLocalDate() : null,
+                lastActivity != null ? lastActivity.toLocalDateTime() : null,
                 version,
                 type,
                 getPlotMembers(plotId));
@@ -225,9 +228,13 @@ public class PlotProvider {
     }
 
     public boolean setLastActivity(int plotId, LocalDate activityDate) {
+        return setLastActivityTime(plotId, activityDate == null ? null : activityDate.atStartOfDay());
+    }
+
+    public boolean setLastActivityTime(int plotId, LocalDateTime activityTime) {
         String qSetLastActivityDate = "UPDATE plot SET last_activity_date = ? WHERE plot_id = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetLastActivityDate, ps -> {
-            ps.setDate(1, activityDate == null ? null : Date.valueOf(activityDate));
+            ps.setTimestamp(1, activityTime == null ? null : Timestamp.valueOf(activityTime));
             ps.setInt(2, plotId);
             return ps.executeUpdate() > 0;
         })));

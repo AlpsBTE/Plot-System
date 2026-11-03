@@ -137,7 +137,9 @@ public abstract class AbstractPlot {
 
         synchronized (this) {
             if (schematicMetadata != null) return schematicMetadata;
-            try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(getInitialSchematicBytes()))) {
+            byte[] schematic = getInitialSchematicBytes();
+            if (schematic == null || schematic.length == 0) throw new IOException("Initial schematic is unavailable");
+            try (ClipboardReader reader = CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(schematic))) {
                 Clipboard clipboard = reader.read();
                 if (clipboard == null) throw new IOException("Could not read schematic metadata");
                 schematicMetadata = new SchematicMetadata(
