@@ -41,6 +41,9 @@ commands:
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
+  repaircompleted:
+    description: Repair a completed schematic's Y frame and paste origin.
+    usage: /repaircompleted <ID>
   cleanupworlds:
     description: Delete single-plot worlds left behind by finished plots.
     usage: /cleanupworlds <amount> [--dry-run]
