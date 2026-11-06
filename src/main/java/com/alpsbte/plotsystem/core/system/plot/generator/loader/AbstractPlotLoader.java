@@ -334,14 +334,30 @@ public abstract class AbstractPlotLoader {
             pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
         }
 
+        int worldMin = world.getBukkitWorld().getMinHeight();
+        int worldMax = world.getBukkitWorld().getMaxHeight() - 1;
+        int pasteMinY = pasteY + clipboard.getMinimumPoint().y() - clipboardOrigin.y();
+        int pasteMaxY = pasteY + clipboard.getMaximumPoint().y() - clipboardOrigin.y();
+        if (pasteMaxY < worldMin || pasteMinY > worldMax) {
+            throw new IOException("Schematic Y band [" + pasteMinY + ", " + pasteMaxY + "] is outside world "
+                    + world.getWorldName() + " [" + worldMin + ", " + worldMax + "] (pasteY=" + pasteY
+                    + ", offset=" + offset + ")");
+        }
+        if (pasteMinY < worldMin || pasteMaxY > worldMax) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text(
+                    "Schematic Y band [" + pasteMinY + ", " + pasteMaxY + "] is partially outside world "
+                            + world.getWorldName() + " [" + worldMin + ", " + worldMax + "] — clipped blocks will be skipped"
+            ));
+        }
+
         // Clear only the Y band the schematic will occupy. Full world-height clears leave void
         // shafts under city plots after abandon/reset.
         if (clearArea) {
-            int minY = world.getBukkitWorld().getMinHeight();
-            int maxY = world.getBukkitWorld().getMaxHeight() - 1;
+            int minY = worldMin;
+            int maxY = worldMax;
             if (offset) {
-                minY = Math.max(minY, pasteY + clipboard.getMinimumPoint().y() - clipboardOrigin.y());
-                maxY = Math.min(maxY, pasteY + clipboard.getMaximumPoint().y() - clipboardOrigin.y());
+                minY = Math.max(minY, pasteMinY);
+                maxY = Math.min(maxY, pasteMaxY);
             }
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
                 Polygonal2DRegion polyRegion = new Polygonal2DRegion(
