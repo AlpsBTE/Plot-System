@@ -4,6 +4,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
@@ -47,9 +48,10 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
             return;
         }
 
-        byte[] completedSchematic = p.getCompletedSchematic();
+        byte[] completedSchematic = PlotHandler.getNormalizedCompletedSchematic(p);
         if (completedSchematic != null) {
-            runFaweBlocking(() -> pasteSchematic(true, completedSchematic, plotWorld, false, true));
+            byte[] toPaste = completedSchematic;
+            runFaweBlocking(() -> pasteSchematic(true, toPaste, plotWorld, false, true));
         } else super.generateStructure();
         copyToCityWorld(completedSchematic == null ? schematicBytes : completedSchematic, completedSchematic != null);
     }

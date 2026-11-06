@@ -29,7 +29,6 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
@@ -237,7 +236,7 @@ public class PlotHandler {
     }
 
     private static boolean pasteCompletedSchematic(Plot plot, CityPlotWorld cityWorld) throws Exception {
-        byte[] schematic = plot.getCompletedSchematic();
+        byte[] schematic = getNormalizedCompletedSchematic(plot);
         if (schematic == null) {
             PlotSystem.getPlugin().getComponentLogger().warn(text(
                     "Finished plot " + plot.getId() + " has no completed schematic to paste into the city world!"
@@ -474,8 +473,15 @@ public class PlotHandler {
             Polygonal2DRegion region,
             ByteArrayOutputStream outputStream
     ) throws Exception {
+        int cityFloorY = cuboidRegion.getMinimumY();
+        int terraMinY = initialSchematic.getRegion().getMinimumY();
+        BlockVector3 terraOrigin = BlockVector3.at(plot.getCenter().x(), terraMinY, plot.getCenter().z());
+
         try (Clipboard clipboard = new BlockArrayClipboard(region)) {
-            clipboard.setOrigin(BlockVector3.at(plot.getCenter().x(), cuboidRegion.getMinimumY(), (double) plot.getCenter().z()));
+            // Copy from the city/one-plot floor, then restore absolute terra Y. FAWE's transform moves
+            // blocks but leaves the origin behind — reset it to the terra min so completed schems match
+            // creator format (WEOffsetY = 0) and city re-paste uses the same offset math as initials.
+            clipboard.setOrigin(BlockVector3.at(plot.getCenter().x(), cityFloorY, plot.getCenter().z()));
             ForwardExtentCopy copy = new ForwardExtentCopy(
                     new BukkitWorld(plot.getWorld().getBukkitWorld()),
                     region,
@@ -484,11 +490,94 @@ public class PlotHandler {
             );
             Operations.complete(copy);
 
+            Clipboard restored = clipboard.transform(new AffineTransform().translate(0, terraMinY - cityFloorY, 0));
+            restored.setOrigin(terraOrigin);
+
             try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
-                double offset = initialSchematic.getRegion().getMinimumY() - cuboidRegion.getMinimumY();
-                writer.write(clipboard.transform(new AffineTransform().translate(Vector3.at(0, offset, 0))));
+                writer.write(restored);
             }
         }
+    }
+
+    /**
+     * Result of aligning a completed schematic to its initial Y frame and creator-style origin.
+     *
+     * @param changed     whether bytes were rewritten
+     * @param fromMinY    completed schematic min Y before repair
+     * @param toMinY      completed schematic min Y after repair (initial min Y)
+     * @param originFixed whether the paste origin Y was moved onto the schematic min
+     */
+    public record CompletedSchematicNormalization(boolean changed, int fromMinY, int toMinY, boolean originFixed) {
+        public static CompletedSchematicNormalization unchanged(int minY) {
+            return new CompletedSchematicNormalization(false, minY, minY, false);
+        }
+    }
+
+    /**
+     * Repairs a completed schematic whose absolute Y or origin drifted from the initial schematic.
+     * <p>
+     * Legacy saves left the origin on the city floor ({@code WEOffsetY ≠ 0}). Corrupt saves can have
+     * block data at the wrong absolute Y. Both are rewritten to creator format (min Y = initial min Y,
+     * origin on that min) and persisted when changed.
+     *
+     * @return normalization details, or {@code null} when the plot has no completed schematic
+     */
+    public static @Nullable CompletedSchematicNormalization normalizeCompletedSchematic(@NotNull Plot plot) throws Exception {
+        byte[] completedBytes = plot.getCompletedSchematic();
+        if (completedBytes == null) return null;
+
+        Clipboard initialSchematic = readInitialSchematic(plot);
+        if (initialSchematic == null) {
+            throw new IOException("Could not read initial schematic for plot #" + plot.getId());
+        }
+
+        int initialMinY = initialSchematic.getRegion().getMinimumY();
+        Clipboard completed;
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(completedBytes))) {
+            completed = reader.read();
+        }
+        if (completed == null) {
+            throw new IOException("Could not read completed schematic for plot #" + plot.getId());
+        }
+
+        int completedMinY = completed.getMinimumPoint().y();
+        BlockVector3 origin = completed.getOrigin() != null ? completed.getOrigin() : completed.getMinimumPoint();
+        boolean minWrong = completedMinY != initialMinY;
+        boolean originWrong = origin.y() != completedMinY;
+        if (!minWrong && !originWrong) {
+            return CompletedSchematicNormalization.unchanged(completedMinY);
+        }
+
+        Clipboard fixed = completed;
+        if (minWrong) {
+            fixed = completed.transform(new AffineTransform().translate(0, initialMinY - completedMinY, 0));
+        }
+        fixed.setOrigin(BlockVector3.at(origin.x(), initialMinY, origin.z()));
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
+            writer.write(fixed);
+        }
+        byte[] repaired = outputStream.toByteArray();
+        if (!DataProvider.PLOT.setCompletedSchematic(plot.getId(), repaired)) {
+            throw new IOException("Could not persist repaired completed schematic for plot #" + plot.getId());
+        }
+
+        PlotSystem.getPlugin().getComponentLogger().info(text(
+                "Repaired completed schematic for plot #" + plot.getId()
+                        + " (minY " + completedMinY + " -> " + initialMinY
+                        + (originWrong ? ", origin reset onto min Y" : "") + ")"
+        ));
+        return new CompletedSchematicNormalization(true, completedMinY, initialMinY, originWrong || minWrong);
+    }
+
+    /**
+     * Returns completed schematic bytes after normalizing legacy/corrupt Y data when needed.
+     */
+    public static byte @Nullable [] getNormalizedCompletedSchematic(@NotNull Plot plot) throws Exception {
+        CompletedSchematicNormalization result = normalizeCompletedSchematic(plot);
+        if (result == null) return null;
+        return plot.getCompletedSchematic();
     }
 
     private static void copySchematicToCityWorld(Plot plot, byte[] schematic) throws Exception {
