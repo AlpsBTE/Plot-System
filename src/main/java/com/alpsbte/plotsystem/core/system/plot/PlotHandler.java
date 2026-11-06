@@ -211,7 +211,9 @@ public class PlotHandler {
 
     /**
      * Loads the world returned by {@link #visitWorld(Plot)}.
-     * When a finished plot's city world does not exist yet, it is created and the stored completed schematic is pasted.
+     * When a finished plot's city world does not exist yet, it is created and the stored completed
+     * schematic is pasted. If the city world already exists but the plot center column is empty
+     * (failed/corrupt paste), the completed schematic is pasted once to recover it.
      * Must be called off the main thread when that city world still has to be generated.
      *
      * @return true when the player can be teleported
@@ -225,6 +227,8 @@ public class PlotHandler {
                 if (!pasteCompletedSchematic(plot, cityWorld)) return false;
             } else if (!cityWorld.loadWorld()) {
                 return false;
+            } else if (isPlotColumnEmpty(plot, cityWorld) && !pasteCompletedSchematic(plot, cityWorld)) {
+                return false;
             }
             return cityWorld.ensureVisitorAccess();
         } catch (Exception exception) {
@@ -233,6 +237,16 @@ public class PlotHandler {
             ), exception);
             return false;
         }
+    }
+
+    /**
+     * Pastes the plot's completed schematic into its city world (creating the world if needed).
+     * Normalizes legacy/corrupt Y data first. Safe to call when the city world already exists.
+     *
+     * @return false when the plot has no completed schematic
+     */
+    public static boolean pasteCompletedSchematic(@NotNull Plot plot) throws Exception {
+        return pasteCompletedSchematic(plot, new CityPlotWorld(plot));
     }
 
     private static boolean pasteCompletedSchematic(Plot plot, CityPlotWorld cityWorld) throws Exception {
@@ -244,9 +258,23 @@ public class PlotHandler {
             return false;
         }
         if (!cityWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityWorld);
+        else if (!cityWorld.loadWorld()) return false;
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, schematic, cityWorld, false, true));
         return true;
+    }
+
+    /**
+     * True when the plot center column has no solid blocks (void / failed paste).
+     */
+    private static boolean isPlotColumnEmpty(@NotNull Plot plot, @NotNull CityPlotWorld cityWorld) throws Exception {
+        BlockVector3 center = plot.getCenter();
+        if (center == null) return true;
+        return Utils.supplySync(() -> {
+            var world = cityWorld.getBukkitWorld();
+            if (world == null) return true;
+            return world.getHighestBlockYAt(center.x(), center.z()) < world.getMinHeight();
+        }).get();
     }
 
     /**

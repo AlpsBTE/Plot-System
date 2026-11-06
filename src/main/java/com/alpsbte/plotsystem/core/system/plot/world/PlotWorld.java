@@ -145,13 +145,14 @@ public class PlotWorld implements IWorld {
                 : new Location(getBukkitWorld(), plotVector.x(), plotVector.y(), plotVector.z());
 
         // Prefer standing on the highest solid block. An empty column (failed/out-of-range paste)
-        // returns below min height — keep the plot-centered Y instead of teleporting into the void.
+        // returns below min height — fall back to the paste floor, not mid-schematic centered Y
+        // (completed outline saves are often ~256 tall with solids only near the bottom).
         int highest = getBukkitWorld().getHighestBlockYAt((int) spawnLocation.getX(), (int) spawnLocation.getZ());
         if (highest >= getBukkitWorld().getMinHeight()) {
             spawnLocation.setY(highest + 1d);
-        } else if (plotVector == null) {
+        } else {
             try {
-                spawnLocation.setY(getPlotHeightCentered());
+                spawnLocation.setY(plotVector == null ? getPlotHeightCentered() : getPlotHeight());
             } catch (IOException exception) {
                 spawnLocation.setY(MIN_WORLD_HEIGHT);
             }

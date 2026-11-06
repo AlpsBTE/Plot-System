@@ -50,17 +50,23 @@ public class CMD_RepairCompleted extends BaseCommand {
 
             try {
                 PlotHandler.CompletedSchematicNormalization result = PlotHandler.normalizeCompletedSchematic(plot);
+                if (result == null) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(
+                            "Plot #" + plotID + " has no completed schematic to repair!"));
+                    return;
+                }
+
+                // Repair only rewrites the DB blob; paste into the city world so the fixed build is visible
+                // without waiting for a later visit (city worlds that already exist used to skip paste).
+                boolean pasted = PlotHandler.pasteCompletedSchematic(plot);
+
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (result == null) {
-                        sender.sendMessage(Utils.ChatUtils.getAlertFormat(
-                                "Plot #" + plotID + " has no completed schematic to repair!"));
-                        return;
-                    }
                     if (!result.changed()) {
                         sender.sendMessage(Utils.ChatUtils.getInfoFormat(
                                 Component.text("Plot #" + plotID + " completed schematic is already aligned (minY ")
                                         .append(Component.text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
                                         .append(Component.text(")."))
+                                        .append(Component.text(pasted ? " Re-pasted into city world." : ""))
                         ));
                         return;
                     }
@@ -70,7 +76,7 @@ public class CMD_RepairCompleted extends BaseCommand {
                                     .append(Component.text(" -> "))
                                     .append(Component.text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
                                     .append(Component.text(result.originFixed() ? " (origin reset)" : ""))
-                                    .append(Component.text("."))
+                                    .append(Component.text(pasted ? ". Pasted into city world." : "."))
                     ));
                     if (getPlayer(sender) != null) {
                         getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
