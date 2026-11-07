@@ -449,11 +449,12 @@ public class PlotHandler {
     }
 
     /**
-     * Repairs a completed schematic whose absolute Y or origin drifted from the initial schematic.
+     * Repairs a completed schematic whose absolute min Y drifted from the initial schematic.
      * <p>
-     * Legacy saves left the origin on the city floor ({@code WEOffsetY ≠ 0}). Corrupt saves can have
-     * block data at the wrong absolute Y. Both are rewritten to creator format (min Y = initial min Y,
-     * origin on that min) and persisted when changed.
+     * Corrupt saves can have block data at the wrong absolute Y; those are shifted to the initial
+     * min Y and the origin is reset onto that min. Legacy saves that only left the origin on the
+     * city floor ({@code WEOffsetY ≠ 0}) still paste correctly with {@code offset=true}, so they
+     * are left unchanged.
      *
      * @return normalization details, or {@code null} when the plot has no completed schematic
      */
@@ -476,17 +477,13 @@ public class PlotHandler {
         }
 
         int completedMinY = completed.getMinimumPoint().y();
-        BlockVector3 origin = completed.getOrigin() != null ? completed.getOrigin() : completed.getMinimumPoint();
-        boolean minWrong = completedMinY != initialMinY;
-        boolean originWrong = origin.y() != completedMinY;
-        if (!minWrong && !originWrong) {
+        if (completedMinY == initialMinY) {
             return CompletedSchematicNormalization.unchanged(completedMinY);
         }
 
-        Clipboard fixed = completed;
-        if (minWrong) {
-            fixed = completed.transform(new AffineTransform().translate(0, initialMinY - completedMinY, 0));
-        }
+        BlockVector3 origin = completed.getOrigin() != null ? completed.getOrigin() : completed.getMinimumPoint();
+        boolean originWasOffMin = origin.y() != completedMinY;
+        Clipboard fixed = completed.transform(new AffineTransform().translate(0, initialMinY - completedMinY, 0));
         fixed.setOrigin(BlockVector3.at(origin.x(), initialMinY, origin.z()));
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -501,9 +498,9 @@ public class PlotHandler {
         PlotSystem.getPlugin().getComponentLogger().info(text(
                 "Repaired completed schematic for plot #" + plot.getId()
                         + " (minY " + completedMinY + " -> " + initialMinY
-                        + (originWrong ? ", origin reset onto min Y" : "") + ")"
+                        + (originWasOffMin ? ", origin reset onto min Y" : "") + ")"
         ));
-        return new CompletedSchematicNormalization(true, completedMinY, initialMinY, originWrong || minWrong);
+        return new CompletedSchematicNormalization(true, completedMinY, initialMinY, true);
     }
 
     /**
