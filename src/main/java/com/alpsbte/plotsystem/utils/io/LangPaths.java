@@ -311,6 +311,8 @@ public abstract class LangPaths {
 
             public static final String ERROR_OCCURRED = ERROR_PREFIX + "error-occurred";
             public static final String NO_PLOTS_LEFT = ERROR_PREFIX + "no-plots-left";
+            public static final String NO_OPEN_PLOTS = ERROR_PREFIX + "no-open-plots";
+            public static final String NO_OTHER_OPEN_PLOTS = ERROR_PREFIX + "no-other-open-plots";
             public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";
             public static final String CHAT_INPUT_EXPIRED = ERROR_PREFIX + "chat-input-expired";
