@@ -127,15 +127,34 @@ public final class PlotWorldMaintenance {
         PlotWorld cityWorld = new PlotWorld(worldName, completedPlots.isEmpty() ? null : completedPlots.get(0));
 
         if (dryRun) {
-            progress.citiesProcessed++;
-            progress.plotsWouldPaste += completedPlots.size();
-            if (cityWorld.isWorldGenerated()) progress.worldsWouldDelete++;
-            PlotSystem.getPlugin().getComponentLogger().info(text(
-                    "Would rebuild CIM world " + worldName + " with " + completedPlots.size() + " completed plot(s)."
-            ));
-            return pauseBeforeNext;
+            return dryRunRebuildCity(worldName, cityWorld, completedPlots, progress, pauseBeforeNext);
         }
+        return executeRebuildCity(worldName, cityWorld, completedPlots, progress, pauseBeforeNext);
+    }
 
+    private static boolean dryRunRebuildCity(
+            String worldName,
+            PlotWorld cityWorld,
+            List<Plot> completedPlots,
+            CimRebuildProgress progress,
+            boolean pauseBeforeNext
+    ) {
+        progress.citiesProcessed++;
+        progress.plotsWouldPaste += completedPlots.size();
+        if (cityWorld.isWorldGenerated()) progress.worldsWouldDelete++;
+        PlotSystem.getPlugin().getComponentLogger().info(text(
+                "Would rebuild CIM world " + worldName + " with " + completedPlots.size() + " completed plot(s)."
+        ));
+        return pauseBeforeNext;
+    }
+
+    private static boolean executeRebuildCity(
+            String worldName,
+            PlotWorld cityWorld,
+            List<Plot> completedPlots,
+            CimRebuildProgress progress,
+            boolean pauseBeforeNext
+    ) throws InterruptedException {
         try {
             if (pauseBeforeNext) Thread.sleep(PAUSE_MILLIS);
             if (!deleteCityWorld(cityWorld, worldName, progress)) return true;
@@ -147,27 +166,9 @@ public final class PlotWorldMaintenance {
             }
 
             // Recreate the empty city world, then paste builds, then environment into leftover void.
-            CityPlotWorld recreated = new CityPlotWorld(completedPlots.get(0));
-            AbstractPlotLoader.ensureWorldGenerated(recreated);
-
-            boolean pastedAny = false;
-            for (Plot plot : completedPlots) {
-                if (pastedAny) Thread.sleep(PAUSE_MILLIS);
-                if (PlotHandler.pasteCompletedIntoCity(plot, false)) {
-                    progress.plotsPasted++;
-                    pastedAny = true;
-                    PlotSystem.getPlugin().getComponentLogger().info(text(
-                            "Rebuilt completed plot #" + plot.getId() + " into CIM world " + worldName + "."
-                    ));
-                } else {
-                    progress.plotsFailed++;
-                }
-            }
-            for (Plot plot : completedPlots) {
-                if (pastedAny) Thread.sleep(PAUSE_MILLIS);
-                PlotHandler.pasteCityEnvironmentIntoVoid(plot);
-                pastedAny = true;
-            }
+            AbstractPlotLoader.ensureWorldGenerated(new CityPlotWorld(completedPlots.get(0)));
+            boolean pauseBeforeEnv = pasteCompletedPlotsIntoCity(worldName, completedPlots, progress);
+            pasteEnvironmentIntoCity(completedPlots, pauseBeforeEnv);
             progress.citiesProcessed++;
             return true;
         } catch (InterruptedException interrupted) {
@@ -181,6 +182,36 @@ public final class PlotWorldMaintenance {
                     exception
             );
             return true;
+        }
+    }
+
+    private static boolean pasteCompletedPlotsIntoCity(
+            String worldName,
+            List<Plot> completedPlots,
+            CimRebuildProgress progress
+    ) throws Exception {
+        boolean pastedAny = false;
+        for (Plot plot : completedPlots) {
+            if (pastedAny) Thread.sleep(PAUSE_MILLIS);
+            if (PlotHandler.pasteCompletedIntoCity(plot, false)) {
+                progress.plotsPasted++;
+                pastedAny = true;
+                PlotSystem.getPlugin().getComponentLogger().info(text(
+                        "Rebuilt completed plot #" + plot.getId() + " into CIM world " + worldName + "."
+                ));
+            } else {
+                progress.plotsFailed++;
+            }
+        }
+        return pastedAny;
+    }
+
+    private static void pasteEnvironmentIntoCity(List<Plot> completedPlots, boolean pauseBeforeFirst) throws Exception {
+        boolean pause = pauseBeforeFirst;
+        for (Plot plot : completedPlots) {
+            if (pause) Thread.sleep(PAUSE_MILLIS);
+            PlotHandler.pasteCityEnvironmentIntoVoid(plot);
+            pause = true;
         }
     }
 

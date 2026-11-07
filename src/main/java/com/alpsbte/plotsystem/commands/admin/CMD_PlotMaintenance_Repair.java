@@ -38,54 +38,75 @@ public class CMD_PlotMaintenance_Repair extends SubCommand {
             return;
         }
 
-        CompletableFuture.runAsync(() -> {
-            Plot plot = DataProvider.PLOT.getPlotById(plotID);
-            if (plot == null) {
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find plot with ID #" + plotID + "!"));
+        CompletableFuture.runAsync(() -> repairPlot(sender, plotID));
+    }
+
+    private void repairPlot(CommandSender sender, int plotID) {
+        Plot plot = DataProvider.PLOT.getPlotById(plotID);
+        if (plot == null) {
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat("Could not find plot with ID #" + plotID + "!"));
+            return;
+        }
+
+        try {
+            PlotHandler.CompletedSchematicNormalization result = PlotHandler.normalizeCompletedSchematic(plot);
+            if (result == null) {
+                sender.sendMessage(Utils.ChatUtils.getAlertFormat(
+                        "Plot #" + plotID + " has no completed schematic to repair!"));
                 return;
             }
 
-            try {
-                PlotHandler.CompletedSchematicNormalization result = PlotHandler.normalizeCompletedSchematic(plot);
-                if (result == null) {
-                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(
-                            "Plot #" + plotID + " has no completed schematic to repair!"));
-                    return;
-                }
+            boolean pasted = PlotHandler.pasteCompletedSchematic(plot);
+            Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () ->
+                    notifyRepairResult(sender, plotID, result, pasted));
+        } catch (Exception exception) {
+            PlotSystem.getPlugin().getComponentLogger().error(
+                    text("Failed to repair completed schematic for plot #" + plotID),
+                    exception
+            );
+            sender.sendMessage(Utils.ChatUtils.getAlertFormat(
+                    "Failed to repair plot #" + plotID + ": " + exception.getMessage()));
+        }
+    }
 
-                boolean pasted = PlotHandler.pasteCompletedSchematic(plot);
+    private void notifyRepairResult(
+            CommandSender sender,
+            int plotID,
+            PlotHandler.CompletedSchematicNormalization result,
+            boolean pasted
+    ) {
+        if (!result.changed()) {
+            sender.sendMessage(Utils.ChatUtils.getInfoFormat(alreadyAlignedMessage(plotID, result, pasted)));
+            return;
+        }
+        sender.sendMessage(Utils.ChatUtils.getInfoFormat(repairedMessage(plotID, result, pasted)));
+        if (getPlayer(sender) != null) {
+            getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
+        }
+    }
 
-                Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
-                    if (!result.changed()) {
-                        sender.sendMessage(Utils.ChatUtils.getInfoFormat(
-                                Component.text("Plot #" + plotID + " completed schematic is already aligned (minY ")
-                                        .append(Component.text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
-                                        .append(Component.text(")."))
-                                        .append(Component.text(pasted ? " Re-pasted into city world." : ""))
-                        ));
-                        return;
-                    }
-                    sender.sendMessage(Utils.ChatUtils.getInfoFormat(
-                            Component.text("Repaired plot #" + plotID + " completed schematic: minY ")
-                                    .append(Component.text(String.valueOf(result.fromMinY()), NamedTextColor.GOLD))
-                                    .append(Component.text(" -> "))
-                                    .append(Component.text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
-                                    .append(Component.text(result.originFixed() ? " (origin reset)" : ""))
-                                    .append(Component.text(pasted ? ". Pasted into city world." : "."))
-                    ));
-                    if (getPlayer(sender) != null) {
-                        getPlayer(sender).playSound(getPlayer(sender).getLocation(), Utils.SoundUtils.DONE_SOUND, 1f, 1f);
-                    }
-                });
-            } catch (Exception exception) {
-                PlotSystem.getPlugin().getComponentLogger().error(
-                        text("Failed to repair completed schematic for plot #" + plotID),
-                        exception
-                );
-                sender.sendMessage(Utils.ChatUtils.getAlertFormat(
-                        "Failed to repair plot #" + plotID + ": " + exception.getMessage()));
-            }
-        });
+    private static Component alreadyAlignedMessage(
+            int plotID,
+            PlotHandler.CompletedSchematicNormalization result,
+            boolean pasted
+    ) {
+        return text("Plot #" + plotID + " completed schematic is already aligned (minY ")
+                .append(text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
+                .append(text(")."))
+                .append(text(pasted ? " Re-pasted into city world." : ""));
+    }
+
+    private static Component repairedMessage(
+            int plotID,
+            PlotHandler.CompletedSchematicNormalization result,
+            boolean pasted
+    ) {
+        return text("Repaired plot #" + plotID + " completed schematic: minY ")
+                .append(text(String.valueOf(result.fromMinY()), NamedTextColor.GOLD))
+                .append(text(" -> "))
+                .append(text(String.valueOf(result.toMinY()), NamedTextColor.GOLD))
+                .append(text(result.originFixed() ? " (origin reset)" : ""))
+                .append(text(pasted ? ". Pasted into city world." : "."));
     }
 
     @Override

@@ -468,6 +468,16 @@ public class PlotHandler {
         }
 
         int initialMinY = initialSchematic.getRegion().getMinimumY();
+        Clipboard completed = readCompletedClipboard(plot, completedBytes);
+        int completedMinY = completed.getMinimumPoint().y();
+        if (completedMinY == initialMinY) {
+            return CompletedSchematicNormalization.unchanged(completedMinY);
+        }
+
+        return persistShiftedCompletedSchematic(plot, completed, completedMinY, initialMinY);
+    }
+
+    private static Clipboard readCompletedClipboard(@NotNull Plot plot, byte[] completedBytes) throws IOException {
         Clipboard completed;
         try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(completedBytes))) {
             completed = reader.read();
@@ -475,12 +485,15 @@ public class PlotHandler {
         if (completed == null) {
             throw new IOException("Could not read completed schematic for plot #" + plot.getId());
         }
+        return completed;
+    }
 
-        int completedMinY = completed.getMinimumPoint().y();
-        if (completedMinY == initialMinY) {
-            return CompletedSchematicNormalization.unchanged(completedMinY);
-        }
-
+    private static CompletedSchematicNormalization persistShiftedCompletedSchematic(
+            @NotNull Plot plot,
+            @NotNull Clipboard completed,
+            int completedMinY,
+            int initialMinY
+    ) throws IOException {
         BlockVector3 origin = completed.getOrigin() != null ? completed.getOrigin() : completed.getMinimumPoint();
         boolean originWasOffMin = origin.y() != completedMinY;
         Clipboard fixed = completed.transform(new AffineTransform().translate(0, initialMinY - completedMinY, 0));
@@ -490,8 +503,7 @@ public class PlotHandler {
         try (ClipboardWriter writer = AbstractPlot.CLIPBOARD_FORMAT.getWriter(outputStream)) {
             writer.write(fixed);
         }
-        byte[] repaired = outputStream.toByteArray();
-        if (!DataProvider.PLOT.setCompletedSchematic(plot.getId(), repaired)) {
+        if (!DataProvider.PLOT.setCompletedSchematic(plot.getId(), outputStream.toByteArray())) {
             throw new IOException("Could not persist repaired completed schematic for plot #" + plot.getId());
         }
 
