@@ -225,6 +225,15 @@ public class PlotProvider {
         })));
     }
 
+    public boolean setDifficulty(int plotId, @NotNull PlotDifficulty difficulty) {
+        String qSetDifficulty = "UPDATE plot SET difficulty_id = ? WHERE plot_id = ?;";
+        return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetDifficulty, ps -> {
+            ps.setString(1, difficulty.name());
+            ps.setInt(2, plotId);
+            return ps.executeUpdate() > 0;
+        })));
+    }
+
     public boolean setMcVersion(int plotId) {
         String qSetMcVersion = "UPDATE plot SET mc_version = ? WHERE plot_id = ?;";
         return Boolean.TRUE.equals(Utils.handleSqlException(false, () -> SqlHelper.runQuery(qSetMcVersion, ps -> {

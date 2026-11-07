@@ -38,6 +38,9 @@ commands:
   editplot:
     description: Enable/disable build permissions for reviewers on a plot.
     usage: /editplot
+  setdifficulty:
+    description: Changes the difficulty of a plot.
+    usage: /setdifficulty <ID> <Difficulty>
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
