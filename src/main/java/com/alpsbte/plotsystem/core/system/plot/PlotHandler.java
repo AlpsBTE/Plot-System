@@ -259,9 +259,24 @@ public class PlotHandler {
         }
         if (!cityWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityWorld);
         else if (!cityWorld.loadWorld()) return false;
+
+        // Completed build first, then environment only into fully empty columns (full Y void).
+        // That keeps basements / indoor air empty and still surrounds a brand-new CIM plot with terrain.
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, schematic, cityWorld, false, true));
+        pasteCityEnvironmentIntoVoid(plot, cityWorld);
         return true;
+    }
+
+    /**
+     * Pastes the plot's initial environment into a city world, only into XZ columns that are air
+     * for the full world height so existing builds and basements are never filled.
+     */
+    private static void pasteCityEnvironmentIntoVoid(@NotNull Plot plot, @NotNull CityPlotWorld cityWorld) throws Exception {
+        byte[] environment = plot.getInitialSchematicBytes();
+        if (environment == null || environment.length == 0) return;
+        AbstractPlotLoader.runFaweBlocking(() ->
+                AbstractPlotLoader.pasteSchematic(true, environment, cityWorld, false, true, true));
     }
 
     /**
@@ -615,5 +630,6 @@ public class PlotHandler {
         if (!cityPlotWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityPlotWorld);
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, schematic, cityPlotWorld, false, true));
+        pasteCityEnvironmentIntoVoid(plot, cityPlotWorld);
     }
 }

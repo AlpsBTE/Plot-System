@@ -72,11 +72,19 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         if (plot.getStatus() == Status.completed) return;
         if (!PlotWorld.isOnePlotWorld(plotWorld.getWorldName())) return;
 
-        // If the player is playing in his own world, then additionally generate the plot in the city world
+        // If the player is playing in his own world, then additionally generate the plot in the city world.
+        // Environment copies only fill void; completed builds may replace env solids inside the outline.
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
         try {
             ensureWorldGenerated(cityPlotWorld);
-            runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(completedSchematic, structureBytes, cityPlotWorld, false, true));
+            runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(
+                    true,
+                    structureBytes,
+                    cityPlotWorld,
+                    false,
+                    true,
+                    !completedSchematic
+            ));
         } catch (IOException exception) {
             throw exception;
         } catch (Exception exception) {
