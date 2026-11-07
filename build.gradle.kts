@@ -104,6 +104,8 @@ tasks.shadowJar {
     // them to the shaded package so mysql_native_password (etc.) still resolve.
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     mergeServiceFiles()
+
+    relocate("com.alpsbte.plotsystem.api", "com.alpsbte.plotsystem.api")
 }
 
 tasks.assemble {
