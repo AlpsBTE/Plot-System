@@ -284,6 +284,8 @@ message:
     player-missing-tutorial: "The player must first complete the tutorial to be added to the plot!"
     error-occurred: "An error occurred! Please try again!"
     no-plots-left: "This city project does not have any more plots left. Please select another project."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
     chat-input-expired: "The chat input has expired."

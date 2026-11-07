@@ -48,13 +48,11 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         List<Plot> plots = new ArrayList<>();
         cityProjects = DataProvider.BUILD_TEAM.getReviewerCities(getMenuPlayer().getUniqueId());
 
-        // Get plots based on city filter
+        // Get plots based on city filter (same order as /plot next)
         if (filteredCityProject != null) {
-            plots.addAll(DataProvider.PLOT.getPlots(List.of(filteredCityProject), Status.unreviewed));
-            plots.addAll(DataProvider.PLOT.getPlots(List.of(filteredCityProject), Status.unfinished));
+            plots.addAll(DataProvider.PLOT.getReviewBookPlots(List.of(filteredCityProject)));
         } else {
-            plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unreviewed));
-            plots.addAll(DataProvider.PLOT.getPlots(cityProjects, Status.unfinished));
+            plots.addAll(DataProvider.PLOT.getReviewBookPlots(cityProjects));
         }
 
         return plots;
