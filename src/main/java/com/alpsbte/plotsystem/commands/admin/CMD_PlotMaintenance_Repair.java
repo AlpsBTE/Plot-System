@@ -3,6 +3,7 @@ package com.alpsbte.plotsystem.commands.admin;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.commands.BaseCommand;
+import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -10,35 +11,31 @@ import com.alpsbte.plotsystem.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
 
 /**
- * Rewrites a plot's completed schematic into creator-compatible Y/origin form.
- * Use for legacy saves (origin stuck on the city floor) and corrupt absolute Y.
+ * Repairs a completed schematic whose absolute min Y drifted from the initial schematic.
  */
-public class CMD_RepairCompleted extends BaseCommand {
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(Utils.ChatUtils.getAlertFormat("You don't have permission to use this command!"));
-            return true;
-        }
+public class CMD_PlotMaintenance_Repair extends SubCommand {
+    public CMD_PlotMaintenance_Repair(BaseCommand baseCommand) {
+        super(baseCommand);
+    }
 
+    @Override
+    public void onCommand(CommandSender sender, String[] args) {
         if (args.length == 0) {
             sendInfo(sender);
-            return true;
+            return;
         }
 
         Integer plotID = AlpsUtils.tryParseInt(args[0]);
         if (plotID == null) {
             sendInfo(sender);
-            return true;
+            return;
         }
 
         CompletableFuture.runAsync(() -> {
@@ -56,8 +53,6 @@ public class CMD_RepairCompleted extends BaseCommand {
                     return;
                 }
 
-                // Repair only rewrites the DB blob; paste into the city world so the fixed build is visible
-                // without waiting for a later visit (city worlds that already exist used to skip paste).
                 boolean pasted = PlotHandler.pasteCompletedSchematic(plot);
 
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
@@ -91,17 +86,16 @@ public class CMD_RepairCompleted extends BaseCommand {
                         "Failed to repair plot #" + plotID + ": " + exception.getMessage()));
             }
         });
-        return true;
     }
 
     @Override
     public String[] getNames() {
-        return new String[]{"repaircompleted"};
+        return new String[]{"repair"};
     }
 
     @Override
     public String getDescription() {
-        return "Repair a completed schematic's Y frame and paste origin.";
+        return "Repair a completed schematic whose min Y drifted, then paste it into the city world.";
     }
 
     @Override
@@ -111,6 +105,6 @@ public class CMD_RepairCompleted extends BaseCommand {
 
     @Override
     public String getPermission() {
-        return "plotsystem.admin.repaircompleted";
+        return "plotsystem.admin.plotmaintenance";
     }
 }

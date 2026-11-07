@@ -1,10 +1,9 @@
 package com.alpsbte.plotsystem.commands;
 
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.commands.admin.CMD_CleanupWorlds;
 import com.alpsbte.plotsystem.commands.admin.CMD_DeletePlot;
 import com.alpsbte.plotsystem.commands.admin.CMD_PReload;
-import com.alpsbte.plotsystem.commands.admin.CMD_RepairCompleted;
+import com.alpsbte.plotsystem.commands.admin.CMD_PlotMaintenance;
 import com.alpsbte.plotsystem.commands.admin.CMD_SetLeaderboard;
 import com.alpsbte.plotsystem.commands.admin.setup.CMD_Setup;
 import com.alpsbte.plotsystem.commands.plot.CMD_Plot;
@@ -42,8 +41,7 @@ public class CommandManager {
 
         // Admin Commands
         baseCommands.add(new CMD_DeletePlot());
-        baseCommands.add(new CMD_RepairCompleted());
-        baseCommands.add(new CMD_CleanupWorlds());
+        baseCommands.add(new CMD_PlotMaintenance());
         baseCommands.add(new CMD_SetLeaderboard());
         baseCommands.add(new CMD_PReload());
 
