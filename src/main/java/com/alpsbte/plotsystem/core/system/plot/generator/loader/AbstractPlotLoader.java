@@ -19,8 +19,11 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.mask.AbstractExtentMask;
+import com.sk89q.worldedit.function.mask.Mask;
 import com.sk89q.worldedit.function.mask.RegionMask;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -44,6 +47,8 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+
+import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -257,10 +262,10 @@ public abstract class AbstractPlotLoader {
     protected void generateStructure() throws Exception {
         if (plotType.hasEnvironment()) {
             // The schematic already contains the environment around the plot, so it is pasted as a whole.
-            // City worlds share space: ignore schematic air so a new plot does not carve voids into
-            // neighbors, and apply the shared height offset so every plot lands on the same Y frame.
+            // City worlds share space: skip schematic air, and only write into fully empty columns
+            // (full Y void) so a new plot never carves or stuffs air pockets inside neighbors.
             boolean cityWorld = PlotWorld.isCityPlotWorld(plotWorld.getWorldName());
-            runFaweBlocking(() -> pasteSchematic(cityWorld, this.schematicBytes, this.plotWorld, false, cityWorld));
+            runFaweBlocking(() -> pasteSchematic(cityWorld, this.schematicBytes, this.plotWorld, false, cityWorld, cityWorld));
             return;
         }
         runFaweBlocking(() -> pasteSchematic(true, PlotUtils.getOutlinesSchematicBytes(plot, this.schematicBytes), this.plotWorld, true, false));
@@ -316,52 +321,182 @@ public abstract class AbstractPlotLoader {
      * @param offset        - offset for the paste operation
      */
     public static void pasteSchematic(boolean ignoreAir, byte[] schematicFile, @NotNull PlotWorld world, boolean clearArea, boolean offset) throws IOException {
+        pasteSchematic(ignoreAir, schematicFile, world, clearArea, offset, false);
+    }
+
+    /**
+     * Pastes the schematic to the plot center in the given world
+     *
+     * @param ignoreAir       - if true, the paste operation will ignore air blocks from the schematic
+     * @param schematicFile   - plot/environment schematic file
+     * @param world           - world to paste in
+     * @param clearArea       - clears the plot area with air before pasting
+     * @param offset          - offset for the paste operation
+     * @param onlyEmptyColumns - if true, only write into XZ columns that are air for the full world
+     *                          height (never overwrite builds or fill basements / indoor air pockets)
+     */
+    public static void pasteSchematic(
+            boolean ignoreAir,
+            byte[] schematicFile,
+            @NotNull PlotWorld world,
+            boolean clearArea,
+            boolean offset,
+            boolean onlyEmptyColumns
+    ) throws IOException {
         // load world if not loaded already
         if (!world.loadWorld()) return;
-        World weWorld = new BukkitWorld(world.getBukkitWorld());
 
-        Clipboard clipboard;
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(schematicFile);
-        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(inputStream)) {
-            clipboard = reader.read();
+        Clipboard clipboard = readClipboard(schematicFile);
+        BlockVector3 clipboardOrigin = clipboardOriginOrMin(clipboard);
+        int pasteY = resolvePasteY(world, clipboard, clipboardOrigin, offset);
+        PasteYBand yBand = resolvePasteYBand(world, clipboard, clipboardOrigin, pasteY);
+        validatePasteYBand(world, yBand, pasteY, offset);
+
+        if (clearArea) {
+            clearPlotArea(world, offset, yBand);
         }
+        pasteClipboard(ignoreAir, world, clipboard, pasteY, onlyEmptyColumns, yBand.worldMin(), yBand.worldMax());
+    }
 
-        BlockVector3 clipboardOrigin = clipboard.getOrigin();
-        if (clipboardOrigin == null) clipboardOrigin = clipboard.getMinimumPoint();
-
-        int pasteY = world.getPlotHeight();
-        if (offset) {
-            pasteY = world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+    private static Clipboard readClipboard(byte[] schematicFile) throws IOException {
+        try (ClipboardReader reader = AbstractPlot.CLIPBOARD_FORMAT.getReader(new ByteArrayInputStream(schematicFile))) {
+            return reader.read();
         }
+    }
 
+    private static BlockVector3 clipboardOriginOrMin(Clipboard clipboard) {
+        BlockVector3 origin = clipboard.getOrigin();
+        return origin != null ? origin : clipboard.getMinimumPoint();
+    }
+
+    private static int resolvePasteY(
+            PlotWorld world,
+            Clipboard clipboard,
+            BlockVector3 clipboardOrigin,
+            boolean offset
+    ) throws IOException {
+        if (!offset) return world.getPlotHeight();
+        return world.getPlotHeight() - clipboard.getMinimumPoint().y() + clipboardOrigin.y();
+    }
+
+    private record PasteYBand(int worldMin, int worldMax, int pasteMinY, int pasteMaxY) {}
+
+    private static PasteYBand resolvePasteYBand(
+            PlotWorld world,
+            Clipboard clipboard,
+            BlockVector3 clipboardOrigin,
+            int pasteY
+    ) {
+        int worldMin = world.getBukkitWorld().getMinHeight();
+        int worldMax = world.getBukkitWorld().getMaxHeight() - 1;
+        int pasteMinY = pasteY + clipboard.getMinimumPoint().y() - clipboardOrigin.y();
+        int pasteMaxY = pasteY + clipboard.getMaximumPoint().y() - clipboardOrigin.y();
+        return new PasteYBand(worldMin, worldMax, pasteMinY, pasteMaxY);
+    }
+
+    private static void validatePasteYBand(PlotWorld world, PasteYBand yBand, int pasteY, boolean offset)
+            throws IOException {
+        if (yBand.pasteMaxY() < yBand.worldMin() || yBand.pasteMinY() > yBand.worldMax()) {
+            throw new IOException("Schematic Y band [" + yBand.pasteMinY() + ", " + yBand.pasteMaxY()
+                    + "] is outside world " + world.getWorldName() + " [" + yBand.worldMin() + ", "
+                    + yBand.worldMax() + "] (pasteY=" + pasteY + ", offset=" + offset + ")");
+        }
+        if (yBand.pasteMinY() < yBand.worldMin() || yBand.pasteMaxY() > yBand.worldMax()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text(
+                    "Schematic Y band [" + yBand.pasteMinY() + ", " + yBand.pasteMaxY()
+                            + "] is partially outside world " + world.getWorldName() + " ["
+                            + yBand.worldMin() + ", " + yBand.worldMax()
+                            + "] — clipped blocks will be skipped"
+            ));
+        }
+    }
+
+    private static void clearPlotArea(PlotWorld world, boolean offset, PasteYBand yBand) {
         // Clear only the Y band the schematic will occupy. Full world-height clears leave void
         // shafts under city plots after abandon/reset.
-        if (clearArea) {
-            int minY = world.getBukkitWorld().getMinHeight();
-            int maxY = world.getBukkitWorld().getMaxHeight() - 1;
-            if (offset) {
-                minY = Math.max(minY, pasteY + clipboard.getMinimumPoint().y() - clipboardOrigin.y());
-                maxY = Math.min(maxY, pasteY + clipboard.getMaximumPoint().y() - clipboardOrigin.y());
-            }
-            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
-                Polygonal2DRegion polyRegion = new Polygonal2DRegion(
-                        weWorld,
-                        world.getPlot().getOutline(),
-                        minY,
-                        maxY
-                );
-                editSession.setMask(new RegionMask(polyRegion));
-                editSession.setBlocks((Region) polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
-            }
+        int minY = yBand.worldMin();
+        int maxY = yBand.worldMax();
+        if (offset) {
+            minY = Math.max(minY, yBand.pasteMinY());
+            maxY = Math.min(maxY, yBand.pasteMaxY());
         }
-
+        World weWorld = new BukkitWorld(world.getBukkitWorld());
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
+            Polygonal2DRegion polyRegion = new Polygonal2DRegion(
+                    weWorld,
+                    world.getPlot().getOutline(),
+                    minY,
+                    maxY
+            );
+            editSession.setMask(new RegionMask(polyRegion));
+            editSession.setBlocks((Region) polyRegion, Objects.requireNonNull(BlockTypes.AIR).getDefaultState());
+        }
+    }
+
+    private static void pasteClipboard(
+            boolean ignoreAir,
+            PlotWorld world,
+            Clipboard clipboard,
+            int pasteY,
+            boolean onlyEmptyColumns,
+            int worldMin,
+            int worldMax
+    ) {
+        try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world.getBukkitWorld()))) {
+            // Shared city worlds: only fill columns that are still completely empty across full Y.
+            if (onlyEmptyColumns) {
+                editSession.setMask(new EmptyColumnMask(editSession, worldMin, worldMax));
+            }
             Operation clipboardHolder = new ClipboardHolder(clipboard)
                     .createPaste(editSession)
                     .to(BlockVector3.at(world.getPlot().getCenter().x(), pasteY, world.getPlot().getCenter().z()))
                     .ignoreAirBlocks(ignoreAir)
                     .build();
             Operations.complete(clipboardHolder);
+        }
+    }
+
+    /**
+     * Allows edits only in XZ columns where every block from {@code minY}..{@code maxY} is air.
+     * Stronger than a per-cell air mask: skips basements and indoor pockets under existing builds.
+     */
+    private static final class EmptyColumnMask extends AbstractExtentMask {
+        private final int minY;
+        private final int maxY;
+        private final Long2BooleanOpenHashMap columnEmpty = new Long2BooleanOpenHashMap();
+
+        private EmptyColumnMask(Extent extent, int minY, int maxY) {
+            super(extent);
+            this.minY = minY;
+            this.maxY = maxY;
+            columnEmpty.defaultReturnValue(false);
+        }
+
+        @Override
+        public boolean test(BlockVector3 vector) {
+            return test(getExtent(), vector);
+        }
+
+        @Override
+        public boolean test(Extent extent, BlockVector3 vector) {
+            long key = (((long) vector.x()) << 32) ^ (vector.z() & 0xffffffffL);
+            if (columnEmpty.containsKey(key)) {
+                return columnEmpty.get(key);
+            }
+            boolean empty = true;
+            for (int y = minY; y <= maxY; y++) {
+                if (!extent.getBlock(vector.x(), y, vector.z()).getBlockType().getMaterial().isAir()) {
+                    empty = false;
+                    break;
+                }
+            }
+            columnEmpty.put(key, empty);
+            return empty;
+        }
+
+        @Override
+        public Mask copy() {
+            return new EmptyColumnMask(getExtent(), minY, maxY);
         }
     }
 

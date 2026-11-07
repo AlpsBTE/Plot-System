@@ -41,9 +41,9 @@ commands:
   deleteplot:
     description: Delete a plot from the system.
     usage: /deleteplot <ID>
-  cleanupworlds:
-    description: Delete single-plot worlds left behind by finished plots.
-    usage: /cleanupworlds <amount> [--dry-run]
+  plotmaintenance:
+    description: Admin plot/world maintenance (cleanup leftover P- worlds, rebuild CIM, repair completed schematics).
+    usage: /plotmaintenance <cleanup|cim|repair> ...
   setleaderboard:
     description: Sets the position of a leaderboard.
     usage: /setleaderboard <name>
