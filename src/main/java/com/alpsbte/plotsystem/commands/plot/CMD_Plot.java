@@ -12,6 +12,7 @@ public class CMD_Plot extends BaseCommand {
     // Register Sub-Commands
     public CMD_Plot() {
         registerSubCommand(new CMD_Plot_Teleport(this));
+        registerSubCommand(new CMD_Plot_Next(this));
         registerSubCommand(new CMD_Plot_Links(this));
         registerSubCommand(new CMD_Plot_Submit(this));
         registerSubCommand(new CMD_Plot_Abandon(this));

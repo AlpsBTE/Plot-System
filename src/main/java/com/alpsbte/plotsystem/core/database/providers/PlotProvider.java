@@ -96,6 +96,18 @@ public class PlotProvider {
         }));
     }
 
+    /**
+     * Plots shown in the review book: unreviewed first, then unfinished, each ordered by plot ID.
+     */
+    public List<Plot> getReviewBookPlots(@NotNull List<CityProject> cities) {
+        if (cities.isEmpty()) return List.of();
+
+        List<Plot> plots = new ArrayList<>();
+        plots.addAll(getPlots(cities, Status.unreviewed));
+        plots.addAll(getPlots(cities, Status.unfinished));
+        return plots;
+    }
+
     public List<Plot> getPlots(@NotNull Builder builder, Status @NotNull ... statuses) {
         String query = "SELECT " + PLOT_SQL_COLUMNS + " FROM plot LEFT JOIN builder_is_plot_member pm ON " +
                 "plot.plot_id = pm.plot_id WHERE (plot.owner_uuid = ? OR pm.uuid = ?)";
