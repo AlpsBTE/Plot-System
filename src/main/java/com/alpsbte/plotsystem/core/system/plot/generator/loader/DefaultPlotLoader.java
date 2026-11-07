@@ -4,6 +4,7 @@ import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
+import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotType;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
@@ -47,9 +48,10 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
             return;
         }
 
-        byte[] completedSchematic = p.getCompletedSchematic();
+        byte[] completedSchematic = PlotHandler.getNormalizedCompletedSchematic(p);
         if (completedSchematic != null) {
-            runFaweBlocking(() -> pasteSchematic(true, completedSchematic, plotWorld, false, true));
+            byte[] toPaste = completedSchematic;
+            runFaweBlocking(() -> pasteSchematic(true, toPaste, plotWorld, false, true));
         } else super.generateStructure();
         copyToCityWorld(completedSchematic == null ? schematicBytes : completedSchematic, completedSchematic != null);
     }
@@ -70,11 +72,19 @@ public class DefaultPlotLoader extends AbstractPlotLoader {
         if (plot.getStatus() == Status.completed) return;
         if (!PlotWorld.isOnePlotWorld(plotWorld.getWorldName())) return;
 
-        // If the player is playing in his own world, then additionally generate the plot in the city world
+        // If the player is playing in his own world, then additionally generate the plot in the city world.
+        // Environment copies only fill void; completed builds may replace env solids inside the outline.
         CityPlotWorld cityPlotWorld = new CityPlotWorld((Plot) plot);
         try {
             ensureWorldGenerated(cityPlotWorld);
-            runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(completedSchematic, structureBytes, cityPlotWorld, false, true));
+            runFaweBlocking(() -> AbstractPlotLoader.pasteSchematic(
+                    true,
+                    structureBytes,
+                    cityPlotWorld,
+                    false,
+                    true,
+                    !completedSchematic
+            ));
         } catch (IOException exception) {
             throw exception;
         } catch (Exception exception) {
