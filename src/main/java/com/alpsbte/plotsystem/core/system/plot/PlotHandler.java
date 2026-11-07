@@ -1,6 +1,5 @@
 package com.alpsbte.plotsystem.core.system.plot;
 
-import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
@@ -12,7 +11,6 @@ import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.plot.world.CityPlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.OnePlotWorld;
 import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
-import com.alpsbte.plotsystem.utils.DependencyManager;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
@@ -37,16 +35,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -214,6 +209,8 @@ public class PlotHandler {
      * When a finished plot's city world does not exist yet, it is created and the stored completed
      * schematic is pasted. If the city world already exists but the plot center column is empty
      * (failed/corrupt paste), the completed schematic is pasted once to recover it.
+     * Neighbor environment can cover a plot center so void checks are not enough for bulk recovery —
+     * use {@link PlotWorldMaintenance#rebuildCityInspirationWorlds(String, boolean)} after wiping a CIM world.
      * Must be called off the main thread when that city world still has to be generated.
      *
      * @return true when the player can be teleported
@@ -224,10 +221,10 @@ public class PlotHandler {
         CityPlotWorld cityWorld = new CityPlotWorld(plot);
         try {
             if (!cityWorld.isWorldGenerated()) {
-                if (!pasteCompletedSchematic(plot, cityWorld)) return false;
+                if (!pasteCompletedIntoCity(plot, true)) return false;
             } else if (!cityWorld.loadWorld()) {
                 return false;
-            } else if (isPlotColumnEmpty(plot, cityWorld) && !pasteCompletedSchematic(plot, cityWorld)) {
+            } else if (isPlotColumnEmpty(plot, cityWorld) && !pasteCompletedIntoCity(plot, true)) {
                 return false;
             }
             return cityWorld.ensureVisitorAccess();
@@ -240,16 +237,22 @@ public class PlotHandler {
     }
 
     /**
-     * Pastes the plot's completed schematic into its city world (creating the world if needed).
+     * Pastes the plot's completed schematic into its city world (creating the world if needed),
+     * then fills surrounding environment into fully empty columns.
      * Normalizes legacy/corrupt Y data first. Safe to call when the city world already exists.
      *
      * @return false when the plot has no completed schematic
      */
     public static boolean pasteCompletedSchematic(@NotNull Plot plot) throws Exception {
-        return pasteCompletedSchematic(plot, new CityPlotWorld(plot));
+        return pasteCompletedIntoCity(plot, true);
     }
 
-    private static boolean pasteCompletedSchematic(Plot plot, CityPlotWorld cityWorld) throws Exception {
+    /**
+     * Pastes the completed schematic into the plot's city world.
+     *
+     * @param includeEnvironment when true, also fills surrounding environment into fully empty columns
+     */
+    static boolean pasteCompletedIntoCity(@NotNull Plot plot, boolean includeEnvironment) throws Exception {
         byte[] schematic = getNormalizedCompletedSchematic(plot);
         if (schematic == null) {
             PlotSystem.getPlugin().getComponentLogger().warn(text(
@@ -257,24 +260,26 @@ public class PlotHandler {
             ));
             return false;
         }
+        CityPlotWorld cityWorld = new CityPlotWorld(plot);
         if (!cityWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityWorld);
         else if (!cityWorld.loadWorld()) return false;
 
-        // Completed build first, then environment only into fully empty columns (full Y void).
-        // That keeps basements / indoor air empty and still surrounds a brand-new CIM plot with terrain.
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, schematic, cityWorld, false, true));
-        pasteCityEnvironmentIntoVoid(plot, cityWorld);
+        if (includeEnvironment) pasteCityEnvironmentIntoVoid(plot);
         return true;
     }
 
     /**
-     * Pastes the plot's initial environment into a city world, only into XZ columns that are air
+     * Pastes the plot's initial environment into its city world, only into XZ columns that are air
      * for the full world height so existing builds and basements are never filled.
      */
-    private static void pasteCityEnvironmentIntoVoid(@NotNull Plot plot, @NotNull CityPlotWorld cityWorld) throws Exception {
+    static void pasteCityEnvironmentIntoVoid(@NotNull Plot plot) throws Exception {
         byte[] environment = plot.getInitialSchematicBytes();
         if (environment == null || environment.length == 0) return;
+        CityPlotWorld cityWorld = new CityPlotWorld(plot);
+        if (!cityWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityWorld);
+        else if (!cityWorld.loadWorld()) return;
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, environment, cityWorld, false, true, true));
     }
@@ -291,119 +296,6 @@ public class PlotHandler {
             return world.getHighestBlockYAt(center.x(), center.z()) < world.getMinHeight();
         }).get();
     }
-
-    /**
-     * Pause between world deletions so loading and removing many worlds does not stall the server.
-     */
-    private static final long FINISHED_WORLD_CLEANUP_PAUSE_MILLIS = 2000L;
-
-    /**
-     * Deletes private {@code P-{id}} worlds whose plot is already finished.
-     * Worlds that still have players in them are left in place.
-     *
-     * @param dryRun when true, worlds are counted and left on disk
-     * @param limit  maximum number of worlds to delete, or null to scan every match
-     */
-    public static FinishedWorldCleanup deleteFinishedOnePlotWorlds(boolean dryRun, Integer limit) throws Exception {
-        CleanupProgress progress = new CleanupProgress();
-        for (MultiverseWorld multiverseWorld : listMultiverseWorlds()) {
-            if (progress.interrupted || reachedCleanupLimit(limit, progress.deleted)) break;
-            cleanupFinishedWorld(multiverseWorld.getName(), dryRun, progress);
-        }
-        return progress.toResult();
-    }
-
-    private static Collection<MultiverseWorld> listMultiverseWorlds() throws Exception {
-        return Utils.supplySync(() -> List.copyOf(DependencyManager.getMultiverseCore().getWorldManager().getWorlds())).get();
-    }
-
-    private static boolean reachedCleanupLimit(Integer limit, int deleted) {
-        return limit != null && deleted >= limit;
-    }
-
-    private static void cleanupFinishedWorld(String worldName, boolean dryRun, CleanupProgress progress) {
-        Plot plot = finishedOnePlot(worldName);
-        if (plot == null) return;
-
-        try {
-            pauseBeforeNextDeletion(dryRun, progress);
-            recordCleanupOutcome(worldName, dryRun, progress, removeFinishedWorld(worldName, plot, dryRun));
-        } catch (InterruptedException interrupted) {
-            Thread.currentThread().interrupt();
-            progress.interrupted = true;
-        } catch (Exception exception) {
-            progress.failed++;
-            PlotSystem.getPlugin().getComponentLogger().error(text("Could not delete finished plot world " + worldName + "!"), exception);
-        }
-    }
-
-    private static @Nullable Plot finishedOnePlot(String worldName) {
-        if (!worldName.toLowerCase(Locale.ROOT).startsWith("p-")) return null;
-
-        Integer plotId = AlpsUtils.tryParseInt(worldName.substring(2));
-        if (plotId == null) return null;
-
-        Plot plot = DataProvider.PLOT.getPlotById(plotId);
-        if (plot == null || plot.getStatus() != Status.completed) return null;
-        return plot;
-    }
-
-    private static void pauseBeforeNextDeletion(boolean dryRun, CleanupProgress progress) throws InterruptedException {
-        if (dryRun || !progress.pauseBeforeNextDelete) return;
-        Thread.sleep(FINISHED_WORLD_CLEANUP_PAUSE_MILLIS);
-    }
-
-    private static Boolean removeFinishedWorld(String worldName, Plot plot, boolean dryRun) throws Exception {
-        return Utils.supplySync(() -> deleteOrCountFinishedWorld(worldName, plot, dryRun)).get();
-    }
-
-    private static Boolean deleteOrCountFinishedWorld(String worldName, Plot plot, boolean dryRun) {
-        PlotWorld world = new PlotWorld(worldName, plot);
-        if (worldHasPlayers(world)) return null;
-        if (dryRun) return true;
-        return world.deleteWorld();
-    }
-
-    private static boolean worldHasPlayers(PlotWorld world) {
-        return world.isWorldLoaded() && !world.getBukkitWorld().getPlayers().isEmpty();
-    }
-
-    private static void recordCleanupOutcome(String worldName, boolean dryRun, CleanupProgress progress, Boolean removed) {
-        if (removed == null) {
-            progress.skippedOccupied++;
-            PlotSystem.getPlugin().getComponentLogger().info(text(
-                    "Skipped finished plot world " + worldName + " because players are still in it."
-            ));
-            return;
-        }
-        if (!removed) {
-            progress.failed++;
-            return;
-        }
-
-        progress.deleted++;
-        progress.pauseBeforeNextDelete = !dryRun;
-        PlotSystem.getPlugin().getComponentLogger().info(text(cleanupOutcomeMessage(dryRun, worldName)));
-    }
-
-    private static String cleanupOutcomeMessage(boolean dryRun, String worldName) {
-        if (dryRun) return "Would delete finished plot world " + worldName + ".";
-        return "Deleted finished plot world " + worldName + ".";
-    }
-
-    private static final class CleanupProgress {
-        private int deleted;
-        private int skippedOccupied;
-        private int failed;
-        private boolean pauseBeforeNextDelete;
-        private boolean interrupted;
-
-        private FinishedWorldCleanup toResult() {
-            return new FinishedWorldCleanup(deleted, skippedOccupied, failed);
-        }
-    }
-
-    public record FinishedWorldCleanup(int deleted, int skippedOccupied, int failed) {}
 
     public static boolean deletePlot(Plot plot) {
         if (!abandonPlot(plot)) {
@@ -630,6 +522,6 @@ public class PlotHandler {
         if (!cityPlotWorld.isWorldGenerated()) AbstractPlotLoader.ensureWorldGenerated(cityPlotWorld);
         AbstractPlotLoader.runFaweBlocking(() ->
                 AbstractPlotLoader.pasteSchematic(true, schematic, cityPlotWorld, false, true));
-        pasteCityEnvironmentIntoVoid(plot, cityPlotWorld);
+        pasteCityEnvironmentIntoVoid(plot);
     }
 }

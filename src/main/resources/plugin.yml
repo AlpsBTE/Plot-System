@@ -45,8 +45,8 @@ commands:
     description: Repair a completed schematic's Y frame and paste origin.
     usage: /repaircompleted <ID>
   cleanupworlds:
-    description: Delete single-plot worlds left behind by finished plots.
-    usage: /cleanupworlds <amount> [--dry-run]
+    description: Maintain leftover finished P- worlds or rebuild CIM city worlds (fails if in-progress CIM plots exist).
+    usage: /cleanupworlds <amount> [--dry-run] | /cleanupworlds cim <cityId|all> [--dry-run]
   setleaderboard:
     description: Sets the position of a leaderboard.
     usage: /setleaderboard <name>
