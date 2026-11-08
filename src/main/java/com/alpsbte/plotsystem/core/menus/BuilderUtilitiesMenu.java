@@ -14,12 +14,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
 import org.ipvp.canvas.mask.Mask;
+import org.ipvp.canvas.slot.Slot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
 import static net.kyori.adventure.text.format.NamedTextColor.GOLD;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class BuilderUtilitiesMenu extends AbstractMenu {
+    private final List<UtilityButton> utilityButtons = new ArrayList<>();
 
     public BuilderUtilitiesMenu(Player player) {
         super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
@@ -39,39 +44,50 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
 
     @Override
     protected void setMenuItemsAsync() {
-        // Set custom-heads menu item
-        getMenu().getSlot(10)
-                .setItem(new ItemBuilder(Material.PLAYER_HEAD, 1)
-                        .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS), GOLD, BOLD))
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS), true).build())
-                        .build());
+        utilityButtons.clear();
 
-        // Set banner-maker menu item
-        getMenu().getSlot(13)
-                .setItem(new ItemBuilder(Material.RED_BANNER, 1)
-                        .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER), GOLD, BOLD))
-                        .setLore(new LoreBuilder()
-                                .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER), true).build())
-                        .build());
+        if (MenuAccess.canOpenCustomHeads()) {
+            utilityButtons.add(new UtilityButton(
+                    new ItemBuilder(Material.PLAYER_HEAD, 1)
+                            .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.CUSTOM_HEADS), GOLD, BOLD))
+                            .setLore(new LoreBuilder()
+                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.CUSTOM_HEADS), true).build())
+                            .build(),
+                    (clickPlayer, _) -> clickPlayer.performCommand("hdb")
+            ));
+        }
 
-        // Set special-blocks menu item
-        getMenu().getSlot(16).setItem(SpecialToolsMenu.getMenuItem(getMenuPlayer()));
+        if (MenuAccess.canOpenBannerMaker()) {
+            utilityButtons.add(new UtilityButton(
+                    new ItemBuilder(Material.RED_BANNER, 1)
+                            .setName(Component.text(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuTitle.BANNER_MAKER), GOLD, BOLD))
+                            .setLore(new LoreBuilder()
+                                    .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.BANNER_MAKER), true).build())
+                            .build(),
+                    (clickPlayer, _) -> clickPlayer.performCommand("bm")
+            ));
+        }
+
+        utilityButtons.add(new UtilityButton(
+                SpecialToolsMenu.getMenuItem(getMenuPlayer()),
+                (clickPlayer, _) -> new SpecialToolsMenu(clickPlayer)
+        ));
+
+        int[] slots = MenuAccess.centeredActionSlots(utilityButtons.size());
+        for (int i = 0; i < utilityButtons.size(); i++) {
+            getMenu().getSlot(slots[i]).setItem(utilityButtons.get(i).item());
+        }
     }
 
     @Override
     protected void setItemClickEventsAsync() {
-        // Set click event for custom-heads menu item
-        getMenu().getSlot(10).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("hdb"));
-
-        // Set click event for banner-maker menu item
-        getMenu().getSlot(13).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("bm"));
-
-        // Set click event for special-blocks menu item
-        getMenu().getSlot(16).setClickHandler((clickPlayer, clickInformation) -> new SpecialToolsMenu(clickPlayer));
+        int[] slots = MenuAccess.centeredActionSlots(utilityButtons.size());
+        for (int i = 0; i < utilityButtons.size(); i++) {
+            getMenu().getSlot(slots[i]).setClickHandler(utilityButtons.get(i).clickHandler());
+        }
 
         // Set click event for back item
-        getMenu().getSlot(22).setClickHandler((clickPlayer, clickInformation) -> clickPlayer.performCommand("companion"));
+        getMenu().getSlot(22).setClickHandler((clickPlayer, _) -> clickPlayer.performCommand("companion"));
     }
 
     @Override
@@ -94,4 +110,6 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
                         .addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.BUILDER_UTILITIES), true).build())
                 .build();
     }
+
+    private record UtilityButton(ItemStack item, Slot.ClickHandler clickHandler) {}
 }

@@ -5,6 +5,7 @@ import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.BuilderUtilitiesMenu;
+import com.alpsbte.plotsystem.core.menus.MenuAccess;
 import com.alpsbte.plotsystem.core.menus.PlayerPlotsMenu;
 import com.alpsbte.plotsystem.core.menus.PlotActionsMenu;
 import com.alpsbte.plotsystem.core.menus.SettingsMenu;
@@ -16,7 +17,6 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Slot;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
@@ -80,17 +80,21 @@ public class CompanionMenu {
      */
     public static @NotNull Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
-        // Set builder utilities menu item
-        items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, clickInformation) -> new BuilderUtilitiesMenu(clickPlayer)));
+        // Set builder utilities menu item (only useful while building on a plot)
+        if (MenuAccess.canOpenBuilderUtilities(player)) {
+            items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, _) -> new BuilderUtilitiesMenu(clickPlayer)));
+        } else {
+            items.put(startingSlot + 5, new FooterItem(MenuItems.borderItem(), (_, _) -> {}));
+        }
 
         // Set player plots menu item
-        items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, clickInformation) -> clickPlayer.performCommand("plots " + clickPlayer.getName())));
+        items.put(startingSlot + 6, new FooterItem(PlayerPlotsMenu.getMenuItem(player), (clickPlayer, _) -> clickPlayer.performCommand("plots " + clickPlayer.getName())));
 
         // Set player settings menu item
         items.put(startingSlot + 7, new FooterItem(new ItemBuilder(BaseItems.SETTINGS_ITEM.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), AQUA).decoration(BOLD, true))
                 .setLore(new LoreBuilder().addLine(LangUtil.getInstance().get(player, LangPaths.MenuDescription.SETTINGS), true).build())
-                .build(), (clickPlayer, clickInformation) -> new SettingsMenu(clickPlayer, returnToMenu)));
+                .build(), (clickPlayer, _) -> new SettingsMenu(clickPlayer, returnToMenu)));
 
         for (int i = 0; i < 3; i++) {
             try {
@@ -100,7 +104,7 @@ public class CompanionMenu {
 
                 Plot plot = builder.getSlot(Slot.values()[i]);
                 ItemStack slotItem = getPlotMenuItem(plot, i, player);
-                items.put(startingSlot + 1 + i, new FooterItem(slotItem, (clickPlayer, clickInformation) -> {
+                items.put(startingSlot + 1 + i, new FooterItem(slotItem, (clickPlayer, _) -> {
                     if (plot == null) return;
                     new PlotActionsMenu(clickPlayer, builder.getSlot(Slot.values()[i_]));
                 }));
@@ -175,17 +179,16 @@ public class CompanionMenu {
         return difficulty;
     }
 
-    public static void clickEventTutorialItem(Menu menu) {
-        // Set click event for tutorial item
-        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
-            menu.getSlot(7).setClickHandler((clickPlayer, clickInformation) -> {
-                if (!clickPlayer.hasPermission("plotsystem.tutorial")) {
-                    clickPlayer.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(clickPlayer.getUniqueId(),
-                            LangPaths.Message.Error.PLAYER_HAS_NO_PERMISSIONS)));
-                    return;
-                }
-                new TutorialsMenu(clickPlayer);
-            });
+    public static ItemStack getTutorialSlotItem(Player player) {
+        return MenuAccess.canOpenTutorials(player) ? TutorialsMenu.getTutorialItem(player) : MenuItems.borderItem();
+    }
+
+    public static void clickEventTutorialItem(Menu menu, Player player) {
+        if (!MenuAccess.canOpenTutorials(player)) return;
+        menu.getSlot(7).setClickHandler((clickPlayer, _) -> {
+            if (!MenuAccess.canOpenTutorials(clickPlayer)) return;
+            new TutorialsMenu(clickPlayer);
+        });
     }
 
     public static ItemStack getPlotMenuItem(Plot plot, int slotIndex, Player langPlayer) {

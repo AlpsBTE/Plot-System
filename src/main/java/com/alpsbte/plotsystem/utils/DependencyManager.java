@@ -27,6 +27,19 @@ public class DependencyManager {
         return PlotSystem.getPlugin().getServer().getPluginManager().isPluginEnabled("WorldGuardExtraFlags");
     }
 
+    public static boolean isHeadDatabaseEnabled() {
+        var pluginManager = PlotSystem.getPlugin().getServer().getPluginManager();
+        return pluginManager.isPluginEnabled("HeadDatabase")
+                || pluginManager.isPluginEnabled("HeadDB")
+                || Bukkit.getPluginCommand("hdb") != null;
+    }
+
+    public static boolean isBannerMakerEnabled() {
+        var pluginManager = PlotSystem.getPlugin().getServer().getPluginManager();
+        return pluginManager.isPluginEnabled("BannerMaker")
+                || Bukkit.getPluginCommand("bm") != null;
+    }
+
     /**
      * @param worldName Name of the world
      * @return Config path for the world
