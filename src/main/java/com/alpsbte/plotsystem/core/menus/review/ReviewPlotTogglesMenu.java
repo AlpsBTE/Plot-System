@@ -8,6 +8,7 @@ import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
+import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.core.system.review.PlotReview;
 import com.alpsbte.plotsystem.core.system.review.ReviewRating;
 import com.alpsbte.plotsystem.core.system.review.ToggleCriteria;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static net.kyori.adventure.text.Component.text;
@@ -187,15 +189,18 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
             return false;
         }
 
+        List<UUID> firstCompletedBuilders = collectBuildersWithoutCompletedPlots();
+
         if (!plot.setStatus(Status.completed)) return false;
 
         // Remove Plot from Owner
         if (!plot.getPlotOwner().setSlot(plot.getPlotOwner().getSlotByPlotId(plot.getId()), -1)) return false;
 
+        boolean scoreApplied;
         if (plot.getPlotMembers().isEmpty()) {
             // Plot was made alone
             // Builder gets 100% of score
-            return plot.getPlotOwner().addScore(score);
+            scoreApplied = plot.getPlotOwner().addScore(score);
         } else {
             // Plot was made in a group
             // Score gets split between all participants
@@ -208,8 +213,38 @@ public class ReviewPlotTogglesMenu extends AbstractMenu {
                 // Remove Slot from Member
                 if (!builder.setSlot(builder.getSlotByPlotId(plot.getId()), -1)) return false;
             }
+            scoreApplied = true;
         }
-        return true;
+
+        if (scoreApplied) {
+            notifyFirstCompletedBuilders(firstCompletedBuilders);
+        }
+        return scoreApplied;
+    }
+
+    private @NotNull List<UUID> collectBuildersWithoutCompletedPlots() {
+        List<UUID> builders = new ArrayList<>();
+        Builder owner = plot.getPlotOwner();
+        if (DataProvider.PLOT.getPlots(owner, Status.completed).isEmpty()) {
+            builders.add(owner.getUUID());
+        }
+        for (Builder member : plot.getPlotMembers()) {
+            if (DataProvider.PLOT.getPlots(member, Status.completed).isEmpty()) {
+                builders.add(member.getUUID());
+            }
+        }
+        return builders;
+    }
+
+    private static void notifyFirstCompletedBuilders(@NotNull List<UUID> builderUuids) {
+        for (UUID uuid : builderUuids) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null || !player.isOnline()) continue;
+            Utils.runSync(() -> {
+                PlotUtils.ChatFormatting.sendDifficultyUnlockedMessage(player);
+                return null;
+            });
+        }
     }
 
     private ItemStack getToggleItem(@NotNull ToggleCriteria criteria, boolean checked) {
