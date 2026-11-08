@@ -118,11 +118,11 @@ menu-title:
 # -----------------------------------------------------
 menu-description:
   error-desc: 'An error occurred...'
-  plot-difficulty-desc: 'Click to Switch...'
+  plot-difficulty-desc: 'Click to switch Easy, Medium or Hard...'
   slot-desc: 'Click on a city project to create a new plot'
   builder-utilities-desc: 'Get access to custom heads, banners and special blocks'
   show-plots-desc: 'Show all your plots'
-  settings-desc: 'Modify your user settings'
+  settings-desc: 'Change language and view modes (Focus, Inspiration, City Inspiration)'
   submit-plot-desc: 'Click to complete this plot and submit it to be reviewed'
   teleport-desc: 'Click to teleport to the plot'
   abandon-desc: 'Click to reset your plot and give it to someone else'
@@ -137,7 +137,7 @@ menu-description:
   submit-review-desc: 'Submit selected points and mark plot as reviewed'
   leave-plot-desc: 'Click to leave this plot'
   select-language-desc: 'Choose your language'
-  select-plot-type-desc: 'Choose your plot type'
+  select-plot-type-desc: 'Choose your view mode — Focus, Inspiration, or City Inspiration'
   select-focus-mode-desc: "Build your plot on a floating island in the void.%newline%%newline%- No Environment%newline%- No neighboring plots"
   select-local-inspiration-mode-desc: "Build on a floating island with surrounding environment as a reference.%newline%%newline%+ Environment%newline%- No neighboring plots"
   select-city-inspiration-mode-desc: "Build on a floating island with surrounding environment and other players plots that got scanned near the own plot.%newline%%newline%+ Environment%newline%+ Neighboring plots"
@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Click Here §ato show open reviews..."
     click-to-show-plots: "§6Click Here §ato show your plots..."
     click-to-play-with-friends: "§7Want to play with your friends? §6Click Here..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Show Stages'
     click-to-open-plots-menu: 'Click to open the plots menu...'
     click-to-toggle: "Click to toggle..."
@@ -256,6 +258,8 @@ message:
     player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
     changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
     plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"

@@ -440,7 +440,10 @@ public final class PlotUtils {
                 }
                 player.sendMessage(text(MSG_LINE, DARK_GRAY));
 
-                if (plot instanceof Plot p) sendGroupTipMessage(p, player);
+                if (plot instanceof Plot p) {
+                    sendGroupTipMessage(p, player);
+                    sendViewModeTipMessage(p, player);
+                }
             });
         }
 
@@ -507,16 +510,52 @@ public final class PlotUtils {
             }
         }
 
+        /**
+         * Nudges newcomers toward Companion → Settings → view modes while they still have no accepted plots.
+         */
+        public static void sendViewModeTipMessage(@NotNull Plot plot, @NotNull Player player) {
+            Builder builder = Builder.byUUID(player.getUniqueId());
+            boolean isParticipant = plot.getPlotOwner().getUUID().equals(builder.getUUID())
+                    || plot.getPlotMembers().stream().anyMatch(member -> member.getUUID().equals(builder.getUUID()));
+            if (!isParticipant || hasCompletedPlots(builder)) return;
+
+            player.sendMessage(text("» ", DARK_GRAY)
+                    .append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.VIEW_MODE_TIP), GREEN)));
+            player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_CHANGE_VIEW_MODE), GOLD)
+                    .clickEvent(ClickEvent.runCommand("/companion"))
+                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS))));
+            player.sendMessage(text(MSG_LINE, DARK_GRAY));
+        }
+
+        /**
+         * Sent after a builder's first accepted plot so they know Medium/Hard are available via Companion.
+         */
+        public static void sendDifficultyUnlockedMessage(@NotNull Player player) {
+            player.sendMessage(text(MSG_LINE, DARK_GRAY));
+            player.sendMessage(text("» ", DARK_GRAY)
+                    .append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.DIFFICULTY_UNLOCKED), GREEN)));
+            player.sendMessage(text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SELECT_DIFFICULTY), GOLD)
+                    .clickEvent(ClickEvent.runCommand("/companion"))
+                    .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PLOT_DIFFICULTY))));
+            player.sendMessage(text(MSG_LINE, DARK_GRAY));
+        }
+
         public static void sendFeedbackMessage(@NotNull List<ReviewNotification> notifications, @NotNull Player player) {
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
+            boolean mayHaveUnlockedDifficulty = false;
             for (ReviewNotification notification : notifications) {
                 PlotReview review = DataProvider.REVIEW.getReview(notification.reviewId()).orElseThrow();
-                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(review.getPlot().getId())), GREEN)));
+                Plot reviewedPlot = review.getPlot();
+                player.sendMessage(text("» ", DARK_GRAY).append(text(LangUtil.getInstance().get(player, LangPaths.Message.Info.REVIEWED_PLOT, String.valueOf(reviewedPlot.getId())), GREEN)));
 
                 Component tc = text(LangUtil.getInstance().get(player, LangPaths.Note.Action.CLICK_TO_SHOW_FEEDBACK), GOLD)
-                        .clickEvent(ClickEvent.runCommand("/plot feedback " + review.getPlot().getId()))
+                        .clickEvent(ClickEvent.runCommand("/plot feedback " + reviewedPlot.getId()))
                         .hoverEvent(text(LangUtil.getInstance().get(player, LangPaths.Plot.PLOT_NAME) + " " + LangUtil.getInstance().get(player, LangPaths.Review.FEEDBACK)));
                 player.sendMessage(tc);
+
+                if (reviewedPlot.getStatus() == Status.completed) {
+                    mayHaveUnlockedDifficulty = true;
+                }
 
                 DataProvider.REVIEW.removeReviewNotification(notification.reviewId(), notification.uuid());
 
@@ -526,6 +565,22 @@ public final class PlotUtils {
             }
             player.sendMessage(text(MSG_LINE, DARK_GRAY));
             player.playSound(player.getLocation(), Utils.SoundUtils.FINISH_PLOT_SOUND, 1, 1);
+
+            // Offline builders receive review notices on join after the plot is already completed.
+            if (mayHaveUnlockedDifficulty && countDistinctCompletedPlots(Builder.byUUID(player.getUniqueId())) == 1) {
+                sendDifficultyUnlockedMessage(player);
+            }
+        }
+
+        private static boolean hasCompletedPlots(@NotNull Builder builder) {
+            return countDistinctCompletedPlots(builder) > 0;
+        }
+
+        private static long countDistinctCompletedPlots(@NotNull Builder builder) {
+            return DataProvider.PLOT.getPlots(builder, Status.completed).stream()
+                    .map(Plot::getId)
+                    .distinct()
+                    .count();
         }
 
         public static void sendUnfinishedPlotReminderMessage(@NotNull List<Plot> plots, @NotNull Player player) {
