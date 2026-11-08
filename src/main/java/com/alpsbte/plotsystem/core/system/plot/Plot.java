@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class Plot extends AbstractPlot {
     private final CityProject cityProject;
-    private final PlotDifficulty difficulty;
+    private PlotDifficulty difficulty;
     private Status status;
     private final String outlineBounds;
     private LocalDate lastActivity;
@@ -66,6 +66,14 @@ public class Plot extends AbstractPlot {
 
     public PlotDifficulty getDifficulty() {
         return difficulty;
+    }
+
+    public boolean setDifficulty(@NotNull PlotDifficulty difficulty) {
+        if (DataProvider.PLOT.setDifficulty(getId(), difficulty)) {
+            this.difficulty = difficulty;
+            return true;
+        }
+        return false;
     }
 
     @Override

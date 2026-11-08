@@ -275,6 +275,8 @@ public abstract class LangPaths {
             public static final String PLAYER_INVITE_ACCEPTED = INFO_PREFIX + "player-invite-accepted";
             public static final String PLAYER_INVITE_TO_ACCEPTED = INFO_PREFIX + "player-invite-to-accepted";
             public static final String PLAYER_INVITE_REJECTED = INFO_PREFIX + "player-invite-rejected";
+            public static final String CHANGED_PLOT_DIFFICULTY = INFO_PREFIX + "changed-plot-difficulty";
+            public static final String PLOT_DIFFICULTY_UNCHANGED = INFO_PREFIX + "plot-difficulty-unchanged";
         }
 
         public static final class Error {
@@ -319,6 +321,7 @@ public abstract class LangPaths {
             public static final String TUTORIAL_DISABLED = ERROR_PREFIX + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR_PREFIX + "tutorial-already-running";
             public static final String REVIEW_NOT_FOUND = ERROR_PREFIX + "review-not-found";
+            public static final String INVALID_PLOT_DIFFICULTY = ERROR_PREFIX + "invalid-plot-difficulty";
         }
     }
 

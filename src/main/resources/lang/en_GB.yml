@@ -254,6 +254,8 @@ message:
     player-invite-accepted: 'Invitation to {0}´s plot has been accepted.'
     player-invite-to-accepted: '{0} has accepted your invitation and has been added to your plot.'
     player-invite-rejected: 'The invitation to {0}´s plot has been rejected.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
   error:
     plot-does-not-exist: "This plot does not exist!"
     plot-either-unclaimed-or-unreviewed: "This plot is either unclaimed or has not been reviewed yet!"
@@ -292,6 +294,7 @@ message:
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
     review-not-found: "Review could not be found!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Daily"
