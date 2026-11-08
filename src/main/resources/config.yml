@@ -28,10 +28,12 @@ max-owned-active-plots: 1
 # true  -> unfinished and unreviewed both count (stricter; must wait for review/accept/abandon)
 count-unreviewed-owned-plots: false
 
-# How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
+# Abandonment policy: unfinished plots become eligible at the start of the day
+# N calendar days after their last owner visit (server time zone).
+# Checked hourly; -2 disables automatic abandonment. This does not schedule notifications.
 inactivity-interval: 14
 
-# How many days of inactivity it will take before a rejected plots are automatically abandoned
+# Abandonment policy for rejected plots, in calendar days.
 # Use -1 to use the normal inactivity-interval, -2 disables it
 rejected-inactivity-interval: -1
 

@@ -2,6 +2,7 @@ package com.alpsbte.plotsystem.commands.plot;
 
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.api.model.PlotAbandonReason;
 import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -67,7 +68,7 @@ public class CMD_Plot_Abandon extends SubCommand {
                 return;
             }
 
-            if (PlotHandler.abandonPlot(plot)) {
+            if (PlotHandler.abandonPlot(plot, PlotAbandonReason.MANUAL, player.getUniqueId())) {
                 Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
                     sender.sendMessage(Utils.ChatUtils.getInfoFormat(langUtil.get(sender, LangPaths.Message.Info.ABANDONED_PLOT, plot.getId() + "")));
                     player.playSound(player.getLocation(), Utils.SoundUtils.ABANDON_PLOT_SOUND, 1, 1);
