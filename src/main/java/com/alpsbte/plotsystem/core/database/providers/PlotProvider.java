@@ -126,6 +126,23 @@ public class PlotProvider {
         }));
     }
 
+    /**
+     * Counts plots owned by the builder in the given statuses (members are not included).
+     */
+    public int countOwnedPlots(@NotNull UUID ownerUuid, Status @NotNull ... statuses) {
+        if (statuses.length == 0) return 0;
+        String query = "SELECT COUNT(plot_id) FROM plot WHERE owner_uuid = ? AND status IN ("
+                + "?,".repeat(statuses.length - 1) + "?);";
+        Integer result = Utils.handleSqlException(0, () -> SqlHelper.runQuery(query, ps -> {
+            ps.setString(1, ownerUuid.toString());
+            for (int i = 0; i < statuses.length; i++) ps.setString(i + 2, statuses[i].name());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+            return 0;
+        }));
+        return result != null ? result : 0;
+    }
+
     private @NotNull Plot extractPlot(@NotNull ResultSet rs) throws SQLException {
         int plotId = rs.getInt("plot_id");
         CityProject cityProject = DataProvider.CITY_PROJECT.getById(rs.getString("city_project_id")).orElseThrow();

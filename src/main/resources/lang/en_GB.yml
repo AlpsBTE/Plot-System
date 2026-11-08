@@ -290,6 +290,7 @@ message:
     no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Please wait a few seconds before creating a new plot!"
     all-slots-occupied: "All your slots are occupied! Please finish your current plots before creating a new one."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "The chat input has expired."
     tutorial-disabled: 'Tutorials are disabled on this server.'
     tutorial-already-running: "You already have a tutorial running! Complete it before starting a new one."
@@ -456,4 +457,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.6
+config-version: 2.7

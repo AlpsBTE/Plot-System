@@ -17,7 +17,7 @@ public class LangUtil extends LanguageUtil {
         if (langUtilInstance != null) return;
         Plugin plugin = PlotSystem.getPlugin();
         LangLibAPI.register(plugin, new LanguageFile[]{
-                new LanguageFile(plugin, 2.6, Language.en_GB),
+                new LanguageFile(plugin, 2.7, Language.en_GB),
                 new LanguageFile(plugin, 2.7, Language.de_DE, "de_AT", "de_CH"),
                 new LanguageFile(plugin, 2.6, Language.fr_FR, "fr_CA"),
                 new LanguageFile(plugin, 2.6, Language.pt_PT, "pt_BR"),

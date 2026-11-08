@@ -66,6 +66,18 @@ public class PlotHandler {
             return false;
         }
 
+        // Owned plot limit (members of other plots still use remaining slots)
+        int maxOwnedActivePlots = getMaxOwnedActivePlots();
+        int ownedActivePlots = DataProvider.PLOT.countOwnedPlots(builder.getUUID(), getOwnedPlotLimitStatuses());
+        if (ownedActivePlots >= maxOwnedActivePlots) {
+            if (player != null) {
+                player.sendMessage(Utils.ChatUtils.getAlertFormat(LangUtil.getInstance().get(
+                        player, LangPaths.Message.Error.MAX_OWNED_PLOTS, String.valueOf(maxOwnedActivePlots))));
+                player.playSound(player.getLocation(), Utils.SoundUtils.ERROR_SOUND, SoundCategory.MASTER, 1, 1, 0);
+            }
+            return false;
+        }
+
         // Slot available?
         Slot freeSlot = builder.getFreeSlot();
         if (freeSlot == null) {
@@ -96,6 +108,26 @@ public class PlotHandler {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Maximum owned plots that count toward the claim limit (clamped to 1–3 slots).
+     */
+    public static int getMaxOwnedActivePlots() {
+        int configured = PlotSystem.getPlugin().getConfig().getInt(ConfigPaths.MAX_OWNED_ACTIVE_PLOTS, 1);
+        return Math.clamp(configured, 1, 3);
+    }
+
+    /**
+     * Statuses that count toward {@link #getMaxOwnedActivePlots()}.
+     * Always includes {@link Status#unfinished}; optionally {@link Status#unreviewed}
+     * when {@link ConfigPaths#COUNT_UNREVIEWED_OWNED_PLOTS} is enabled.
+     */
+    public static Status[] getOwnedPlotLimitStatuses() {
+        if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.COUNT_UNREVIEWED_OWNED_PLOTS, false)) {
+            return new Status[]{Status.unfinished, Status.unreviewed};
+        }
+        return new Status[]{Status.unfinished};
     }
 
     public static boolean assignAndGeneratePlot(Builder builder, Plot plot) {
