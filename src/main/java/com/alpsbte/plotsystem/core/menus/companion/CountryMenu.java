@@ -2,17 +2,14 @@ package com.alpsbte.plotsystem.core.menus.companion;
 
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
-import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
-import com.alpsbte.plotsystem.core.menus.tutorial.TutorialsMenu;
 import com.alpsbte.plotsystem.core.system.CityProject;
 import com.alpsbte.plotsystem.core.system.Country;
 import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Continent;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
 import com.alpsbte.plotsystem.utils.enums.Status;
-import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.MenuItems;
@@ -59,8 +56,7 @@ public class CountryMenu extends AbstractMenu {
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
         // Set tutorial item
-        getMenu().getSlot(7).setItem(PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE) ?
-                TutorialsMenu.getTutorialItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(7).setItem(CompanionMenu.getTutorialSlotItem(getMenuPlayer()));
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
@@ -77,11 +73,11 @@ public class CountryMenu extends AbstractMenu {
 
     @Override
     protected void setItemClickEventsAsync() {
-        getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) ->  // Set click event for random selection item
+        getMenu().getSlot(0).setClickHandler((clickPlayer, _) ->  // Set click event for random selection item
                 CompletableFuture.runAsync(() -> generateRandomPlot(clickPlayer, countryProjects, selectedPlotDifficulty)));
 
         // Set click event for plots difficulty item
-        getMenu().getSlot(6).setClickHandler((clickPlayer, clickInformation) -> {
+        getMenu().getSlot(6).setClickHandler((clickPlayer, _) -> {
             selectedPlotDifficulty = (selectedPlotDifficulty == null ?
                     PlotDifficulty.values()[0] : selectedPlotDifficulty.ordinal() != PlotDifficulty.values().length - 1 ?
                     PlotDifficulty.values()[selectedPlotDifficulty.ordinal() + 1] : null);
@@ -92,16 +88,16 @@ public class CountryMenu extends AbstractMenu {
             setCountryItems();
         });
 
-        CompanionMenu.clickEventTutorialItem(getMenu());
+        CompanionMenu.clickEventTutorialItem(getMenu(), getMenuPlayer());
 
         int startingSlot = 9;
         if (CompanionMenu.hasContinentView()) {
-            getMenu().getSlot(0).setClickHandler((clickPlayer, clickInformation) -> new ContinentMenu(clickPlayer));
+            getMenu().getSlot(0).setClickHandler((clickPlayer, _) -> new ContinentMenu(clickPlayer));
         }
 
         for (Country country : countryProjects) {
             int i = countryProjects.indexOf(country);
-            getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, clickInformation) -> new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty));
+            getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, _) -> new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty));
         }
 
         Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
