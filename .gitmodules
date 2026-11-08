@@ -1,0 +1,4 @@
+[submodule "wiki"]
+	path = wiki
+	url = https://github.com/AlpsBTE/Plot-System.wiki.git
+	branch = master
