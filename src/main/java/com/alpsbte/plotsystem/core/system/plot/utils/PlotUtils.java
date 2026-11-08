@@ -342,20 +342,20 @@ public final class PlotUtils {
         public static void showOutlines() {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 Builder builder = Builder.byUUID(player.getUniqueId());
-
-                List<Plot> plots = Cache.getCachedInProgressPlots(builder);
-                BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
-
+                List<Plot> plots = plotsForOutlines(builder);
                 if (plots.isEmpty()) continue;
 
+                BlockVector2 playerPos2D = BlockVector2.at(player.getLocation().getX(), player.getLocation().getZ());
                 for (Plot plot : plots) {
-                    if ((!plot.getWorld().getWorldName().equalsIgnoreCase(player.getWorld().getName())) ||
-                            (!plot.getPlotOwner().getPlotType().hasEnvironment() || plot.getVersion() <= 2)) {
+                    if (!plot.getWorld().getWorldName().equalsIgnoreCase(player.getWorld().getName())) {
+                        continue;
+                    }
+                    // Focus-mode / legacy plots have no environment outlines to render
+                    if (!plot.getPlotType().hasEnvironment() || plot.getVersion() <= 2) {
                         continue;
                     }
 
                     List<BlockVector2> points = plot.getBlockOutline();
-
                     for (BlockVector2 point : points) {
                         if (point.distanceSq(playerPos2D) >= 50 * 50) continue;
                         if (!particleAPIEnabled) {
@@ -363,14 +363,30 @@ public final class PlotUtils {
                             continue;
                         }
                         Location loc = new Location(player.getWorld(), point.x(), player.getLocation().getY() + 1, point.z());
-                        // create a particle packet
                         Object packet = particles.FLAME().packet(true, loc);
-
-                        // send this packet to player
                         particles.sendPacket(player, packet);
                     }
                 }
             }
+        }
+
+        /**
+         * Unfinished plots the player owns/is a member of (building),
+         * plus the unreviewed plot they are standing on (reviewing).
+         */
+        private static List<Plot> plotsForOutlines(@NotNull Builder builder) {
+            List<Plot> plots = new ArrayList<>(Cache.getCachedInProgressPlots(builder));
+
+            AbstractPlot current = getCurrentPlot(builder, Status.unreviewed);
+            if (!(current instanceof Plot unreviewedPlot)) {
+                return plots;
+            }
+
+            boolean alreadyIncluded = plots.stream().anyMatch(plot -> plot.getId() == unreviewedPlot.getId());
+            if (!alreadyIncluded) {
+                plots.add(unreviewedPlot);
+            }
+            return plots;
         }
     }
 
