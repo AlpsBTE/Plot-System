@@ -18,6 +18,16 @@ spawn-world: default
 # Prevents beginners from generating difficult plots
 enable-score-requirement: true
 
+# Maximum owned plots that count toward the claim limit at the same time (1-3)
+# Remaining slots can still be used when invited as a member on other players' plots
+# Set to 3 to restore the previous behaviour (one owned plot per builder slot)
+max-owned-active-plots: 1
+
+# Whether submitted (unreviewed) owned plots count toward max-owned-active-plots
+# false -> only unfinished plots count; after submit the player can claim another owned plot
+# true  -> unfinished and unreviewed both count (stricter; must wait for review/accept/abandon)
+count-unreviewed-owned-plots: false
+
 # How many days of inactivity it will take before a claimed plot is automatically abandoned, -2 disables it
 inactivity-interval: 14
 
@@ -129,4 +139,4 @@ tutorials:
 
 
 # NOTE: Do not change
-config-version: 4.4
+config-version: 4.5

@@ -7,6 +7,8 @@ public abstract class ConfigPaths {
     // General Behaviour
     public static final String SPAWN_WORLD = "spawn-world";
     public static final String ENABLE_SCORE_REQUIREMENT = "enable-score-requirement";
+    public static final String MAX_OWNED_ACTIVE_PLOTS = "max-owned-active-plots";
+    public static final String COUNT_UNREVIEWED_OWNED_PLOTS = "count-unreviewed-owned-plots";
     public static final String DEV_MODE = "dev-mode";
     public static final String INACTIVITY_INTERVAL = "inactivity-interval";
     public static final String REJECTED_INACTIVITY_INTERVAL = "rejected-inactivity-interval";

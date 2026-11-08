@@ -317,6 +317,7 @@ public abstract class LangPaths {
             public static final String NO_OTHER_OPEN_PLOTS = ERROR_PREFIX + "no-other-open-plots";
             public static final String PLEASE_WAIT = ERROR_PREFIX + "please-wait";
             public static final String ALL_SLOTS_OCCUPIED = ERROR_PREFIX + "all-slots-occupied";
+            public static final String MAX_OWNED_PLOTS = ERROR_PREFIX + "max-owned-plots";
             public static final String CHAT_INPUT_EXPIRED = ERROR_PREFIX + "chat-input-expired";
             public static final String TUTORIAL_DISABLED = ERROR_PREFIX + "tutorial-disabled";
             public static final String TUTORIAL_ALREADY_RUNNING = ERROR_PREFIX + "tutorial-already-running";
