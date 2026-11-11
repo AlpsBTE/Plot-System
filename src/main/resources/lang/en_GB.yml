@@ -461,4 +461,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.7
+config-version: 2.8
