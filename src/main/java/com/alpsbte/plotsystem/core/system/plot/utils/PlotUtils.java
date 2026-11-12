@@ -34,7 +34,6 @@ import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -83,93 +82,113 @@ public final class PlotUtils {
 
     /**
      * Returns the plot that the player is currently standing on or next to.
-     * If he is standing in a single-plot world, it returns the plot of this world.
-     * If he is standing in a multi-plot world, it returns the closest plot of all unfinished plots in this city
+     * In a single-plot world this is the plot of that world.
+     * In a city world this prefers the city-inspiration plot whose outline contains the player,
+     * and falls back to the nearest city-inspiration plot when standing outside every outline.
      *
      * @return the current plot of the player
      */
     @Nullable
-    public static AbstractPlot getCurrentPlot(@NotNull Builder builder, Status... statuses) {
-        boolean dev = PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.DEV_MODE);
-        if (dev) {
-            PlotSystem.getPlugin().getComponentLogger().info(text(
-                    "getCurrentPlot: enter | player=" + (builder.isOnline() ? builder.getPlayer().getName() : builder.getUUID()) +
-                            ", statuses=" + (statuses == null ? "null" : java.util.Arrays.toString(statuses))
-            ));
+    public static AbstractPlot getCurrentPlot(@NotNull Builder builder, Status @Nullable ... statuses) {
+        if (!builder.isOnline()) return null;
+
+        Status[] statusFilter = statuses == null ? new Status[0] : statuses;
+        String worldName = builder.getPlayer().getWorld().getName();
+        if (PlotWorld.isOnePlotWorld(worldName)) {
+            return resolveOnePlotWorld(worldName, statusFilter);
         }
-
-        if (builder.isOnline()) {
-            String worldName = builder.getPlayer().getWorld().getName();
-            if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: worldName=" + worldName));
-
-            if (PlotWorld.isOnePlotWorld(worldName)) {
-                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected OnePlotWorld"));
-                try {
-                    int id = Integer.parseInt(worldName.substring(2));
-                    AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
-                            ? DataProvider.PLOT.getPlotById(id)
-                            : DataProvider.TUTORIAL_PLOT.getById(id).orElse(null);
-                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: one-plot id=" + id + ", resolved=" + (plot == null ? "null" : (plot.getClass().getSimpleName() + "#" + plot.getId() + " status=" + plot.getStatus()))));
-
-                    if (plot == null) return null;
-                    if (statuses == null || statuses.length == 0) return plot;
-                    for (Status status : statuses) if (status == plot.getStatus()) return plot;
-                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: status filter did not match for plot #" + plot.getId()));
-                    return null;
-                } catch (NumberFormatException ex) {
-                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: failed to parse plot id from worldName=" + worldName), ex);
-                    return null;
-                }
-            } else if (PlotWorld.isCityPlotWorld(worldName)) {
-                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: detected CityPlotWorld"));
-                String cityID = worldName.substring(2);
-                Optional<CityProject> city = DataProvider.CITY_PROJECT.getById(cityID);
-                if (city.isEmpty()) {
-                    if (dev) PlotSystem.getPlugin().getComponentLogger().warn(text("getCurrentPlot: city not found for id=" + cityID));
-                    return null;
-                }
-
-                List<Plot> plots = DataProvider.PLOT.getPlots(city.get(), statuses);
-                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate plots in city=" + city.get().getName(builder.isOnline() ? builder.getPlayer() : null) + ", count=" + plots.size()));
-                if (plots.isEmpty()) return null;
-                if (plots.size() == 1) return plots.getFirst();
-
-                // Find the plot in the city world that is closest to the player
-                Location playerLoc = builder.getPlayer().getLocation().clone();
-                Vector3 playerVector = Vector3.at(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ());
-
-                double distance = Double.MAX_VALUE;
-                Plot chosenPlot = plots.getFirst();
-                for (Plot plot : plots) {
-                    if (plot.getPlotType() != PlotType.CITY_INSPIRATION_MODE) continue;
-                    BlockVector3 plotCenter = plot.getCenter();
-                    double currentDistance = plotCenter.withY((int) playerVector.y()).distance(playerVector.toBlockPoint());
-                    if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: candidate #" + plot.getId() + " center=" + plotCenter + " distance=" + currentDistance));
-                    if (currentDistance < distance) {
-                        distance = currentDistance;
-                        chosenPlot = plot;
-                    }
-                }
-
-                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: chosen plot id=" + chosenPlot.getId() + ", distance=" + distance));
-                return chosenPlot;
-            } else {
-                if (dev) PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: world is not a plot world"));
-            }
-        } else if (dev) {
-            PlotSystem.getPlugin().getComponentLogger().info(text("getCurrentPlot: builder is offline"));
+        if (PlotWorld.isCityPlotWorld(worldName)) {
+            return resolveCityPlot(builder, statusFilter);
         }
         return null;
     }
 
+    @Nullable
+    private static AbstractPlot resolveOnePlotWorld(@NotNull String worldName, Status @NotNull [] statuses) {
+        try {
+            int id = Integer.parseInt(worldName.substring(2));
+            AbstractPlot plot = worldName.toLowerCase(Locale.ROOT).startsWith("p-")
+                    ? DataProvider.PLOT.getPlotById(id)
+                    : DataProvider.TUTORIAL_PLOT.getById(id).orElse(null);
+
+            if (plot == null) return null;
+            if (statuses.length == 0) return plot;
+            for (Status status : statuses) {
+                if (status == plot.getStatus()) return plot;
+            }
+            return null;
+        } catch (NumberFormatException _) {
+            return null;
+        }
+    }
+
+    @Nullable
+    private static Plot resolveCityPlot(@NotNull Builder builder, Status @NotNull [] statuses) {
+        String cityID = builder.getPlayer().getWorld().getName().substring(2);
+        Optional<CityProject> city = DataProvider.CITY_PROJECT.getById(cityID);
+        if (city.isEmpty()) return null;
+
+        List<Plot> candidates = new ArrayList<>();
+        for (Plot plot : DataProvider.PLOT.getPlots(city.get(), statuses)) {
+            if (plot.getPlotType() == PlotType.CITY_INSPIRATION_MODE) candidates.add(plot);
+        }
+        if (candidates.isEmpty()) return null;
+
+        Location playerLoc = builder.getPlayer().getLocation();
+        List<Plot> containing = new ArrayList<>();
+        for (Plot plot : candidates) {
+            if (isInsidePlotOutline(plot, playerLoc)) containing.add(plot);
+        }
+
+        List<Plot> selectable = containing.isEmpty() ? candidates : containing;
+        if (selectable.size() == 1) return selectable.getFirst();
+        return nearestPlot(selectable, playerLoc);
+    }
+
+    @Nullable
+    private static Plot nearestPlot(@NotNull List<Plot> plots, @NotNull Location playerLoc) {
+        BlockVector3 playerPoint = BlockVector3.at(playerLoc.getBlockX(), playerLoc.getBlockY(), playerLoc.getBlockZ());
+        Plot chosenPlot = null;
+        double distance = Double.MAX_VALUE;
+
+        for (Plot plot : plots) {
+            BlockVector3 plotCenter = plot.getCenter();
+            if (plotCenter == null) continue;
+
+            double currentDistance = plotCenter.withY(playerPoint.y()).distance(playerPoint);
+            if (currentDistance < distance) {
+                distance = currentDistance;
+                chosenPlot = plot;
+            }
+        }
+        return chosenPlot;
+    }
+
+    /**
+     * Checks whether the location is inside the plot's 2D outline polygon.
+     * Y is ignored so containment matches the build footprint.
+     */
+    public static boolean isInsidePlotOutline(@NotNull AbstractPlot plot, @NotNull Location location) {
+        List<BlockVector2> outline = plot.getOutline();
+        if (outline == null || outline.size() < 3) return false;
+
+        BlockVector3 point = BlockVector3.at(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        return Polygonal2DRegion.contains(outline, Integer.MIN_VALUE, Integer.MAX_VALUE, point);
+    }
+
     public static boolean isPlayerOnPlot(@NotNull AbstractPlot plot, Player player) {
         PlotWorld world = plot.getWorld();
-        if (world.isWorldLoaded() && world.getBukkitWorld().getPlayers().contains(player)) {
-            Location playerLoc = player.getLocation();
-            ProtectedRegion protectedRegion = world.getProtectedRegion();
-            return protectedRegion == null || protectedRegion.contains(Vector3.toBlockPoint(playerLoc.getX(), playerLoc.getY(), playerLoc.getZ()));
+        if (!world.isWorldLoaded() || !world.getBukkitWorld().getPlayers().contains(player)) {
+            return false;
         }
-        return false;
+
+        // Prefer the polygonal build region; the entry cylinder overlaps neighbouring plots.
+        ProtectedRegion buildRegion = world.getProtectedBuildRegion();
+        if (buildRegion != null) {
+            Location playerLoc = player.getLocation();
+            return buildRegion.contains(BlockVector3.at(playerLoc.getBlockX(), playerLoc.getBlockY(), playerLoc.getBlockZ()));
+        }
+        return isInsidePlotOutline(plot, player.getLocation());
     }
 
     public static @Nullable CuboidRegion getPlotAsRegion(@NotNull AbstractPlot plot) throws IOException {

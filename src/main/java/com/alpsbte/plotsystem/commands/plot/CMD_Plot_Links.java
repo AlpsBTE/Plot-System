@@ -5,6 +5,7 @@ import com.alpsbte.plotsystem.commands.BaseCommand;
 import com.alpsbte.plotsystem.commands.SubCommand;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
+import com.alpsbte.plotsystem.core.system.plot.AbstractPlot;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.utils.PlotUtils;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -40,7 +41,12 @@ public class CMD_Plot_Links extends SubCommand {
                     sendInfo(sender);
                     return;
                 }
-                PlotUtils.ChatFormatting.sendLinkMessages(PlotUtils.getCurrentPlot(builder, Status.unfinished, Status.unreviewed), player);
+                AbstractPlot currentPlot = PlotUtils.getCurrentPlot(builder, Status.unfinished, Status.unreviewed);
+                if (currentPlot == null) {
+                    sender.sendMessage(Utils.ChatUtils.getAlertFormat(langUtil.get(sender, LangPaths.Message.Error.PLOT_DOES_NOT_EXIST)));
+                    return;
+                }
+                PlotUtils.ChatFormatting.sendLinkMessages(currentPlot, player);
                 return;
             }
 
