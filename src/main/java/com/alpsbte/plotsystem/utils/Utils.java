@@ -76,11 +76,18 @@ public class Utils {
 
     public static void updatePlayerInventorySlots(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            // Add Items
-            player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
+            // Only place hotbar shortcuts the player can actually use
+            if (player.hasPermission("plotsystem.companion")) {
+                player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
+            } else {
+                player.getInventory().setItem(8, ItemStack.empty());
+            }
+
             if (player.hasPermission("plotsystem.review")) {
                 player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
-            } else player.getInventory().setItem(7, ItemStack.empty());
+            } else {
+                player.getInventory().setItem(7, ItemStack.empty());
+            }
         });
     }
 

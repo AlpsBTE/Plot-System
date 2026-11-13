@@ -101,10 +101,13 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerInteractEvent(@NotNull PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(event.getPlayer()))) {
-                event.getPlayer().performCommand("companion");
-            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem(event.getPlayer()))) {
-                event.getPlayer().performCommand("review");
+            Player player = event.getPlayer();
+            if (event.getItem() != null && event.getItem().equals(CompanionMenu.getMenuItem(player))
+                    && player.hasPermission("plotsystem.companion")) {
+                player.performCommand("companion");
+            } else if (event.getItem() != null && event.getItem().equals(ReviewMenu.getMenuItem(player))
+                    && player.hasPermission("plotsystem.review")) {
+                player.performCommand("review");
             }
         }
 
@@ -269,8 +272,9 @@ public class EventListener implements Listener {
     private void sendNotices(@NotNull Player player, Builder builder) {
         sendReviewNotices(player, builder);
 
-        // Start or notify the player if he has not completed the beginner tutorial yet (only if required)
-        if (TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
+        // Start or notify only when the player can actually run /tutorial
+        if (player.hasPermission("plotsystem.tutorial")
+                && TutorialPlot.isRequiredAndInProgress(TutorialCategory.BEGINNER.getId(), player.getUniqueId())) {
             if (!player.hasPlayedBefore()) {
                 // If disabled, the player has to start the tutorial manually
                 if (PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.BEGINNER_TUTORIAL_START_ON_FIRST_JOIN, true))
