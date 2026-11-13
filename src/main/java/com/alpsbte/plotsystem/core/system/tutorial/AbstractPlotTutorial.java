@@ -7,6 +7,7 @@ import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
+import com.alpsbte.plotsystem.core.system.plot.world.PlotWorld;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractPlotStage;
 import com.alpsbte.plotsystem.core.system.tutorial.stage.AbstractStage;
 import com.alpsbte.plotsystem.core.system.tutorial.utils.TutorialNPC;
@@ -19,11 +20,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.UUID;
@@ -203,7 +204,14 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
     public void onTutorialStop(UUID playerUUID) {
         if (!getPlayerUUID().toString().equals(playerUUID.toString())) return;
         super.onTutorialStop(playerUUID);
-        if (tutorialPlot != null) tutorialPlot.getWorld().deleteWorld();
+        if (tutorialPlot != null) {
+            PlotWorld plotWorld = tutorialPlot.getWorld();
+            World tutorialWorld = plotWorld.getBukkitWorld();
+            if (tutorialWorld != null) {
+                tutorialWorld.getPlayers().forEach(p -> p.teleport(Utils.getSpawnLocation()));
+            }
+            plotWorld.deleteWorld();
+        }
         TutorialPlotProvider.tutorialPlots.remove(tutorialPlot);
     }
 
