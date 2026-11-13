@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -111,16 +112,16 @@ public interface IWorld {
     /**
      * Loads the protected plot world region from WorldGuard config
      *
-     * @return protected WorldGuard region
+     * @return protected WorldGuard region, or null when the world or region is unavailable
      */
-    ProtectedRegion getProtectedRegion();
+    @Nullable ProtectedRegion getProtectedRegion();
 
     /**
      * Loads the protected plot world build region from WorldGuard config
      *
-     * @return protected WorldGuard build region
+     * @return protected WorldGuard build region, or null when the world or region is unavailable
      */
-    ProtectedRegion getProtectedBuildRegion();
+    @Nullable ProtectedRegion getProtectedBuildRegion();
 
     /**
      * Checks if the plot world is loaded to memory
