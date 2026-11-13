@@ -42,6 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -179,8 +180,7 @@ public class PlotSystem extends JavaPlugin {
             }
 
             // Unload tutorials
-            for (int i = 0; i < AbstractTutorial.getActiveTutorials().size(); i++) {
-                Tutorial tutorial = AbstractTutorial.getActiveTutorials().get(i);
+            for (Tutorial tutorial : List.copyOf(AbstractTutorial.getActiveTutorials())) {
                 tutorial.onTutorialStop(tutorial.getPlayerUUID());
             }
         }
