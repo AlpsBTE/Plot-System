@@ -19,7 +19,7 @@ spawn-world: default
 enable-score-requirement: true
 
 # Maximum owned plots that count toward the claim limit at the same time (1-3)
-# Remaining slots can still be used when invited as a member on other players' plots
+# Remaining slots can still be used when invited as a member on other players plots
 # Set to 3 to restore the previous behaviour (one owned plot per builder slot)
 max-owned-active-plots: 1
 
