@@ -157,11 +157,11 @@ public abstract class AbstractTutorial implements Tutorial {
     }
 
     @Override
-    public List<AbstractTutorialHologram> getActiveHolograms() {
+    public List<AbstractTutorialHologram> getHolograms() {
         return DecentHologramDisplay.activeDisplays.stream()
                 .filter(AbstractTutorialHologram.class::isInstance)
-                .filter(holo -> holo.isVisible(playerUUID))
-                .map(h -> (AbstractTutorialHologram) h)
+                .map(AbstractTutorialHologram.class::cast)
+                .filter(holo -> holo.tutorial == this)
                 .toList();
     }
 

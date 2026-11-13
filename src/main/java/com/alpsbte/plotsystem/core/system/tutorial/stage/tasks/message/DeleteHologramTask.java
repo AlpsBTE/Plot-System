@@ -21,7 +21,7 @@ public class DeleteHologramTask extends AbstractTask {
 
     @Override
     public void performTask() {
-        if (hologramsToRemove == null) hologramsToRemove = AbstractTutorial.getActiveTutorial(player.getUniqueId()).getActiveHolograms();
+        if (hologramsToRemove == null) hologramsToRemove = AbstractTutorial.getActiveTutorial(player.getUniqueId()).getHolograms();
         for (AbstractTutorialHologram hologram : hologramsToRemove) if (hologram.isVisible(player.getUniqueId())) hologram.delete();
         setTaskDone();
     }
