@@ -48,11 +48,11 @@ public interface Tutorial {
     TutorialNPC getNPC();
 
     /**
-     * Gets a list of all active holograms from the current tutorial stage.
+     * Gets a list of all holograms owned by this tutorial.
      *
-     * @return list of active tutorial holograms
+     * @return list of tutorial holograms owned by this tutorial
      */
-    List<AbstractTutorialHologram> getActiveHolograms();
+    List<AbstractTutorialHologram> getHolograms();
 
     /**
      * Gets the current tutorial world the player is in
