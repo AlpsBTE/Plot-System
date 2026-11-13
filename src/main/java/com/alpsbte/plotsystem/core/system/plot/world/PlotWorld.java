@@ -199,12 +199,12 @@ public class PlotWorld implements IWorld {
     }
 
     @Override
-    public ProtectedRegion getProtectedRegion() {
+    public @Nullable ProtectedRegion getProtectedRegion() {
         return getRegion(getRegionName() + "-1");
     }
 
     @Override
-    public ProtectedRegion getProtectedBuildRegion() {
+    public @Nullable ProtectedRegion getProtectedBuildRegion() {
         return getRegion(getRegionName());
     }
 
@@ -235,7 +235,7 @@ public class PlotWorld implements IWorld {
         RegionManager regionManager = container.get(BukkitAdapter.adapt(getBukkitWorld()));
         if (regionManager != null) return regionManager.getRegion(regionName);
 
-        PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null!"));
+        PlotSystem.getPlugin().getComponentLogger().warn(text("Region manager is null for world " + getWorldName() + "!"));
         return null;
     }
 

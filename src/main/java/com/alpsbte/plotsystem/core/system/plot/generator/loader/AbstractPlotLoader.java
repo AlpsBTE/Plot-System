@@ -163,8 +163,7 @@ public abstract class AbstractPlotLoader {
             RegionContainer regionContainer = WorldGuard.getInstance().getPlatform().getRegionContainer();
             RegionManager regionManager = regionContainer.get(BukkitAdapter.adapt(plotWorld.getBukkitWorld()));
             if (regionManager == null) {
-                PlotSystem.getPlugin().getComponentLogger().warn(text("Region Manager is null!"));
-                return null;
+                throw new IOException("WorldGuard region manager is null for world " + plotWorld.getWorldName() + "!");
             }
 
             int minWorldHeight = getProtectionMinHeight();
