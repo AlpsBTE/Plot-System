@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6点击此区 §a显示公开审核..."
     click-to-show-plots: "§6点击此区 §a显示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩吗？ §6点击此区..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: '显示阶段'
     click-to-open-plots-menu: '点击此区 显示你的建地...'
     click-to-toggle: "点击切换..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: '邀请到 {0}绘图已被接受。'
     player-invite-to-accepted: '{0} 已接受您的邀请并已添加到您的地皮中。'
     player-invite-rejected: '{0}绘图的邀请已被拒绝。'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "此建地不存在！ "
     plot-either-unclaimed-or-unreviewed: "此建地无人认领或尚未审核！ "
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "玩家必須先完成教學才能加入劇情！"
     error-occurred: "发生错误！请再次尝试！"
     no-plots-left: "此城市计画区没有剩余更多建地了。请选择其他计画区。"
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "请稍后再创建一个新的建地！"
     all-slots-occupied: "你的所有槽位都被占用了！请在创建新的建地之前先完成您当前的建地。"
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "聊天输入已过期。"
     tutorial-disabled: '教程在此服务器上被禁用。'
     tutorial-already-running: "你已经在运行一个教程！在开始一个新教程之前完成它。"
     review-not-found: "无法找到评论！"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "每天"
@@ -451,4 +461,4 @@ database:
     correct_window_type: '更正窗口类型'
     windows_blacked_out: '所有窗口被炸出'
 # NOTE: Do not change
-config-version: 2.6
+config-version: 2.7

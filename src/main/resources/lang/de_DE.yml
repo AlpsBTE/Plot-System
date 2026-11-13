@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Klicke hier, §aum offene Bewertungen anzuzeigen..."
     click-to-show-plots: "§6Klicke hier, §aum deine Plots anzuzeigen..."
     click-to-play-with-friends: "§7Willst du mit deinen Freunden spielen? §6Klicke hier..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Stages Anzeigen'
     click-to-open-plots-menu: 'Klicke hier, um das Plot Menü zu öffnen...'
     click-to-toggle: "Zum Umschalten klicken..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: 'Die Einladung von {0}´s Plot wurde angenommen.'
     player-invite-to-accepted: '{0} hat deine Einladung angenommen und wurde zu deinem Plot hinzugefügt.'
     player-invite-rejected: 'Die Einladung von {0}´s Plot wurde abgelehnt.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "Dieser Plot existiert nicht!"
     plot-either-unclaimed-or-unreviewed: "Dieser Plot ist entweder unbeansprucht oder wurde noch nicht bewertet!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "Der Spieler muss zuerst das Tutorial abschließen, um hinzugefügt zu werden!"
     error-occurred: "Ein Fehler ist aufgetreten! Bitte versuche es erneut!"
     no-plots-left: "Für diese Stadt gibt es keine freien Plots mehr. Bitte wähle einen anderen Ort."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Bitte warte ein paar Sekunden, bevor du einen weiteren neuen Plot erstellst!"
     all-slots-occupied: "Alle deine Slots sind belegt! Bitte stelle deine aktuellen Plots fertig, bevor du einen neuen erstellst."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "Die Eingabe ist abgelaufen."
     tutorial-disabled: 'Tutorials sind auf diesem Server deaktiviert.'
     tutorial-already-running: "Du hast bereits ein Tutorial am Laufen! Schließe dieses ab, bevor du ein neues beginnst."
     review-not-found: "Bewertung konnte nicht gefunden werden!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Heute"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Richtige Verstrebungen'
     windows_blacked_out: 'Alle Fenster verdunkelt'
 # NOTE: Do not change
-config-version: 2.7
+config-version: 2.8

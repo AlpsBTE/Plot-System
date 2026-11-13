@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6 Haz clic aquí §ato mostrar reseñas abiertas..."
     click-to-show-plots: "§6 Haz clic aquí §ato mostrar tus parcelas..."
     click-to-play-with-friends: "§7¿Quieres jugar con tus amigos? §6 Haz clic aquí..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Mostrar etapas'
     click-to-open-plots-menu: 'Haga clic para abrir el menú de parcelas...'
     click-to-toggle: "Clic para alternar..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: 'La invitación a la parcela de {0} ha sido aceptada.'
     player-invite-to-accepted: '{0} aceptó tu invitación y se ha unido a tu parcela.'
     player-invite-rejected: 'La invitación a la parcela de {0} ha sido rechazada.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "¡Esta parcela no existe!"
     plot-either-unclaimed-or-unreviewed: "¡Esta parcela no tiene dueño o no ha sido revisada todavía!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "¡El jugador debe primero completar el tutorial para ser añadido a la parcela!"
     error-occurred: "Ha ocurrido un error. Por favor, inténtalo de nuevo."
     no-plots-left: "Este proyecto de ciudad no tiene más parcelas. Por favor, seleccione otro proyecto."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "¡Por favor, espere unos segundos antes de crear una nueva parcela!"
     all-slots-occupied: "¡Todas tus ranuras están ocupadas! Por favor, termina tus parcelas actuales antes de crear una nueva."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "La entrada del chat ha caducado."
     tutorial-disabled: 'Los tutoriales están desactivados en este servidor.'
     tutorial-already-running: "¡Ya tienes un tutorial en ejecución! Complétalo antes de comenzar uno nuevo."
     review-not-found: "¡No se pudo encontrar la revisión!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Diario"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Tipos correctos de ventanas'
     windows_blacked_out: 'Todas las ventanas bloqueadas'
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3
