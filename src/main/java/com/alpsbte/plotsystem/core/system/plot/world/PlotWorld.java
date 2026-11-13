@@ -64,27 +64,38 @@ public class PlotWorld implements IWorld {
     @Override
     public boolean deleteWorld() {
         if (!isWorldGenerated() || !loadWorld()) return false;
-        if (!Boolean.TRUE.equals(mvCore.getWorldManager().getWorld(getWorldName())
-                .map(world -> mvCore.getWorldManager().deleteWorld(DeleteWorldOptions.world(world)).isSuccess())
-                .getOrElse(false)) || !mvCore.getWorldManager().saveWorldsConfig().isSuccess()) {
+        var worldManager = mvCore.getWorldManager();
+        MultiverseWorld mvWorld = worldManager.getWorld(getWorldName()).getOrNull();
+        if (mvWorld == null) {
             PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete world " + getWorldName() + "!"));
             return false;
         }
-        try {
-            String configWorldName = getWorldName().toLowerCase(Locale.ROOT);
 
-            var mviConfig = DependencyManager.getMultiverseInventoriesConfigPath(configWorldName);
-            if (mviConfig != null) {
-                File multiverseInventoriesConfig = new File(mviConfig);
-                if (multiverseInventoriesConfig.exists()) FileUtils.deleteDirectory(multiverseInventoriesConfig);
-            }
-            File worldGuardConfig = new File(DependencyManager.getWorldGuardConfigPath(configWorldName));
-            if (worldGuardConfig.exists()) FileUtils.deleteDirectory(worldGuardConfig);
-        } catch (IOException ex) {
-            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config files for world " + getWorldName() + "!"), ex);
+        String mvWorldName = mvWorld.getName();
+        if (!worldManager.deleteWorld(DeleteWorldOptions.world(mvWorld)).isSuccess() || !worldManager.saveWorldsConfig().isSuccess()) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete world " + getWorldName() + "!"));
             return false;
         }
-        return true;
+
+        boolean mviDeleted = deleteWorldConfig(DependencyManager.getMultiverseInventoriesConfigPath(mvWorldName));
+        boolean worldGuardDeleted = deleteWorldConfig(DependencyManager.getWorldGuardConfigPath(mvWorldName));
+        return mviDeleted && worldGuardDeleted;
+    }
+
+    /**
+     * @return false when the directory exists but could not be deleted
+     */
+    private boolean deleteWorldConfig(@Nullable String configPath) {
+        if (configPath == null) return true;
+        File directory = new File(configPath);
+        if (!directory.isDirectory()) return true;
+        try {
+            FileUtils.deleteDirectory(directory);
+            return true;
+        } catch (IOException ex) {
+            PlotSystem.getPlugin().getComponentLogger().warn(text("Could not delete config directory " + directory.getPath() + "!"), ex);
+            return false;
+        }
     }
 
     @Override
