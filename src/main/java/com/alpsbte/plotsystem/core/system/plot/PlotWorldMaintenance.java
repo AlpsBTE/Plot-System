@@ -189,28 +189,47 @@ public final class PlotWorldMaintenance {
             String worldName,
             List<Plot> completedPlots,
             CimRebuildProgress progress
-    ) throws Exception {
+    ) throws InterruptedException {
         boolean pastedAny = false;
         for (Plot plot : completedPlots) {
             if (pastedAny) Thread.sleep(PAUSE_MILLIS);
-            if (PlotHandler.pasteCompletedIntoCity(plot, false)) {
-                progress.plotsPasted++;
-                pastedAny = true;
-                PlotSystem.getPlugin().getComponentLogger().info(text(
-                        "Rebuilt completed plot #" + plot.getId() + " into CIM world " + worldName + "."
-                ));
-            } else {
+            try {
+                if (PlotHandler.pasteCompletedIntoCity(plot, false)) {
+                    progress.plotsPasted++;
+                    pastedAny = true;
+                    PlotSystem.getPlugin().getComponentLogger().info(text(
+                            "Rebuilt completed plot #" + plot.getId() + " into CIM world " + worldName + "."
+                    ));
+                } else {
+                    progress.plotsFailed++;
+                }
+            } catch (InterruptedException interrupted) {
+                throw interrupted;
+            } catch (Exception exception) {
                 progress.plotsFailed++;
+                PlotSystem.getPlugin().getComponentLogger().error(
+                        text("Could not rebuild completed plot #" + plot.getId() + " into CIM world " + worldName + "!"),
+                        exception
+                );
             }
         }
         return pastedAny;
     }
 
-    private static void pasteEnvironmentIntoCity(List<Plot> completedPlots, boolean pauseBeforeFirst) throws Exception {
+    private static void pasteEnvironmentIntoCity(List<Plot> completedPlots, boolean pauseBeforeFirst) throws InterruptedException {
         boolean pause = pauseBeforeFirst;
         for (Plot plot : completedPlots) {
             if (pause) Thread.sleep(PAUSE_MILLIS);
-            PlotHandler.pasteCityEnvironmentIntoVoid(plot);
+            try {
+                PlotHandler.pasteCityEnvironmentIntoVoid(plot);
+            } catch (InterruptedException interrupted) {
+                throw interrupted;
+            } catch (Exception exception) {
+                PlotSystem.getPlugin().getComponentLogger().error(
+                        text("Could not paste environment for plot #" + plot.getId() + " into its CIM world!"),
+                        exception
+                );
+            }
             pause = true;
         }
     }
