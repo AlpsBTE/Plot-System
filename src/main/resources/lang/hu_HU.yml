@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Kattints Ide §ahogy lásd az értékelésre váró telkeket..."
     click-to-show-plots: "§6Kattints Ide §ahogy megtekintsd a telkeidet..."
     click-to-play-with-friends: "§7Barátaiddal akarsz együtt játszani? §6Kattints Ide..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Fázisok Megjelenítése'
     click-to-open-plots-menu: 'Kattints ide a telek menü megnyitásához...'
     click-to-toggle: "Kattints hogy bekapcsold a..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: 'A meghívó {0} telkére el lett fogadva.'
     player-invite-to-accepted: '{0} elfogadta a meghívásodat, és hozzá lett adva a telkedhez.'
     player-invite-rejected: 'A meghívó {0} telkére el lett utasítva.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "Ez a telek nem létezik!"
     plot-either-unclaimed-or-unreviewed: "Ez a telek vagy gazdátlan, vagy még nem lett értékelve!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "A játékosnak előbb teljesítenie kell az útmutatót, hogy hozzá legyen adva a telekhez!"
     error-occurred: "Hiba történt. Kérjük, próbálja meg újra!"
     no-plots-left: "Ennél a városnál nincs több elérhető telek. Kérlek válassz egy másik projektet."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Kérlek várj pár másodpercet, mielőtt létrehozol egy új telket!"
     all-slots-occupied: "Minden telek helyed foglalt! Kérlek fejezd be a jelenlegi telkeidet, mielőtt létrehozol egy újat."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "A chat parancs lejárt."
     tutorial-disabled: 'Ezen a szerveren az Útmutató nem elérhető.'
     tutorial-already-running: "Már folyamatban van egy útmutató! Végezd el, mielőtt újat kezdesz."
     review-not-found: "Értékelés nem található!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Napi"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Helyes ablaktípus'
     windows_blacked_out: 'Minden ablak belülről ki van takarva'
 # NOTE: Do not change
-config-version: 1.4
+config-version: 1.5

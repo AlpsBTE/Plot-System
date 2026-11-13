@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Klikni sem §apre zobrazenie neskontrolovaných parcel..."
     click-to-show-plots: "§6Klikni sem §7pre zobrazenie tvojich parcel..."
     click-to-play-with-friends: "§7Chceš hrať s kamarátmi? §6Klikni sem..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Zobraziť fázy'
     click-to-open-plots-menu: 'Klikni pre otvorenie menu parcel...'
     click-to-toggle: "Klikni pre prepnutie..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: '''Pozvánka na parcelu hráča {0} bola prijatá.'
     player-invite-to-accepted: 'Hráč {0} prijal tvoju pozvánku a bol pridaný do tvojej parcely.'
     player-invite-rejected: 'Pozvánka na parcelu hráča {0} bola zamietnutá.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "Táto parcela neexistuje!"
     plot-either-unclaimed-or-unreviewed: "Táto parcela je buď nezabraná, alebo ešte nebola skontrolovaná!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "Hráč musí najprv dokončiť tutoriál, aby mohol byť pridaný do parcely!"
     error-occurred: "Vyskytla sa chyba! Skús to znova."
     no-plots-left: "V tomto meste už nie sú žiadne voľné parcely. Vyber si prosím iný projekt."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Pred vytvorením novej parcely počkaj pár sekúnd!"
     all-slots-occupied: "Všetky tvoje sloty sú obsadené! Najprv dokonči rozpracované parcely."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "Čas na zadanie do chatu vypršal."
     tutorial-disabled: 'Tutoriály sú vypnuté na tomto serveri.'
     tutorial-already-running: "Už máš spustený tutoriál! Dokonči ho pred začatím nového."
     review-not-found: "Hodnotenie sa nepodarilo nájsť!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Dnes"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Správny typ okien'
     windows_blacked_out: 'Všetky okná zaclonené'
 # NOTE: Do not change
-config-version: 2
+config-version: 3

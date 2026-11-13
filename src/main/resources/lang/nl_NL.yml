@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Klik Hier §aom openstaande beoordelingen te tonen..."
     click-to-show-plots: "§6Klik Hier §aom jouw plots te tonen..."
     click-to-play-with-friends: "§7Wil je met je vrienden spelen? §6Klik Hier..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Toon Fasen'
     click-to-open-plots-menu: 'Click to open the plots menu...'
     click-to-toggle: "Klik om te activeren..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: 'Uitnodiging voor {0}´s plot is geaccepteerd.'
     player-invite-to-accepted: '{0} heeft jouw uitnodiging geaccepteerd en is toegevoegd aan uw plot.'
     player-invite-rejected: 'De uitnodiging van {0}´s plot is afgewezen.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "Dit plot bestaat niet!"
     plot-either-unclaimed-or-unreviewed: "Dit plot is nog niet toegewezen of is nog niet beoordeeld!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "De speler moet eerst de tutorial voltooien om toegevoegd te worden aan het plot!"
     error-occurred: "Er is een fout opgetreden! Probeer het nog eens!"
     no-plots-left: "Dit stadsproject heeft geen plots meer. Selecteer alstublieft een ander project."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Wacht alstublieft een paar seconden voordat u een nieuw plot aanmaakt!"
     all-slots-occupied: "Al je slots zijn bezet! Voltooi je huidige plots voordat je een nieuwe maakt."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "De chatinvoer is verlopen."
     tutorial-disabled: 'Tutorials zijn uitgeschakeld op deze server.'
     tutorial-already-running: "Je hebt al een tutorial bezig! Voltooi deze voordat je een nieuwe begint."
     review-not-found: "Beoordeling kan niet worden gevonden!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Dagelijks"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'Alle ramen zijn verduisterd'
 # NOTE: Do not change
-config-version: 1.2
+config-version: 1.3

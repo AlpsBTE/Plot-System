@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6Clic aici §a pentru a vedea evaluările deschise..."
     click-to-show-plots: "§6Clic aici §a pentru a vedea plot-urile tale..."
     click-to-play-with-friends: "§7Vrei să te joci cu prietenii tăi? §6Clic aici..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: 'Afișează etape'
     click-to-open-plots-menu: 'Clic pentru a deschide meniu plot-uri...'
     click-to-toggle: "Clic pentru a comuta..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: 'Invitația la plot-ul lui {0} a fost acceptată.'
     player-invite-to-accepted: '{0} ți-a acceptat invitația și a fost adăugat la plot-ul tău.'
     player-invite-rejected: 'Invitația la plot-ul lui {0} a fost refuzată.'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "Acest plot nu există!"
     plot-either-unclaimed-or-unreviewed: "Acest plot nu a fost rezervat sau nu a fost încă evaluat!"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "Jucătorul trebuie mai întâi să completeze tutorialul pentru a fi adăugat la plot!"
     error-occurred: "A apărut o eroare! Încearcă din nou!"
     no-plots-left: "Proiectul pentru acest oraș nu mai are plot-uri disponibile. Selectează un alt proiect."
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "Te rog așteaptă câteva secunde înainte să creezi un plot nou!"
     all-slots-occupied: "Toate spațiile tale sunt ocupate! Termină plot-urile începute înainte de a crea unul nou."
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "Input-ul în chat a expirat."
     tutorial-disabled: 'Tutorialele sunt dezactivate pe acest server.'
     tutorial-already-running: "Deja ai început un tutorial! Completează-l înainte de a începe unul nou."
     review-not-found: "Evaluarea nu a fost găsită!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "Zilnic"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Modele ferestre corecte'
     windows_blacked_out: 'Toate ferestrele închise cu block-uri'
 # NOTE: Do not change
-config-version: 1.1
+config-version: 1.2

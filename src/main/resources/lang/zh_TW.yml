@@ -207,6 +207,8 @@ note:
     click-to-show-open-reviews: "§6點擊此處§a顯示公開審核..."
     click-to-show-plots: "§6點擊此處§a顯示你的建地..."
     click-to-play-with-friends: "§7想和你的朋友一起玩嗎？§6點擊此處..."
+    click-to-change-view-mode: "§6Click Here §7to change your view mode in Companion → Settings..."
+    click-to-select-difficulty: "§6Click Here §ato open the Companion and switch difficulty..."
     tutorial-show-stages: '顯示階段'
     click-to-open-plots-menu: '點擊以開啟建地選單...'
     click-to-toggle: "Click to toggle..."
@@ -254,6 +256,10 @@ message:
     player-invite-accepted: '已接受來自 {0} 建地的邀請。'
     player-invite-to-accepted: '{0} 接受了你的邀請並加入了你的建地。'
     player-invite-rejected: '已拒絕來自 {0} 建地的邀請。'
+    changed-plot-difficulty: "§aChanged difficulty of plot §6#{0}§a to §6{1}§a!"
+    plot-difficulty-unchanged: "§aPlot §6#{0}§a already has difficulty §6{1}§a!"
+    view-mode-tip: "§aTip: Switch view modes to see surrounding terrain while you build!"
+    difficulty-unlocked: "§aYour first plot was accepted! You can now try §6Medium§a and §6Hard§a plots for a challenge."
   error:
     plot-does-not-exist: "此建地不存在！"
     plot-either-unclaimed-or-unreviewed: "此建地無人認領或尚未審核！"
@@ -284,12 +290,16 @@ message:
     player-missing-tutorial: "玩家必须先完成教程，才能加入剧情！"
     error-occurred: "發生錯誤！請再次嘗試！"
     no-plots-left: "此城市計畫區沒有剩餘更多建地了。請選擇其他計畫區。"
+    no-open-plots: "There are no open plots available to teleport to!"
+    no-other-open-plots: "There are no further open plots in the review book!"
     please-wait: "請稍後再建立一個新的建地！"
     all-slots-occupied: "你全部的槽位都被占用了！在建立新的建地前請先完成你當前的建地。"
+    max-owned-plots: "You already own the maximum of {0} active plot(s)! Finish or abandon one before claiming another."
     chat-input-expired: "聊天輸入過期了。"
     tutorial-disabled: '此伺服器的教學被停用了。'
     tutorial-already-running: "你已經有一個教學正在進行！在開始新的教學前請先將它完成。"
     review-not-found: "Review could not be found!"
+    invalid-plot-difficulty: "Invalid plot difficulty! Use easy, medium or hard."
 leaderboards:
   pages:
     DAILY: "每日"
@@ -451,4 +461,4 @@ database:
     correct_window_type: 'Correct window types'
     windows_blacked_out: 'All windows blacked out'
 # NOTE: Do not change
-config-version: 2.6
+config-version: 2.7
