@@ -1,9 +1,8 @@
 package com.alpsbte.plotsystem.commands.admin;
 
-import com.alpsbte.alpslib.hologram.DecentHologramDisplay;
 import com.alpsbte.plotsystem.commands.BaseCommand;
-import com.alpsbte.plotsystem.core.holograms.HologramConfiguration;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
+import com.alpsbte.plotsystem.core.holograms.leaderboards.ScoreLeaderboard;
 import com.alpsbte.plotsystem.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,7 +38,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
                     .append(Component.newline())
                     .build();
 
-            for (DecentHologramDisplay holo : DecentHologramDisplay.activeDisplays) {
+            for (ScoreLeaderboard holo : HologramRegister.getLeaderboards()) {
                 message = message
                         .append(Component.text(" > ", NamedTextColor.GOLD))
                         .append(Component.text(holo.getId(), NamedTextColor.WHITE))
@@ -55,7 +54,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
         }
 
         // Find leaderboard by name
-        DecentHologramDisplay leaderboard = DecentHologramDisplay.activeDisplays.stream()
+        ScoreLeaderboard leaderboard = HologramRegister.getLeaderboards().stream()
                 .filter(holo -> holo.getId().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);
@@ -65,7 +64,7 @@ public class CMD_SetLeaderboard extends BaseCommand {
             player.sendMessage(Utils.ChatUtils.getAlertFormat("Leaderboard could not be found!"));
             return true;
         }
-        HologramRegister.saveLocation(leaderboard.getId(), (HologramConfiguration) leaderboard, getPlayer(sender).getLocation());
+        HologramRegister.saveLocation(leaderboard, getPlayer(sender).getLocation());
         player.sendMessage(Utils.ChatUtils.getInfoFormat("Successfully updated hologram location!"));
         player.playSound(player.getLocation(), Utils.SoundUtils.DONE_SOUND, 1, 1);
         return true;
