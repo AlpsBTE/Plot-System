@@ -461,4 +461,4 @@ database:
     correct_window_type: 'Richtige Verstrebungen'
     windows_blacked_out: 'Alle Fenster verdunkelt'
 # NOTE: Do not change
-config-version: 2.8
+config-version: 2.7
