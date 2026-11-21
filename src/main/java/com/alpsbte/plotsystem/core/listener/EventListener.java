@@ -1,4 +1,4 @@
-package com.alpsbte.plotsystem.core;
+package com.alpsbte.plotsystem.core.listener;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -26,6 +26,7 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.PlayerInventorySlots;
 import com.destroystokyo.paper.event.player.PlayerClientOptionsChangeEvent;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
@@ -79,7 +80,7 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
 
         // Add Items
-        Utils.updatePlayerInventorySlots(player);
+        PlayerInventorySlots.update(player);
 
         // User has joined for the first time
         // Adding user to the database
@@ -161,7 +162,7 @@ public class EventListener implements Listener {
             if (plotWorld != null && !isPersistentCityWorld(plotWorld)) plotWorld.unloadWorld(false);
         }, 60L);
 
-        Utils.updatePlayerInventorySlots(event.getPlayer());
+        PlayerInventorySlots.update(event.getPlayer());
     }
 
     @EventHandler
@@ -238,12 +239,12 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onLanguageChange(@NotNull LanguageChangeEvent event) {
-        Utils.updatePlayerInventorySlots(event.getPlayer());
+        PlayerInventorySlots.update(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerClientOptionsChange(@NotNull PlayerClientOptionsChangeEvent e) {
-        Utils.updatePlayerInventorySlots(e.getPlayer());
+        PlayerInventorySlots.update(e.getPlayer());
     }
 
     private void handleIronTrapdoorClick(@NotNull PlayerInteractEvent event) {

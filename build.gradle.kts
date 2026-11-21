@@ -79,6 +79,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation(libs.io.papermc.paper.paper.api)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    compileOnly(libs.net.luckperms.api)
 
     if (paperNextEnabled.get()) {
         constraints {
