@@ -7,11 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class PlayerInventorySlots {
     private static final String PERMISSION_COMPANION = "plotsystem.companion";
     private static final String PERMISSION_REVIEW = "plotsystem.review";
     private static final int SLOT_COMPANION = 8;
     private static final int SLOT_REVIEW = 7;
+    public static final List<String> PERMISSIONS_AFFECTING_ITEM_VISIBILITY = List.of(PERMISSION_COMPANION, PERMISSION_REVIEW);
 
     public static void update(Player player) {
         Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
@@ -28,9 +31,5 @@ public class PlayerInventorySlots {
                 player.getInventory().setItem(SLOT_REVIEW, ItemStack.empty());
             }
         });
-    }
-
-    public static boolean affectsItemVisibility(String permission) {
-        return permission.equals(PERMISSION_COMPANION) || permission.equals(PERMISSION_REVIEW);
     }
 }
