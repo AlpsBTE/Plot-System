@@ -76,7 +76,7 @@ dependencies {
     compileOnly(libs.li.cinnazeyy.langlibs.api)
     compileOnly(libs.commons.io.commons.io)
     compileOnly(libs.io.papermc.paper.paper.api)
-    compileOnly(libs.net.luckperms)
+    compileOnly(libs.luckperms)
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation(libs.io.papermc.paper.paper.api)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

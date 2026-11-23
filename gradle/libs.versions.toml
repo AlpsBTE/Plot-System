@@ -36,7 +36,7 @@ multiverse-core = "5.8.2"
 # https://central.sonatype.com/artifact/org.mariadb.jdbc/mariadb-java-client
 org-mariadb-jdbc-mariadb-java-client = "3.5.11"
 # https://central.sonatype.com/artifact/net.luckperms/api
-net-luckperms = "5.5"
+luckperms = "5.5"
 #
 # Plugins
 #
@@ -62,7 +62,7 @@ io-papermc-paper-paper-api = { module = "io.papermc.paper:paper-api", version.re
 li-cinnazeyy-langlibs-api = { module = "li.cinnazeyy:LangLibs-API", version.ref = "li-cinnazeyy-langlibs-api" }
 multiverse-core = { module = "org.mvplugins.multiverse.core:multiverse-core", version.ref = "multiverse-core" }
 org-mariadb-jdbc-mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "org-mariadb-jdbc-mariadb-java-client" }
-net-luckperms = { module="net.luckperms:api", version.ref = "net-luckperms" }
+luckperms = { module="net.luckperms:api", version.ref = "luckperms" }
 
 [plugins]
 git-semver = { id = "com.github.jmongard.git-semver-plugin", version.ref = "git-semver" }
