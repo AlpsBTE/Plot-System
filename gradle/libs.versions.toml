@@ -62,7 +62,7 @@ io-papermc-paper-paper-api = { module = "io.papermc.paper:paper-api", version.re
 li-cinnazeyy-langlibs-api = { module = "li.cinnazeyy:LangLibs-API", version.ref = "li-cinnazeyy-langlibs-api" }
 multiverse-core = { module = "org.mvplugins.multiverse.core:multiverse-core", version.ref = "multiverse-core" }
 org-mariadb-jdbc-mariadb-java-client = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "org-mariadb-jdbc-mariadb-java-client" }
-luckperms = { module="net.luckperms:api", version.ref = "luckperms" }
+luckperms = { module = "net.luckperms:api", version.ref = "luckperms" }
 
 [plugins]
 git-semver = { id = "com.github.jmongard.git-semver-plugin", version.ref = "git-semver" }
