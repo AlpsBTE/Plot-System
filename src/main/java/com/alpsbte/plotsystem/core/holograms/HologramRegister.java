@@ -10,29 +10,40 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public final class HologramRegister {
     private HologramRegister() {}
 
+    private static final List<ScoreLeaderboard> leaderboards = new ArrayList<>();
+
     /**
-     * Registers the {@link ScoreLeaderboard} and adds
-     * them to {@link DecentHologramDisplay#activeDisplays}.
+     * Registers the {@link ScoreLeaderboard}.
      */
     public static void init() {
-        new ScoreLeaderboard();
+        leaderboards.add(new ScoreLeaderboard());
     }
 
+    public static List<ScoreLeaderboard> getLeaderboards() {
+        return Collections.unmodifiableList(leaderboards);
+    }
+
+    /**
+     * Re-applies location and enabled state from the config to all leaderboards.
+     */
     public static void reload() {
-        for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
-            // Register and create holograms
-            if (PlotSystem.getPlugin().getConfig().getBoolean(((HologramConfiguration) display).getEnablePath())) {
-                display.setEnabled(true);
-                for (Player player : Objects.requireNonNull(Bukkit.getWorld(display.getLocation().getWorld().getName())).getPlayers())
-                    display.create(player);
+        for (ScoreLeaderboard leaderboard : leaderboards) {
+            leaderboard.setLocation(getLocation(leaderboard));
+            if (PlotSystem.getPlugin().getConfig().getBoolean(leaderboard.getEnablePath())) {
+                leaderboard.setEnabled(true);
+                for (Player player : Objects.requireNonNull(Bukkit.getWorld(leaderboard.getLocation().getWorld().getName())).getPlayers())
+                    leaderboard.create(player);
             } else {
-                display.setEnabled(false);
-                display.removeAll();
+                leaderboard.setEnabled(false);
+                leaderboard.removeAll();
             }
         }
     }
@@ -47,18 +58,15 @@ public final class HologramRegister {
         );
     }
 
-    public static void saveLocation(String id, HologramConfiguration configPaths, Location newLocation) {
+    public static void saveLocation(ScoreLeaderboard leaderboard, Location newLocation) {
         FileConfiguration config = PlotSystem.getPlugin().getConfig();
-        config.set(configPaths.getEnablePath(), true);
-        config.set(configPaths.getXPath(), newLocation.getX());
-        config.set(configPaths.getYPath(), newLocation.getY());
-        config.set(configPaths.getZPath(), newLocation.getZ());
+        config.set(leaderboard.getEnablePath(), true);
+        config.set(leaderboard.getXPath(), newLocation.getX());
+        config.set(leaderboard.getYPath(), newLocation.getY());
+        config.set(leaderboard.getZPath(), newLocation.getZ());
         ConfigUtil.getInstance().saveFiles();
 
-        for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
-            if (!Objects.equals(display.getId(), id)) continue;
-            display.setLocation(newLocation);
-        }
+        leaderboard.setLocation(newLocation);
     }
 
     public static class LeaderboardPositionLine extends DecentHologramDisplay.TextLine {

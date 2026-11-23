@@ -111,7 +111,7 @@ public class StageTimeline implements TutorialTimeline {
         activeTimelines.remove(player.getUniqueId());
         if (assignmentProgressTask != null) assignmentProgressTask.cancel();
         if (currentTask != null) currentTask.setTaskDone();
-        tutorial.getActiveHolograms().forEach(AbstractTutorialHologram::delete);
+        tutorial.getHolograms().forEach(AbstractTutorialHologram::delete);
         tutorial.getNPC().setInteractionPromptVisibility(player.getUniqueId(), false, false);
         tasks.clear();
     }
