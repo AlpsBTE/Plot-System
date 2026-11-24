@@ -17,7 +17,7 @@ public class PlayerInventorySlots {
     public static final List<String> PERMISSIONS_AFFECTING_ITEM_VISIBILITY = List.of(PERMISSION_COMPANION, PERMISSION_REVIEW);
 
     public static void update(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(PlotSystem.getPlugin(), () -> {
             // Only place hotbar shortcuts the player can actually use
             if (player.hasPermission(PERMISSION_COMPANION)) {
                 player.getInventory().setItem(SLOT_COMPANION, CompanionMenu.getMenuItem(player));
