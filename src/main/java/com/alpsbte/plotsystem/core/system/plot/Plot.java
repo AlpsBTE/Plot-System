@@ -243,6 +243,16 @@ public class Plot extends AbstractPlot {
         if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.MEDIUM, Status.unclaimed).isEmpty()) mediumHasPlots = true;
         if (!DataProvider.PLOT.getPlots(city, PlotDifficulty.HARD, Status.unclaimed).isEmpty()) hardHasPlots = true;
 
+        if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) {
+            if (hardHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.HARD);
+            } else if (mediumHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
+            } else if (easyHasPlots) {
+                return CompletableFuture.completedFuture(PlotDifficulty.EASY);
+            }
+        }
+
         if (hardHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // Return hard
             return CompletableFuture.completedFuture(PlotDifficulty.HARD);
         } else if (mediumHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // Return medium
@@ -250,15 +260,9 @@ public class Plot extends AbstractPlot {
         } else if (easyHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.EASY)) { // Return easy
             return CompletableFuture.completedFuture(PlotDifficulty.EASY);
         } else if (mediumHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.HARD)) { // If hard has no plots return medium
-            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
-        } else if (easyHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
             return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-        } else if (!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.ENABLE_SCORE_REQUIREMENT)) { // If score requirement is disabled get plot from any available difficulty
-            if (easyHasPlots) {
-                return CompletableFuture.completedFuture(PlotDifficulty.EASY);
-            } else if (mediumHasPlots) {
-                return CompletableFuture.completedFuture(PlotDifficulty.MEDIUM);
-            }
+        } else if (easyHasPlots && meetsPlotDifficultyScoreRequirement(builder, PlotDifficulty.MEDIUM)) { // If medium has no plots return easy
+            return CompletableFuture.completedFuture(PlotDifficulty.EASY);
         }
         return CompletableFuture.completedFuture(null); // If nothing is available return null
     }
