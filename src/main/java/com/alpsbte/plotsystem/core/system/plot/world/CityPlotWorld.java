@@ -10,6 +10,7 @@ import com.alpsbte.plotsystem.utils.io.ConfigPaths;
 import com.alpsbte.plotsystem.utils.io.ConfigUtil;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.PlayerInventorySlots;
 import com.google.common.annotations.Beta;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.Vector2;
@@ -130,7 +131,7 @@ public class CityPlotWorld extends PlotWorld {
 
         player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getId()))));
 
-        Utils.updatePlayerInventorySlots(player);
+        PlayerInventorySlots.update(player);
         PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
 
         if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId())) return true;

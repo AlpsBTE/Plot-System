@@ -5,7 +5,7 @@ name: Plot-System
 description: "${description}"
 author: R3tuxn, Cinnazeyy & Zoriot
 depend: [ LangLibs, FancyNpcs, FastAsyncWorldEdit, Multiverse-Core, DecentHolograms, WorldGuard ]
-softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI, HeadDB, HeadDatabase ]
+softdepend: [ WorldGuardExtraFlags, ParticleNativeAPI, HeadDB, HeadDatabase, LuckPerms ]
 
 commands:
   cancelchat:

@@ -8,9 +8,10 @@ import com.alpsbte.alpslib.io.database.DatabaseConnection;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.alpslib.utils.head.HeadLookupService;
 import com.alpsbte.plotsystem.commands.CommandManager;
-import com.alpsbte.plotsystem.core.EventListener;
+import com.alpsbte.plotsystem.core.listener.EventListener;
 import com.alpsbte.plotsystem.core.holograms.HologramRegister;
 import com.alpsbte.plotsystem.core.integration.DefaultPlotSnapshotProvider;
+import com.alpsbte.plotsystem.core.listener.LuckPermsEventListener;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.core.system.plot.PlotHandler;
@@ -31,9 +32,11 @@ import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.google.common.io.CharStreams;
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import net.kyori.adventure.text.Component;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.ServicePriority;
 import org.ipvp.canvas.MenuFunctionListener;
@@ -111,6 +114,12 @@ public class PlotSystem extends JavaPlugin {
             headLookupService = HeadLookupService.createForPlugin(this).registerEvents(this);
             if (getConfig().getBoolean(ConfigPaths.TUTORIAL_ENABLE))
                 this.getServer().getPluginManager().registerEvents(new TutorialEventListener(), this);
+
+            RegisteredServiceProvider<LuckPerms> luckPermsProvider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+            if (luckPermsProvider != null) {
+                LuckPerms luckPerms = luckPermsProvider.getProvider();
+                new LuckPermsEventListener().subscribe(luckPerms);
+            }
             getComponentLogger().info(successPrefix.append(text("Successfully registered event listeners.")));
         } catch (Exception ex) {
             getComponentLogger().error(errorPrefix.append(text("Could not register event listeners.")), ex);

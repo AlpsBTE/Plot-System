@@ -14,6 +14,7 @@ import com.alpsbte.plotsystem.utils.Utils;
 import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
+import com.alpsbte.plotsystem.utils.items.PlayerInventorySlots;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,7 +90,7 @@ public class OnePlotWorld extends PlotWorld {
             player.sendMessage(Utils.ChatUtils.getInfoFormat(LangUtil.getInstance().get(player, LangPaths.Message.Info.TELEPORTING_PLOT, String.valueOf(plot.getId()))));
             PlotUtils.ChatFormatting.sendLinkMessages(plot, player);
         }
-        Utils.updatePlayerInventorySlots(player);
+        PlayerInventorySlots.update(player);
 
         if (!plot.getPlotOwner().getUUID().equals(player.getUniqueId())) return true;
         plot.setLastActivity(false);

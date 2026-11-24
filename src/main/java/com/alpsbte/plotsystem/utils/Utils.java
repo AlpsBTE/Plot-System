@@ -3,8 +3,6 @@ package com.alpsbte.plotsystem.utils;
 import com.alpsbte.alpslib.io.database.SqlHelper;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
-import com.alpsbte.plotsystem.core.menus.companion.CompanionMenu;
-import com.alpsbte.plotsystem.core.menus.review.ReviewMenu;
 import com.alpsbte.plotsystem.core.system.plot.Plot;
 import com.alpsbte.plotsystem.utils.chat.ChatInput;
 import com.alpsbte.plotsystem.utils.enums.PlotDifficulty;
@@ -23,7 +21,6 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -72,23 +69,6 @@ public class Utils {
         }
 
         return DependencyManager.getMultiverseCore().getWorldManager().getDefaultWorld().get().getSpawnLocation();
-    }
-
-    public static void updatePlayerInventorySlots(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(PlotSystem.getPlugin(), () -> {
-            // Only place hotbar shortcuts the player can actually use
-            if (player.hasPermission("plotsystem.companion")) {
-                player.getInventory().setItem(8, CompanionMenu.getMenuItem(player));
-            } else {
-                player.getInventory().setItem(8, ItemStack.empty());
-            }
-
-            if (player.hasPermission("plotsystem.review")) {
-                player.getInventory().setItem(7, ReviewMenu.getMenuItem(player));
-            } else {
-                player.getInventory().setItem(7, ItemStack.empty());
-            }
-        });
     }
 
     public static CompletableFuture<Void> runSync(Callable<Void> task) {
