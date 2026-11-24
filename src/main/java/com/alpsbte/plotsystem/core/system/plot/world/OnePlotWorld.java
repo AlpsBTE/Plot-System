@@ -70,11 +70,9 @@ public class OnePlotWorld extends PlotWorld {
 
     @Override
     public boolean unloadWorld(boolean movePlayers) {
-        boolean isTutorialPlot;
-        isTutorialPlot = plot.getPlotType() == PlotType.TUTORIAL;
-
-        if (isTutorialPlot) return deleteWorld();
-        else return super.unloadWorld(movePlayers);
+        // Tutorial worlds are deleted by the tutorial when it stops.
+        if (plot.getPlotType() == PlotType.TUTORIAL) return false;
+        return super.unloadWorld(movePlayers);
     }
 
     @Override

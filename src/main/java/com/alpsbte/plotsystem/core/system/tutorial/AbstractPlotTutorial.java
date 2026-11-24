@@ -3,7 +3,6 @@ package com.alpsbte.plotsystem.core.system.tutorial;
 import com.alpsbte.alpslib.utils.AlpsUtils;
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.core.database.DataProvider;
-import com.alpsbte.plotsystem.core.database.providers.TutorialPlotProvider;
 import com.alpsbte.plotsystem.core.system.Builder;
 import com.alpsbte.plotsystem.core.system.plot.TutorialPlot;
 import com.alpsbte.plotsystem.core.system.plot.generator.loader.TutorialPlotLoader;
@@ -51,12 +50,11 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
 
         CompletableFuture.runAsync(() -> {
             String playerUUID = player.getUniqueId().toString();
-            Optional<TutorialPlot> plot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID);
+            Optional<TutorialPlot> plot = DataProvider.TUTORIAL_PLOT.claim(tutorialId, playerUUID);
             if (plot.isEmpty() && DataProvider.TUTORIAL_PLOT.add(tutorialId, playerUUID)) {
-                tutorialPlot = DataProvider.TUTORIAL_PLOT.getByTutorialId(tutorialId, playerUUID).orElse(null);
-            } else {
-                tutorialPlot = plot.orElse(null);
+                plot = DataProvider.TUTORIAL_PLOT.claim(tutorialId, playerUUID);
             }
+            tutorialPlot = plot.orElse(null);
 
             // Check if tutorial plot is null
             if (tutorialPlot == null) {
@@ -212,7 +210,7 @@ public abstract class AbstractPlotTutorial extends AbstractTutorial implements P
             }
             plotWorld.deleteWorld();
         }
-        TutorialPlotProvider.tutorialPlots.remove(tutorialPlot);
+        DataProvider.TUTORIAL_PLOT.release(tutorialPlot);
     }
 
     @Override

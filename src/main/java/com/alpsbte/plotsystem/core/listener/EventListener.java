@@ -64,7 +64,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.empty;
@@ -145,8 +144,7 @@ public class EventListener implements Listener {
             }
 
             PlotWorld plotWorld = PlotWorld.getPlotWorldByName(w.getName());
-            if (plotWorld != null && !isPersistentCityWorld(plotWorld) && !plotWorld.getWorldName().toLowerCase(Locale.ROOT).startsWith("t-"))
-                plotWorld.unloadWorld(false);
+            if (plotWorld != null && !isPersistentCityWorld(plotWorld)) plotWorld.unloadWorld(false);
         }, 60L);
 
         if (PlotUtils.plotReminder.containsKey(event.getPlayer().getUniqueId())) {

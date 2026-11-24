@@ -13,33 +13,72 @@ import java.util.Map;
 import java.util.Optional;
 
 public class TutorialPlotProvider {
-    public static final Map<TutorialPlot, Integer> tutorialPlots = new HashMap<>();
 
-    public Optional<TutorialPlot> getById(int id) {
-        return tutorialPlots.keySet().stream().filter(t -> tutorialPlots.get(t) == id).findFirst();
+    private static final int UNASSIGNED_ID = -1;
+    private final Map<Integer, TutorialPlot> activePlots = new HashMap<>();
+
+    public synchronized Optional<TutorialPlot> getById(int id) {
+        return Optional.ofNullable(activePlots.get(id));
     }
 
+    /**
+     * Returns the tutorial plot of a running tutorial, or otherwise the stored progress of the player.
+     */
     public Optional<TutorialPlot> getByTutorialId(int tutorialId, String playerUUID) {
-        Optional<TutorialPlot> tutorialPlot = tutorialPlots.keySet().stream()
+        Optional<TutorialPlot> active = getActive(tutorialId, playerUUID);
+        if (active.isPresent()) return active;
+        return load(tutorialId, playerUUID);
+    }
+
+    /**
+     * Loads the tutorial plot of the player and assigns it to a free world slot.
+     * Release it with {@link #release(TutorialPlot)} when the tutorial stops.
+     */
+    public Optional<TutorialPlot> claim(int tutorialId, String playerUUID) {
+        Optional<TutorialPlot> stored = getByTutorialId(tutorialId, playerUUID);
+        if (stored.isEmpty() || stored.get().getId() != UNASSIGNED_ID) return stored;
+
+        synchronized (this) {
+            // Another thread may have claimed a slot for this player in the meantime
+            Optional<TutorialPlot> active = getActive(tutorialId, playerUUID);
+            if (active.isPresent()) return active;
+
+            int slot = 0;
+            while (activePlots.containsKey(slot)) slot++;
+
+            TutorialPlot progress = stored.get();
+            TutorialPlot plot = new TutorialPlot(slot, tutorialId, playerUUID, progress.getStageID(),
+                    progress.isComplete(), progress.getLastActivity());
+            activePlots.put(slot, plot);
+            return Optional.of(plot);
+        }
+    }
+
+    /**
+     * Frees the world slot of the plot.
+     */
+    public synchronized void release(TutorialPlot plot) {
+        if (plot == null) return;
+        activePlots.remove(plot.getId(), plot);
+    }
+
+    private synchronized Optional<TutorialPlot> getActive(int tutorialId, String playerUUID) {
+        return activePlots.values().stream()
                 .filter(t -> t.getTutorialID() == tutorialId && t.getUUID().toString().equals(playerUUID)).findFirst();
+    }
 
-        if (tutorialPlot.isPresent()) return tutorialPlot;
-
+    private Optional<TutorialPlot> load(int tutorialId, String playerUUID) {
         String qGet = "SELECT stage_id, is_complete, last_stage_complete_date FROM tutorial WHERE tutorial_id = ? AND uuid = ?;";
-        return Utils.handleSqlException(tutorialPlot, () -> SqlHelper.runQuery(qGet, ps -> {
+        return Utils.handleSqlException(Optional.empty(), () -> SqlHelper.runQuery(qGet, ps -> {
             ps.setInt(1, tutorialId);
             ps.setString(2, playerUUID);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int plotId = getNextTutorialPlotId();
                 int stageId = rs.getInt(1);
                 boolean isComplete = rs.getBoolean(2);
                 Date lastStageCompleteDate = rs.getDate(3);
-                TutorialPlot newTutorialPlot = new TutorialPlot(plotId, tutorialId, playerUUID, stageId,
-                        isComplete, lastStageCompleteDate != null ? lastStageCompleteDate.toLocalDate() : null);
-                tutorialPlots.put(newTutorialPlot, plotId);
-
-                return Optional.of(newTutorialPlot);
+                return Optional.of(new TutorialPlot(UNASSIGNED_ID, tutorialId, playerUUID, stageId,
+                        isComplete, lastStageCompleteDate != null ? lastStageCompleteDate.toLocalDate() : null));
             }
             return Optional.empty();
         }));
@@ -76,13 +115,5 @@ public class TutorialPlotProvider {
             ps.setString(4, playerUUID);
             return ps.executeUpdate() > 0;
         })));
-    }
-
-    private int getNextTutorialPlotId() {
-        int id = 0;
-        while (tutorialPlots.containsValue(id)) {
-            id++;
-        }
-        return id;
     }
 }
