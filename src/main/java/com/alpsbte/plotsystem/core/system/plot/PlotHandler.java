@@ -2,7 +2,6 @@ package com.alpsbte.plotsystem.core.system.plot;
 
 import com.alpsbte.plotsystem.PlotSystem;
 import com.alpsbte.plotsystem.api.event.PlotAbandonedEvent;
-import com.alpsbte.plotsystem.api.event.PlotArchivedEvent;
 import com.alpsbte.plotsystem.api.event.PlotCreatedEvent;
 import com.alpsbte.plotsystem.api.event.PlotSubmissionUndoneEvent;
 import com.alpsbte.plotsystem.api.event.PlotSubmittedEvent;
@@ -250,8 +249,7 @@ public class PlotHandler {
             PlotSystem.getPlugin().getComponentLogger().error(text("Failed to abandon plot with the ID " + plot.getId() + "!"));
         }
         if (successful) {
-            publishEvent(new PlotArchivedEvent(snapshot, reason, actor));
-            publishEvent(new PlotAbandonedEvent(snapshot, reason));
+            publishEvent(new PlotAbandonedEvent(snapshot, reason, actor));
         }
         return successful;
     }
