@@ -93,7 +93,7 @@ public class PlotWorldGenerator {
         Option<LoadedMultiverseWorld> mvWorld = worldManager.getLoadedWorld(worldName);
 
         world.setDifficulty(Difficulty.PEACEFUL);
-        world.setSpawnFlags(false, false);
+        world.setAllowMonsterSpawning(false);
         world.setAutoSave(PlotWorld.isCityPlotWorld(worldName));
 
         // Configure multiverse world
