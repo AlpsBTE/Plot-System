@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.review;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -38,7 +39,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     private CityProject filteredCityProject = null;
 
     public ReviewMenu(Player player) {
-        super(6, 4, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
+        super(6, 4, MenuBackground.REVIEW, LangUtil.getInstance().get(player, LangPaths.Review.MANAGE_AND_REVIEW_PLOTS), player);
     }
 
     @Override
@@ -109,10 +110,10 @@ public class ReviewMenu extends AbstractPaginatedMenu {
         }
 
         // Set previous page item
-        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(46).setItem(hasPreviousPage() ? MenuItems.previousPageItem(getMenuPlayer()) : borderItem());
 
         // Set next page item
-        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : MenuItems.borderItem());
+        getMenu().getSlot(52).setItem(hasNextPage() ? MenuItems.nextPageItem(getMenuPlayer()) : borderItem());
     }
 
     @Override
@@ -172,7 +173,7 @@ public class ReviewMenu extends AbstractPaginatedMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

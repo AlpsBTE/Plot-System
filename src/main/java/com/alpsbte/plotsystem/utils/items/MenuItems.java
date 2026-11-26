@@ -54,7 +54,7 @@ public class MenuItems {
     }
 
     public static ItemStack previousPageItem(Player player) {
-        return new ItemBuilder(BaseItems.MENU_BACK.getItem())
+        return new ItemBuilder(BaseItems.MENU_PREVIOUS.getItem())
                 .setName(text(LangUtil.getInstance().get(player, LangPaths.MenuTitle.PREVIOUS_PAGE), GOLD, BOLD))
                 .build();
     }

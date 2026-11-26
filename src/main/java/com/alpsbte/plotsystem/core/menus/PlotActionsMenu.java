@@ -12,7 +12,6 @@ import com.alpsbte.plotsystem.utils.enums.Status;
 import com.alpsbte.plotsystem.utils.io.LangPaths;
 import com.alpsbte.plotsystem.utils.io.LangUtil;
 import com.alpsbte.plotsystem.utils.items.BaseItems;
-import com.alpsbte.plotsystem.utils.items.MenuItems;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.mask.BinaryMask;
@@ -37,7 +36,7 @@ public class PlotActionsMenu extends AbstractMenu {
     private final List<ActionButton> actionButtons = new ArrayList<>();
 
     public PlotActionsMenu(Player menuPlayer, @NotNull Plot plot) {
-        super(3, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
+        super(3, MenuBackground.PLOT_ACTIONS, LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId() + " | " + plot.getStatus().name().substring(0, 1).toUpperCase() + plot.getStatus().name().substring(1), menuPlayer);
         this.plot = plot;
     }
 
@@ -153,7 +152,7 @@ public class PlotActionsMenu extends AbstractMenu {
                                     .build())
                             .build());
         } else {
-            getMenu().getSlot(22).setItem(MenuItems.borderItem());
+            getMenu().getSlot(22).setItem(borderItem());
         }
     }
 
@@ -185,7 +184,7 @@ public class PlotActionsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)

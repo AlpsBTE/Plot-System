@@ -27,7 +27,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     private final List<UtilityButton> utilityButtons = new ArrayList<>();
 
     public BuilderUtilitiesMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
+        super(3, MenuBackground.BUILDER_UTILITIES, LangUtil.getInstance().get(player, LangPaths.MenuTitle.BUILDER_UTILITIES), player);
 
         if (!PlotUtils.isPlotWorld(player.getWorld())) {
             player.closeInventory();
@@ -93,7 +93,7 @@ public class BuilderUtilitiesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

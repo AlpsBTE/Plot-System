@@ -75,16 +75,17 @@ public class CompanionMenu {
      *
      * @param startingSlot slot to start drawing items at
      * @param player       player that is viewing this (translation purposes)
+     * @param borderItem   item for unused slots, see {@link com.alpsbte.plotsystem.core.menus.AbstractMenu#borderItem()}
      * @param returnToMenu a lambda to call when needing to return to current menu
      * @return FooterItems indexed by slot number
      */
-    public static @NotNull Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, Consumer<Player> returnToMenu) {
+    public static @NotNull Map<Integer, FooterItem> getFooterItems(int startingSlot, Player player, ItemStack borderItem, Consumer<Player> returnToMenu) {
         HashMap<Integer, FooterItem> items = new HashMap<>();
         // Set builder utilities menu item (only useful while building on a plot)
         if (MenuAccess.canOpenBuilderUtilities(player)) {
             items.put(startingSlot + 5, new FooterItem(BuilderUtilitiesMenu.getMenuItem(player), (clickPlayer, _) -> new BuilderUtilitiesMenu(clickPlayer)));
         } else {
-            items.put(startingSlot + 5, new FooterItem(MenuItems.borderItem(), (_, _) -> {}));
+            items.put(startingSlot + 5, new FooterItem(borderItem, (_, _) -> {}));
         }
 
         // Set player plots menu item
@@ -179,8 +180,8 @@ public class CompanionMenu {
         return difficulty;
     }
 
-    public static ItemStack getTutorialSlotItem(Player player) {
-        return MenuAccess.canOpenTutorials(player) ? TutorialsMenu.getTutorialItem(player) : MenuItems.borderItem();
+    public static ItemStack getTutorialSlotItem(Player player, ItemStack borderItem) {
+        return MenuAccess.canOpenTutorials(player) ? TutorialsMenu.getTutorialItem(player) : borderItem;
     }
 
     public static void clickEventTutorialItem(Menu menu, Player player) {

@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.tutorial;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -42,7 +43,7 @@ public class TutorialsMenu extends AbstractMenu {
     private boolean isBeginnerTutorialCompleted = false;
 
     public TutorialsMenu(Player menuPlayer) {
-        super(6, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
+        super(6, MenuBackground.TUTORIALS, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIALS), menuPlayer);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class TutorialsMenu extends AbstractMenu {
 
         // Set back item
         getMenu().getSlot(49).setItem(!PlotSystem.getPlugin().getConfig().getBoolean(ConfigPaths.BEGINNER_TUTORIAL_REQUIRED)
-                || isBeginnerTutorialCompleted ? MenuItems.backMenuItem( getMenuPlayer()) : MenuItems.borderItem());
+                || isBeginnerTutorialCompleted ? MenuItems.backMenuItem( getMenuPlayer()) : borderItem());
     }
 
     @Override
@@ -106,7 +107,7 @@ public class TutorialsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

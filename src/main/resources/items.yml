@@ -60,6 +60,9 @@ menu-error:
 menu-close:
   material: BARRIER
   modelId: ''
+menu-previous:
+  material: head(9226)
+  modelId: ''
 menu-back:
   material: head(9226)
   modelId: ''

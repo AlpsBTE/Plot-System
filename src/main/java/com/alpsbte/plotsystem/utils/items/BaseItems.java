@@ -30,6 +30,7 @@ public enum BaseItems {
     MENU_CLOSE("menu-close"),
     MENU_BACK("menu-back"),
     MENU_NEXT("menu-next"),
+    MENU_PREVIOUS("menu-previous"),
     MENU_ADD("menu-add"),
     MENU_REMOVE("menu-remove"),
 
