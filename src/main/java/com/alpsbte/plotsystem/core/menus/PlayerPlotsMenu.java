@@ -42,7 +42,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     private int plotDisplayCount = 0;
 
     public PlayerPlotsMenu(Player menuPlayer, @NotNull Builder builder) {
-        super(6, LangUtil.getInstance().get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName()), menuPlayer);
+        super(6, MenuBackground.PLAYER_PLOTS, LangUtil.getInstance().get(menuPlayer.getPlayer(), LangPaths.MenuTitle.PLAYER_PLOTS, builder.getName()), menuPlayer);
         this.builder = builder;
     }
 
@@ -109,7 +109,7 @@ public class PlayerPlotsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

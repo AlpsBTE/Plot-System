@@ -13,7 +13,11 @@ public abstract class AbstractPaginatedMenu extends AbstractMenu {
     private int currentPage = 0;
 
     protected AbstractPaginatedMenu(int rows, int pagedRows, String title, Player menuPlayer) {
-        super(rows, title, menuPlayer, false);
+        this(rows, pagedRows, MenuBackground.NONE, title, menuPlayer);
+    }
+
+    protected AbstractPaginatedMenu(int rows, int pagedRows, MenuBackground background, String title, Player menuPlayer) {
+        super(rows, background, title, menuPlayer, false);
         this.maxItemsPerPage = pagedRows * 9;
         reloadMenuAsync();
     }

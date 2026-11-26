@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -45,7 +46,7 @@ public class CountryMenu extends AbstractMenu {
     private PlotDifficulty selectedPlotDifficulty = PlotDifficulty.EASY;
 
     CountryMenu(Player player, @NotNull Continent continent) {
-        super(6, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);
+        super(6, MenuBackground.COMPANION_COUNTRIES, LangUtil.getInstance().get(player, continent.langPath) + " → " + LangUtil.getInstance().get(player, LangPaths.MenuTitle.COMPANION_SELECT_COUNTRY), player);
         selectedContinent = continent;
     }
 
@@ -62,9 +63,9 @@ public class CountryMenu extends AbstractMenu {
         getMenu().getSlot(6).setItem(CompanionMenu.getDifficultyItem(getMenuPlayer(), selectedPlotDifficulty));
 
         // Set tutorial item
-        getMenu().getSlot(7).setItem(CompanionMenu.getTutorialSlotItem(getMenuPlayer()));
+        getMenu().getSlot(7).setItem(CompanionMenu.getTutorialSlotItem(getMenuPlayer(), borderItem()));
 
-        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), borderItem(), player -> new CountryMenu(player, selectedContinent));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         super.setPreviewItems();
@@ -106,7 +107,7 @@ public class CountryMenu extends AbstractMenu {
             getMenu().getSlot(startingSlot + i).setClickHandler((clickPlayer, _) -> new CityProjectMenu(clickPlayer, country, selectedPlotDifficulty));
         }
 
-        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), player -> new CountryMenu(player, selectedContinent));
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(45, getMenuPlayer(), borderItem(), player -> new CountryMenu(player, selectedContinent));
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
     }
 
@@ -122,7 +123,7 @@ public class CountryMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("001111001")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)
@@ -137,7 +138,7 @@ public class CountryMenu extends AbstractMenu {
         if (CompanionMenu.hasContinentView()) {
             getMenu().getSlot(1).setItem(MenuItems.backMenuItem(getMenuPlayer()));
         } else {
-            getMenu().getSlot(1).setItem(MenuItems.borderItem());
+            getMenu().getSlot(1).setItem(borderItem());
         }
 
         Player player = getMenuPlayer();

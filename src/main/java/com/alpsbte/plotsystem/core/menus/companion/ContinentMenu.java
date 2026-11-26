@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.companion;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.plotsystem.core.database.DataProvider;
 import com.alpsbte.plotsystem.core.menus.AbstractMenu;
 import com.alpsbte.plotsystem.utils.Utils;
@@ -20,7 +21,7 @@ public class ContinentMenu extends AbstractMenu {
     private final HashMap<Integer, Continent> layout = new HashMap<>();
 
     ContinentMenu(Player menuPlayer) {
-        super(5, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.COMPANION_SELECT_CONTINENT), menuPlayer);
+        super(5, MenuBackground.COMPANION_CONTINENTS, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.COMPANION_SELECT_CONTINENT), menuPlayer);
 
         layout.put(9, Continent.NORTH_AMERICA);
         layout.put(11, Continent.SOUTH_AMERICA);
@@ -34,7 +35,7 @@ public class ContinentMenu extends AbstractMenu {
     protected void setPreviewItems() {
         getMenu().getSlot(0).setItem(MenuItems.getRandomItem(getMenuPlayer())); // Set random selection item
 
-        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), borderItem(), ContinentMenu::new);
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setItem(footerItem.item()));
 
         super.setPreviewItems();
@@ -66,14 +67,14 @@ public class ContinentMenu extends AbstractMenu {
             getMenu().getSlot(continent.getKey()).setClickHandler((clickPlayer, clickInfo) -> new CountryMenu(clickPlayer, continent.getValue()));
         }
 
-        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), ContinentMenu::new);
+        Map<Integer, FooterItem> footerItems = CompanionMenu.getFooterItems(9 * 4, getMenuPlayer(), borderItem(), ContinentMenu::new);
         footerItems.forEach((index, footerItem) -> getMenu().getSlot(index).setClickHandler(footerItem.clickHandler()));
     }
 
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("011111111")
                 .pattern("010101010")
                 .pattern("111101111")

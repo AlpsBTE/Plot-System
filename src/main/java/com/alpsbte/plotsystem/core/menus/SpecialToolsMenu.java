@@ -19,7 +19,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class SpecialToolsMenu extends AbstractMenu {
     public SpecialToolsMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), player);
+        super(3, MenuBackground.SPECIAL_TOOLS, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SPECIAL_TOOLS), player);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class SpecialToolsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

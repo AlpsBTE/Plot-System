@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.review;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.PlotSystem;
@@ -43,7 +44,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     boolean sentWarning = false;
 
     public ReviewPlotMenu(Player player, Plot plot, ReviewRating rating) {
-        super(6, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getId())), player);
+        super(6, MenuBackground.REVIEW_PLOT, LangUtil.getInstance().get(player, LangPaths.MenuTitle.REVIEW_PLOT, Integer.toString(plot.getId())), player);
         this.plot = plot;
         this.rating = rating;
     }
@@ -181,7 +182,7 @@ public class ReviewPlotMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

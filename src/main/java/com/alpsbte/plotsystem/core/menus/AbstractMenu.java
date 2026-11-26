@@ -1,29 +1,50 @@
 package com.alpsbte.plotsystem.core.menus;
 
 import com.alpsbte.plotsystem.PlotSystem;
+import com.alpsbte.plotsystem.utils.items.MenuItems;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.mask.Mask;
 import org.ipvp.canvas.type.ChestMenu;
-
-import static net.kyori.adventure.text.Component.text;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMenu {
     private final Menu menu;
     private final Player menuPlayer;
     private final String title;
+    private final MenuBackground background;
 
     protected AbstractMenu(int rows, String title, Player menuPlayer) {
-        this(rows, title, menuPlayer, true);
+        this(rows, MenuBackground.NONE, title, menuPlayer, true);
     }
 
     protected AbstractMenu(int rows, String title, Player menuPlayer, boolean reload) {
+        this(rows, MenuBackground.NONE, title, menuPlayer, reload);
+    }
+
+    protected AbstractMenu(int rows, @NotNull MenuBackground background, String title, Player menuPlayer) {
+        this(rows, background, title, menuPlayer, true);
+    }
+
+    protected AbstractMenu(int rows, @NotNull MenuBackground background, String title, Player menuPlayer, boolean reload) {
         this.title = title;
+        this.background = background;
         this.menuPlayer = menuPlayer;
-        this.menu = ChestMenu.builder(rows).title(text(title)).redraw(true).build();
+        this.menu = ChestMenu.builder(rows).title(displayTitle()).redraw(true).build();
 
         if (reload) reloadMenuAsync();
+    }
+
+    private Component displayTitle() {
+        return background.apply(Component.text(title));
+    }
+
+    protected ItemStack borderItem() {
+        return background.isActive() ? ItemStack.empty() : MenuItems.borderItem();
     }
 
     /**
@@ -55,7 +76,8 @@ public abstract class AbstractMenu {
     protected void setPreviewItems() {
         if (getMask() != null) getMask().apply(getMenu());
         getMenu().open(getMenuPlayer());
-        getMenuPlayer().getOpenInventory().setTitle(title);
+        // paper can only retitle an open window from a legacy string...
+        getMenuPlayer().getOpenInventory().setTitle(LegacyComponentSerializer.legacySection().serialize(displayTitle()));
     }
 
     /**

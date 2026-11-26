@@ -37,7 +37,7 @@ public class FeedbackMenu extends AbstractMenu {
     private final Plot plot;
 
     public FeedbackMenu(Player player, int plotID) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
+        super(3, MenuBackground.FEEDBACK, LangUtil.getInstance().get(player, LangPaths.MenuTitle.FEEDBACK, String.valueOf(plotID)), player);
         this.plot = DataProvider.PLOT.getPlotById(plotID);
     }
 
@@ -99,7 +99,7 @@ public class FeedbackMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.FULL_MASK)

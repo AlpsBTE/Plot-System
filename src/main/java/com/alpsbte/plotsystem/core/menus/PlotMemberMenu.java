@@ -38,7 +38,7 @@ public class PlotMemberMenu extends AbstractMenu {
 
     public PlotMemberMenu(@NotNull Plot plot, Player menuPlayer) {
         // Avoid opening the menu before 'plot' is assigned
-        super(3,
+        super(3, MenuBackground.PLOT_MEMBERS,
                 LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.MANAGE_MEMBERS) + " | " +
                         LangUtil.getInstance().get(menuPlayer, LangPaths.Plot.PLOT_NAME) + " #" + plot.getId(),
                 menuPlayer,
@@ -155,7 +155,7 @@ public class PlotMemberMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

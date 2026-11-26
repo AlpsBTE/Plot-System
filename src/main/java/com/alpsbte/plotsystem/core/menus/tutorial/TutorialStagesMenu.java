@@ -1,5 +1,6 @@
 package com.alpsbte.plotsystem.core.menus.tutorial;
 
+import com.alpsbte.plotsystem.core.menus.MenuBackground;
 import com.alpsbte.alpslib.utils.item.ItemBuilder;
 import com.alpsbte.alpslib.utils.item.LoreBuilder;
 import com.alpsbte.plotsystem.core.database.DataProvider;
@@ -45,7 +46,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     private boolean isTutorialCompleted;
 
     public TutorialStagesMenu(Player menuPlayer, int tutorialId) {
-        super(6, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIAL_STAGES), menuPlayer, false);
+        super(6, MenuBackground.TUTORIAL_STAGES, LangUtil.getInstance().get(menuPlayer, LangPaths.MenuTitle.TUTORIAL_STAGES), menuPlayer, false);
         this.tutorialId = tutorialId;
         int totalStages = ConfigUtil.getTutorialInstance().configs[tutorialId].getInt(TutorialUtils.Path.TUTORIAL_STAGES);
 
@@ -152,7 +153,7 @@ public class TutorialStagesMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern("111101111")
                 .pattern(Utils.EMPTY_MASK)
                 .pattern(Utils.EMPTY_MASK)

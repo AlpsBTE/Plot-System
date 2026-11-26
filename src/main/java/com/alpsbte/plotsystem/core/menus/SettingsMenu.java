@@ -25,7 +25,7 @@ public class SettingsMenu extends AbstractMenu {
     private Consumer<Player> onBack = player -> player.performCommand("companion");
 
     public SettingsMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), player);
+        super(3, MenuBackground.SETTINGS, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SETTINGS), player);
     }
 
     public SettingsMenu(Player player, Consumer<Player> onBack) {
@@ -86,7 +86,7 @@ public class SettingsMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")

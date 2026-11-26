@@ -27,7 +27,7 @@ public class PlotTypeMenu extends AbstractMenu {
     private Builder builder;
 
     public PlotTypeMenu(Player player) {
-        super(3, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SELECT_PLOT_TYPE), player);
+        super(3, MenuBackground.PLOT_TYPE, LangUtil.getInstance().get(player, LangPaths.MenuTitle.SELECT_PLOT_TYPE), player);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class PlotTypeMenu extends AbstractMenu {
                                     .addLine(LangUtil.getInstance().get(getMenuPlayer(), LangPaths.MenuDescription.SELECT_CITY_INSPIRATION_MODE), true)
                                     .build())
                             .setEnchanted(builder.getPlotType().getId() == PlotType.CITY_INSPIRATION_MODE.getId())
-                            .build() : MenuItems.borderItem());
+                            .build() : borderItem());
 
 
 
@@ -117,7 +117,7 @@ public class PlotTypeMenu extends AbstractMenu {
     @Override
     protected Mask getMask() {
         return BinaryMask.builder(getMenu())
-                .item(MenuItems.borderItem())
+                .item(borderItem())
                 .pattern(Utils.FULL_MASK)
                 .pattern(Utils.EMPTY_MASK)
                 .pattern("111101111")
